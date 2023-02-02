@@ -1,0 +1,16 @@
+VAT-Mart/
+*.pth
+*/__pycache__
+*/*/__pycache__
+*/*/*/__pycache__
+*/*/*/*/__pycache__
+*/*/*/*/*/__pycache__
+*/*/*/*/*/*/__pycache__
+data/*
+legacy/*
+raw/*
+shapes/*
+src/checkpoints/*
+src/figures/*
+src/inference_gifs/*
+src/logs/*

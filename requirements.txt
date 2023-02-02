@@ -1,0 +1,8 @@
+torch
+torchvision
+matplotlib
+numpy
+open3d
+opencv-python
+numpy.quaternion
+scipy

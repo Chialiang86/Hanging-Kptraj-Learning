@@ -1,0 +1,24 @@
+dataset_module: 'dataset'
+dataset_class: 'KptReconDataset'
+module: 'traj_recon_vae' 
+model: 'TrajRecon'
+
+inputs:
+  hidden_dim: 128 # not used
+  z_feat_dim: 64 # not used
+  num_steps: 30
+  wpt_dim: 6
+  lbd_kl: 1.0
+  lbd_recon: 1.0
+  kl_annealing: 1
+
+lr: 0.001
+lr_decay_rate: 0.95
+lr_decay_epoch: 20
+weight_decay: 0.0001
+save_freq: 20
+
+batch_size: 16
+
+start_epoch: 0
+stop_epoch: 200
