@@ -139,24 +139,26 @@ def main(args):
         shape_name_postfix = kptraj_file.split('/')[-1].split('.')[0]
         shape_name_hash = shape_name_postfix.split('_aug')[0]
 
-        affordance_name_complete = f'{shape_dir}/{shape_name}/affordance.npy'
-        pcd_affordance = np.load(affordance_name_complete)
-        contact_point = pcd_affordance[0, :3]
-        print(pcd_affordance)
+        # affordance_name_complete = f'{shape_dir}/{shape_name}/affordance.npy'
+        # pcd_affordance = np.load(affordance_name_complete)
+        # contact_point = pcd_affordance[0, :3]
+        # print(pcd_affordance)
 
-        hook_id = p.loadURDF(f"../shapes/hook/{shape_name_hash}/base.urdf", hook_pose[:3], hook_pose[3:])
-        print(f'GT pose: {hook_pose}')
-        # get pose of loadURDF
-        pos, rot = p.getBasePositionAndOrientation(hook_id)
-        pose = list(pos) + list(rot)
-        pose1 = np.array(pose)
-        print(f'loadURDF pose: {pose}')
-        p.resetBasePositionAndOrientation(hook_id,  hook_pose[:3], hook_pose[3:])
-        pos, rot = p.getBasePositionAndOrientation(hook_id)
-        pose = list(pos) + list(rot)
-        pose2 = np.array(pose)
-        print(f'resetBasePositionAndOrientation pose: {pose}') #  => same as GT
-        print(pose2 - pose1)
+        urdf_path = f"../shapes/hook/{shape_name_hash}/base.urdf"
+        print(urdf_path)
+        hook_id = p.loadURDF(urdf_path, hook_pose[:3], hook_pose[3:])
+        # print(f'GT pose: {hook_pose}')
+        # # get pose of loadURDF
+        # pos, rot = p.getBasePositionAndOrientation(hook_id)
+        # pose = list(pos) + list(rot)
+        # pose1 = np.array(pose)
+        # print(f'loadURDF pose: {pose}')
+        # p.resetBasePositionAndOrientation(hook_id,  hook_pose[:3], hook_pose[3:])
+        # pos, rot = p.getBasePositionAndOrientation(hook_id)
+        # pose = list(pos) + list(rot)
+        # pose2 = np.array(pose)
+        # print(f'resetBasePositionAndOrientation pose: {pose}') #  => same as GT
+        # print(pose2 - pose1)
 
         # load json
         f_kptraj = open(kptraj_file, 'r')
@@ -189,22 +191,20 @@ def main(args):
                 #     wpts.append(list(kptraj[wpt_id]))
 
             wpts.append(list(kptraj[-1]))
-            # colors = np.random.uniform(low=[0] * 3, high=[1] * 3).repeat(3).reshape((3,3)).T
-            # print('colors:', colors)
-
+            colors = np.random.uniform(low=[0] * 3, high=[1] * 3).repeat(3).reshape((3,3)).T
             wpts = refine_waypoint_rotation(wpts)
             kptraj_shorten = shorten_kpt_trajectory(wpts, length=args.kptraj_length)
             for wpt_id, wpt in enumerate(kptraj_shorten):
 
                 wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(wpt)
 
-                # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001, color=colors)
-                draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.005)
+                draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001, color=colors)
+                # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001)
 
-            contact_quat = kptraj_shorten[-1][3:]
-            contact_pose = list(contact_point) + list(contact_quat)
-            wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(contact_pose)
-            draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.005)
+            # contact_quat = kptraj_shorten[-1][3:]
+            # contact_pose = list(contact_point) + list(contact_quat)
+            # wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(contact_pose)
+            # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.005)
 
         while True:
             keys = p.getKeyboardEvents()

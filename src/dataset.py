@@ -1,8 +1,9 @@
 import os, glob, json
 import numpy as np
 import open3d as o3d
-from pointnet2_ops.pointnet2_utils import furthest_point_sample
 
+from scipy.spatial.transform import Rotation as R
+from pointnet2_ops.pointnet2_utils import furthest_point_sample
 import torch
 from torch.utils.data import Dataset
 # from torchvision import datasets
@@ -170,7 +171,7 @@ class KptReconShapeDataset(Dataset):
         return points, waypoints
 
 class KptReconAffordanceDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False):
+    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False, enable_affordance=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
 
@@ -180,12 +181,18 @@ class KptReconAffordanceDataset(Dataset):
         shape_list = []
         self.max_num_points = 0
         self.min_num_points = 1e10
+
+        affordance_list = []
         for shape_file in shape_files:
-            pcd = np.load(shape_file)
+            pcd = np.load(shape_file).astype(np.float32)
             points = pcd[:,:3]
+            shape_list.append(points)
             self.max_num_points = max(self.max_num_points, points.shape[0])
             self.min_num_points = min(self.min_num_points, points.shape[0])
-            shape_list.append(points)
+
+            if enable_affordance == True:
+                affordance_map = pcd[:,3]
+                affordance_list.append(affordance_map)
         
         base_num = 500
         self.sample_num_points = base_num * (self.min_num_points // base_num)
@@ -208,26 +215,9 @@ class KptReconAffordanceDataset(Dataset):
         self.shape_array = shape_list
         self.traj_array = traj_list
 
-        # create array
-        # TODO: check why "Nx4" point cloud not work
-        # self.shape_array = np.zeros((self.size, self.max_num_points, 3), dtype=np.float32) # N x P x 4
-        # for i in range(len(shape_list)):
-        #     length = shape_list[i].shape[0]
-        #     self.shape_array[i, :length, :3] = shape_list[i]
-        #     self.shape_array[i, :length, 3:] = 1.0 # valid flag
-        #     self.shape_array[i, length:, 3:] = 0.0 # valid flag
+        if enable_affordance == True:
+            self.affordance_array = affordance_list
 
-        # self.traj_array = np.zeros((self.size, self.traj_len, wpt_dim), dtype=np.float32) # N x T x 6
-        # for i in range(len(traj_list)):
-        #     length = traj_list[i].shape[0]
-        #     self.traj_array[i, :self.traj_len, :] = traj_list[i][:self.traj_len]
-        #     self.traj_array[i] = traj_list[i]
-
-            # # TODO: do we need this? => maybe no
-            # if 'residual' in dataset_dir:
-            #     self.traj_array[i,1:,:3] *= 1000 # relative position will be very small
-            #     self.traj_array[i,1:,3:] *= (180.0 / np.pi) # relative rotation will be very small
-    
     def print_data_shape(self):
         print(f"shape : {len(self.shape_array)}")
         print(f"trajectory : {len(self.traj_array)}")
@@ -244,12 +234,14 @@ class KptReconAffordanceDataset(Dataset):
         if self.type == "absolute":
             waypoints[:,:3] = (waypoints[:,:3] - centroid) / max_ratio
         elif self.type == "residual":
-            waypoints[0,:3] = (waypoints[0,:3] - centroid) / max_ratio
+            first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
+            first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
+
+            waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
             waypoints[1:,:3] = waypoints[1:,:3] / max_ratio
         else :
             print(f"dataset type undefined : {self.type}")
             exit(-1)
-        # points[:,:3] = centroid_points
         
         points = torch.from_numpy(centroid_points).unsqueeze(0).to('cuda').contiguous()
         input_pcid = furthest_point_sample(points, self.sample_num_points).long().reshape(-1)  # BN
@@ -259,29 +251,42 @@ class KptReconAffordanceDataset(Dataset):
 
 if __name__=="__main__":
     
-    dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-absolute-30/01.16.13.53/train"
-    dataset = KptReconDataset(dataset_dir)
-    dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-residual-30/01.16.13.55/train"
-    dataset = KptReconDataset(dataset_dir)
-    dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon/hook-kptraj_1104-absolute-30/01.16.13.41/train"
-    dataset = KptReconDataset(dataset_dir)
-    dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon/hook-kptraj_1104-residual-30/01.16.13.41/train"
-    dataset = KptReconDataset(dataset_dir)
-    dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-absolute-30/01.16.13.53/train"
+    # dataset = KptReconDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-residual-30/01.16.13.55/train"
+    # dataset = KptReconDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon/hook-kptraj_1104-absolute-30/01.16.13.41/train"
+    # dataset = KptReconDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon/hook-kptraj_1104-residual-30/01.16.13.41/train"
+    # dataset = KptReconDataset(dataset_dir)
+    # dataset.print_data_shape()
     
-    dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-absolute-30/01.16.13.56/train"
+    # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-absolute-30/01.16.13.56/train"
+    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-residual-30/01.16.13.57/train"
+    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-absolute-30/01.16.13.41/train"
+    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-residual-30/01.16.13.42/train"
+    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset.print_data_shape()
+    
+    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28/train"
     dataset = KptReconShapeDataset(dataset_dir)
     dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-residual-30/01.16.13.57/train"
+    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29/train"
     dataset = KptReconShapeDataset(dataset_dir)
     dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-absolute-30/01.16.13.41/train"
+    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30/train"
     dataset = KptReconShapeDataset(dataset_dir)
     dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-residual-30/01.16.13.42/train"
+    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34/train"
     dataset = KptReconShapeDataset(dataset_dir)
     dataset.print_data_shape()
 

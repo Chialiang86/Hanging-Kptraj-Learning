@@ -345,7 +345,7 @@ if __name__=="__main__":
     parser.add_argument('--split_ratio', type=float, nargs='+', default=[0.8, 0.1], help='the first value is the ratio of training set, the second is for testing set')
     parser.add_argument('--kptraj_type', '-kt', type=int, default=0, help='0:absolute, 1:residual')
     parser.add_argument('--kptraj_root', '-kr', type=str, default='../raw')
-    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_1104_aug')
+    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_1104_origin')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
     parser.add_argument('--shape_dir', '-sd', type=str, default='hook')
     parser.add_argument('--data_root', '-dr', type=str, default='../data', help='the output dataset directory root')
