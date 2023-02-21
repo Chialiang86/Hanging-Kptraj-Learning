@@ -1,5 +1,5 @@
 dataset_module: 'dataset'
-dataset_class: 'KptReconShapeDataset'
+dataset_class: 'KptrajReconShapeDataset'
 module: 'traj_recon_shape_cvae' 
 model: 'TrajReconShape'
 

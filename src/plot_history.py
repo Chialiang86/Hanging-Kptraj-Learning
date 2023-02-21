@@ -21,6 +21,8 @@ def main(root_name : str):
             training_model_type = 'cae'
         elif '_cvae' in fname:
             training_model_type = 'cvae'
+        elif 'affordance' in fname:
+            training_model_type = 'affordance'
         else :
             print('the training type of the log file is not specified')
             exit(0)
@@ -50,6 +52,14 @@ def main(root_name : str):
                 'total_loss': []
             }
 
+        if training_model_type == 'affordance':
+            training_res = {
+                'total_loss': []
+            }
+            validation_res = {
+                'total_loss': []
+            }
+
         i = 0
         for i, line in enumerate(lines):
             if 'training stage' in line:
@@ -75,7 +85,15 @@ def main(root_name : str):
                     training_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                     training_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
                     training_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
+                
+                if training_model_type == 'affordance':
+                    time_line = lines[i + 1]
+                    epoch_line = lines[i + 2]
+                    lr_line = lines[i + 3]
+                    total_liss_line = lines[i + 4]
 
+                    training_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
+                    training_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
 
             if 'validation stage' in line:
                 if training_model_type == 'ae' or training_model_type == 'cae':
@@ -98,6 +116,15 @@ def main(root_name : str):
                     validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
                     validation_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                     validation_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
+                    validation_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
+
+                if training_model_type == 'affordance':
+                    time_line = lines[i + 1]
+                    epoch_line = lines[i + 2]
+                    lr_line = lines[i + 3]
+                    total_liss_line = lines[i + 4]
+
+                    validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
                     validation_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
         
         fname_1 = fname.split('/')[1]

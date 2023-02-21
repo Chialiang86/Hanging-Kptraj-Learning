@@ -1,0 +1,21 @@
+num of points = 5000
+---------------------------------------------
+[ training stage ]
+ - time :  00:05:50 
+ - epoch :     0/2     
+ - lr : 1.00E-03 
+ - train_kl_avg_loss :    0.05991
+ - train_recon_avg_loss :    0.12013
+ - train_total_avg_loss :    0.18004
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:06:51 
+ - epoch :     0/2     
+ - lr : 1.00E-03 
+ - val_kl_avg_loss :    0.00202
+ - val_recon_avg_loss :    2.85784
+ - val_total_avg_loss :    2.85987
+---------------------------------------------
+

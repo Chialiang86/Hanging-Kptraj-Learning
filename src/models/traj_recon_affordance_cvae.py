@@ -23,7 +23,7 @@ def KL(mu, logvar):
     kl_loss = torch.mean(kl_loss)
     return kl_loss
 
-class PointNet2ClassSSG(PointNet2ClassificationSSG):
+class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
@@ -116,20 +116,19 @@ class TrajEncoder(nn.Module):
 
         super(TrajEncoder, self).__init__()
 
+        # self.mlp = nn.Sequential(
+        #     nn.Linear(num_steps * wpt_dim, 128),
+        #     nn.Linear(128, 128),
+        #     nn.Linear(128, traj_feat_dim)
+        # )
 
         self.mlp = nn.Sequential(
-            nn.Linear(num_steps * wpt_dim, 128),
-            nn.Linear(128, 128),
-            nn.Linear(128, traj_feat_dim)
+            nn.Linear(num_steps * wpt_dim, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, traj_feat_dim)
         )
-
-        # self.mlp = nn.Sequential(
-        #     nn.Linear(num_steps * wpt_dim, 256),
-        #     nn.LeakyReLU(),
-        #     nn.Linear(256, 256),
-        #     nn.LeakyReLU(),
-        #     nn.Linear(256, traj_feat_dim)
-        # )
 
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
@@ -171,19 +170,20 @@ class AllDecoder(nn.Module):
     def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
         super(AllDecoder, self).__init__()
 
-        self.mlp = nn.Sequential(
-            nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, 512),
-            nn.Linear(512, 256),
-            nn.Linear(256, num_steps * wpt_dim)
-        )
-
         # self.mlp = nn.Sequential(
-        #     nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
-        #     nn.LeakyReLU(),
-        #     nn.Linear(hidden_dim, hidden_dim),
-        #     nn.LeakyReLU(),
-        #     nn.Linear(hidden_dim, num_steps * wpt_dim)
+        #     nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, 512),
+        #     nn.Linear(512, 256),
+        #     nn.Linear(256, num_steps * wpt_dim)
         # )
+
+        self.mlp = nn.Sequential(
+            nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
+            nn.LeakyReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.LeakyReLU(),
+            nn.Linear(hidden_dim, num_steps * wpt_dim)
+        )
+        
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
 
@@ -205,7 +205,7 @@ class TrajReconAffordance(nn.Module):
 
         self.z_dim = z_feat_dim
 
-        self.pointnet2 = PointNet2ClassSSG({'feat_dim': pcd_feat_dim})
+        self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
         self.mlp_traj = TrajEncoder(traj_feat_dim=traj_feat_dim, num_steps=num_steps, wpt_dim=wpt_dim)
         self.mlp_cp = nn.Linear(3, cp_feat_dim) # contact point
 
@@ -279,18 +279,28 @@ class TrajReconAffordance(nn.Module):
         f_cp = self.mlp_cp(contact_point)
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        # pcs = pcs.repeat(1, 1, 2)
         pcs = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs)
         f_s = whole_feats[:, :, 0]
 
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
-        recon_dir = recon_traj[:, 0, :]
-        recon_dir = recon_dir.reshape(-1, 3, 2)
-        recon_dirmat = self.rot6d_to_rotmat(recon_dir)
-        recon_wps = recon_traj[:, 1:, :]
+        ret_traj = torch.zeros(recon_traj.shape)
+        if self.dataset_type == 0: # absolute 
+            ret_traj = recon_traj
+            ret_traj[:, 0, :3] = contact_point
 
-        return recon_dirmat, recon_wps
+        if self.dataset_type == 1: # residual 
+            ret_traj[:, 0, :3] = contact_point
+
+            recon_dir = recon_traj[:, 0]
+            recon_dir = recon_dir.reshape(-1, 3, 2)
+            recon_dirmat = self.rot6d_to_rotmat(recon_dir)
+            recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
+            ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
+
+            ret_traj[:, 1:] = recon_traj[:, 1:]
+
+        return ret_traj
 
     # def sample_n(self, pcs, batch_size, rvs=100):
     #     z_all = torch.Tensor(torch.randn(batch_size * rvs, self.z_dim)).cuda()
@@ -325,7 +335,7 @@ class TrajReconAffordance(nn.Module):
             recon_wps = recon_traj[:, 1:, :]
             wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * 6), input_wps.view(batch_size, (self.num_steps - 1) * 6))
             
-            recon_loss = dir_loss + wpt_loss
+            recon_loss = self.lbd_dir * dir_loss + wpt_loss
             # recon_absolute = recon_traj[:, 0, :]
             # recon_residual = recon_traj[:, 1:, :]
             # input_absolute = traj[:, 0, :]

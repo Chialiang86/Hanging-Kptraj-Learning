@@ -1,4 +1,4 @@
-import json, argparse, random, os, shutil, time
+import json, glob, argparse, random, os, shutil, time
 import torch
 import open3d as o3d
 import numpy as np
@@ -156,6 +156,7 @@ def main(args):
     # extract the hook ids without augmented hooks 
     # _aug: the trajectories are augmented
     #: the shapes are augmented)
+    # IMPORTANT!!! get these hook_ids from keypoint trajectory folder (not from shape folder)
     hook_ids = np.asarray([kptraj_file.split('.')[0].split('_aug')[0].split('#')[0] for kptraj_file in kptraj_files])
     hook_ids = np.unique(hook_ids)
 
@@ -180,16 +181,24 @@ def main(args):
     test_hook_ids = hook_ids[random_inds[-test_split_num:]]
 
     # config output dataset dir
-    data_subroot = os.path.join(data_root, dataset_category)
     time_stamp = datetime.today().strftime('%m.%d.%H.%M')
-    data_train_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{time_stamp}', 'train')
-    data_val_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{time_stamp}', 'val')
-    data_test_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{time_stamp}', 'test')
-    os.makedirs(data_train_dir, exist_ok=True)
-    os.makedirs(data_val_dir, exist_ok=True)
-    os.makedirs(data_test_dir, exist_ok=True)
+    dataset_id = f'{time_stamp}-{args.shape_num_pts}'
 
+    data_subroot = os.path.join(data_root, dataset_category)
+    traj_recon_data_train_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'train')
+    traj_recon_data_val_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'val')
+    traj_recon_data_test_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'test')
+    os.makedirs(traj_recon_data_train_dir, exist_ok=True)
+    os.makedirs(traj_recon_data_val_dir, exist_ok=True)
+    os.makedirs(traj_recon_data_test_dir, exist_ok=True)
+
+    less_pts_num = 0
     short_traj_num = 0
+
+    # log_file (now, this file is used for recording point cloud that contain too less points)
+    log_file_path = f'dataprep_{dataset_id}.txt'
+    f_out = open(log_file_path, 'w')
+    # point_thresh = 1000 # TODO: maybe can write it in input_args
 
     # for shape_file in shape_files
     for kptraj_file in tqdm(kptraj_files):
@@ -205,16 +214,13 @@ def main(args):
         # ex : ../raw/keypoint_trajectory_1104/Hook_skew#3_aug.json -> Hook_skew#3
         shape_name_postfix_without_aug = kptraj_file.split('/')[-1].split('.')[0].split('_aug')[0]
 
-        shape_name_complete = f'{shape_dir}/{shape_name}/base.ply'
-        affordance_name_complete = f'{shape_dir}/{shape_name}/affordance.npy'
-
         if args.visualize:
             hook_id = p.loadURDF(f"../shapes/hook/{shape_name_postfix_without_aug}/base.urdf", hook_pose[:3], hook_pose[3:])
             p.resetBasePositionAndOrientation(hook_id,  hook_pose[:3], hook_pose[3:])
 
         # data_dir
-        data_dir = data_train_dir if np.asarray([hook_id in kptraj_file for hook_id in train_hook_ids]).any() else (
-                        data_val_dir if np.asarray([hook_id in kptraj_file for hook_id in val_hook_ids]).any() else data_test_dir
+        data_dir = traj_recon_data_train_dir if np.asarray([hook_id in kptraj_file for hook_id in train_hook_ids]).any() else (
+                        traj_recon_data_val_dir if np.asarray([hook_id in kptraj_file for hook_id in val_hook_ids]).any() else traj_recon_data_test_dir
                     ) 
 
         # load json
@@ -228,6 +234,56 @@ def main(args):
         # preprocess the trajectories in the json file
         for i, kptraj in enumerate(kptrajs):
             subdir_name = f'{data_dir}/{shape_name_postfix}-{i}'
+            
+            # ================================= #
+            # for point cloud or affordance map #
+            # ================================= #
+
+            # copy point cloud paths to dest directory
+            shape_path_complete_todo = []
+            target_shape_path_todo = []
+            if 'shape' in dataset_category:
+                # copy point cloud to dest
+                shape_paths_complete = glob.glob(f'{shape_dir}/{shape_name}/base*.ply')
+                for shape_path_complete in shape_paths_complete:
+                    shape_id = os.path.split(shape_path_complete)[1].split('.')[0].split('-')[-1] # shape-0.ply -> 0
+                    target_shape_path = f'{subdir_name}/shape-{shape_id}.ply'
+
+                    pcd = o3d.io.read_point_cloud(shape_path_complete)
+                    num_pts = np.asarray(pcd.points).shape[0]
+                    if num_pts >= args.shape_num_pts: # check num of points
+                        shape_path_complete_todo.append(shape_path_complete)
+                        target_shape_path_todo.append(target_shape_path)
+                
+                if len(shape_path_complete_todo) == 0:
+                    f_out.write(f'{shape_name} doesn\'t contain enough points\n')
+                    less_pts_num += 1
+                    continue
+            
+            affordance_path_complete_todo = []
+            target_affordance_path_todo = []
+            # copy affordance paths to dest directory
+            if 'affordance' in dataset_category:
+                # copy point cloud to dest
+                affordance_paths_complete = glob.glob(f'{shape_dir}/{shape_name}/affordance*.npy')
+                for affordance_path_complete in affordance_paths_complete:
+                    shape_id = os.path.split(affordance_path_complete)[1].split('.')[0].split('-')[-1] # affordance-0.npy -> 0
+                    target_affordance_path = f'{subdir_name}/affordance-{shape_id}.npy'
+
+                    affordance_map = np.load(affordance_path_complete)
+                    num_pts = affordance_map.shape[0]
+                    if num_pts >= args.shape_num_pts: # check num of points
+                        affordance_path_complete_todo.append(affordance_path_complete)
+                        target_affordance_path_todo.append(target_affordance_path)
+
+                if len(affordance_path_complete_todo) == 0:
+                    f_out.write(f'{shape_name} doesn\'t contain enough points\n')
+                    less_pts_num += 1
+                    continue
+            
+            # ================================ #
+            # for semantic keypoint trajectory #
+            # ================================ #
 
             # # decide sample frequency by waypoint intervals
             # mean_traj_wpt_dist = mean_waypt_dist(kptraj)
@@ -311,30 +367,30 @@ def main(args):
             if args.visualize:
                 p.removeAllUserDebugItems()
 
+            # ========================== #
+            # for saving to target paths #
+            # ========================== #
+
             # output info
             os.makedirs(subdir_name, exist_ok=True)
 
-            # copy point cloud paths to dest directory
-            if dataset_category != 'traj_recon':
-                # copy point cloud to dest
-                output_ply = f'{subdir_name}/shape.ply'
-                shutil.copyfile(shape_name_complete, output_ply)
+            if 'shape' in dataset_category:
+                for shape_path_complete, target_shape_path in zip(shape_path_complete_todo, target_shape_path_todo):
+                    shutil.copyfile(shape_path_complete, target_shape_path)
             
-            # copy affordance paths to dest directory
-            if dataset_category == 'traj_recon_affordance' or dataset_category == 'traj_recon_affordance+scoring':
-                # copy point cloud to dest
-                output_npy = f'{subdir_name}/affordance.npy'
-                shutil.copyfile(affordance_name_complete, output_npy)
+            if 'affordance' in dataset_category:
+                for affordance_path_complete, target_affordance_path in zip(affordance_path_complete_todo, target_affordance_path_todo):
+                    shutil.copyfile(affordance_path_complete, target_affordance_path)
 
             kptraj_json = { "trajectory": wpts_shorten }
             output_traj = f'{subdir_name}/traj.json'
-
             f_kptraj = open(output_traj, 'w')
             json.dump(kptraj_json, f_kptraj, indent=4)
         
         if args.visualize:
             p.removeBody(hook_id)
 
+    print(f'less_pts_num : {less_pts_num}')
     print(f'short_traj_num : {short_traj_num}')
 
 if __name__=="__main__":
@@ -345,12 +401,13 @@ if __name__=="__main__":
     parser.add_argument('--split_ratio', type=float, nargs='+', default=[0.8, 0.1], help='the first value is the ratio of training set, the second is for testing set')
     parser.add_argument('--kptraj_type', '-kt', type=int, default=0, help='0:absolute, 1:residual')
     parser.add_argument('--kptraj_root', '-kr', type=str, default='../raw')
-    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_1104_origin')
+    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_all_one_0214')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
-    parser.add_argument('--shape_dir', '-sd', type=str, default='hook')
+    parser.add_argument('--shape_dir', '-sd', type=str, default='hook_all')
+    parser.add_argument('--shape_num_pts', '-snp', type=int, default=1000, help='the number of points threshold, if the number of points larger than this threshold, then this script will save it')
     parser.add_argument('--data_root', '-dr', type=str, default='../data', help='the output dataset directory root')
-    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0015) # 1mm
-    parser.add_argument('--kptraj_length', '-kl', type=int, default=30)
+    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
+    parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
     parser.add_argument('--visualize', '-v', action='store_true')
 
     args = parser.parse_args()

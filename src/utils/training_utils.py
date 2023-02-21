@@ -1,11 +1,5 @@
-import os
-import sys
-import h5py
-import torch
+import os, sys, h5py, torch, importlib, random, shutil, copy
 import numpy as np
-import importlib
-import random
-import shutil
 from PIL import Image
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(BASE_DIR, '../utils'))
@@ -41,12 +35,13 @@ class kl_annealing():
         return self.L[self.index]
 
 def normalize_pc(points : np.ndarray):
-    centroid = np.mean(points, axis=0, dtype=np.float32)
-    points -= centroid
-    max_ratio = np.max(np.sqrt(np.sum(abs(points)**2,axis=-1)))
-    points /= max_ratio
+    points_copy = copy.deepcopy(points)
+    centroid = np.mean(points_copy, axis=0, dtype=np.float32)
+    points_copy -= centroid
+    max_ratio = np.max(np.sqrt(np.sum(abs(points_copy)**2,axis=-1)))
+    points_copy /= max_ratio
     
-    return points, centroid, max_ratio
+    return points_copy, centroid, max_ratio
 
 def force_mkdir(folder):
     if os.path.exists(folder):

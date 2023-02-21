@@ -125,7 +125,7 @@ def main(args):
 
     sample_dist = args.kptraj_sample_distance
     
-    kptraj_files = glob.glob(f'{kptraj_dir}/Hook_90*.json')
+    kptraj_files = glob.glob(f'{kptraj_dir}/*.json')
     kptraj_files.sort()
     # shape_files = glob.glob(f'{shape_dir}/*/*.ply')
 
@@ -144,7 +144,7 @@ def main(args):
         # contact_point = pcd_affordance[0, :3]
         # print(pcd_affordance)
 
-        urdf_path = f"../shapes/hook/{shape_name_hash}/base.urdf"
+        urdf_path = f"../shapes/{args.shape_dir}/{shape_name_hash}/base.urdf"
         print(urdf_path)
         hook_id = p.loadURDF(urdf_path, hook_pose[:3], hook_pose[3:])
         # print(f'GT pose: {hook_pose}')
@@ -220,8 +220,8 @@ if __name__=="__main__":
     parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_1104_aug')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
     parser.add_argument('--shape_dir', '-sd', type=str, default='hook')
-    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0015)
-    parser.add_argument('--kptraj_length', '-kl', type=int, default=30)
+    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
+    parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
 
     args = parser.parse_args()
     main(args)

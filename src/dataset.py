@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
 from utils.training_utils import get_model_module, optimizer_to_device, normalize_pc
 
-class KptReconDataset(Dataset):
+class KptrajReconDataset(Dataset):
     def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
@@ -82,7 +82,7 @@ class KptReconDataset(Dataset):
 
         return waypoints
 
-class KptReconShapeDataset(Dataset):
+class KptrajReconShapeDataset(Dataset):
     def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
@@ -170,123 +170,152 @@ class KptReconShapeDataset(Dataset):
 
         return points, waypoints
 
-class KptReconAffordanceDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False, enable_affordance=False):
+class KptrajReconAffordanceDataset(Dataset):
+    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, enable_gravity=False, enable_traj=True, enable_affordance=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
 
-        shape_files = glob.glob(f'{dataset_dir}/*/*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
-        traj_files = glob.glob(f'{dataset_dir}/*/*.json') # trajectory in 7d format
+        dataset_subdirs = glob.glob(f'{dataset_dir}/*')
+        self.enable_affordance = enable_affordance
+        self.enable_traj = enable_traj
 
-        shape_list = []
+        self.shape_list = []
+        self.affordance_list = []
+        self.traj_list = []
+        self.max_num_waypoints = 0
         self.max_num_points = 0
         self.min_num_points = 1e10
+        for dataset_subdir in dataset_subdirs:
 
-        affordance_list = []
-        for shape_file in shape_files:
-            pcd = np.load(shape_file).astype(np.float32)
-            points = pcd[:,:3]
-            shape_list.append(points)
-            self.max_num_points = max(self.max_num_points, points.shape[0])
-            self.min_num_points = min(self.min_num_points, points.shape[0])
+            shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
+            shape_list_tmp = []
+            affordance_list_tmp = []
+            for shape_file_subdir in shape_files:
+                pcd = np.load(shape_file_subdir).astype(np.float32)
+                points = pcd[:,:3]
+                shape_list_tmp.append(points)
+                self.max_num_points = max(self.max_num_points, points.shape[0])
+                self.min_num_points = min(self.min_num_points, points.shape[0])
 
+                if enable_affordance == True:
+                    affordance_map = pcd[:,3]
+                    affordance_list_tmp.append(affordance_map)
+            
+            self.shape_list.append(shape_list_tmp)
             if enable_affordance == True:
-                affordance_map = pcd[:,3]
-                affordance_list.append(affordance_map)
+                self.affordance_list.append(affordance_list_tmp)
+
+            if enable_traj:
+                traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
+                for traj_file in traj_files:
+                    f_traj = open(traj_file, 'r')
+                    traj = json.load(f_traj)
+                    waypoints = np.array(traj['trajectory'], dtype=np.float32)
+                    self.max_num_waypoints = max(self.max_num_waypoints, waypoints.shape[0])
+                    self.traj_list.append(waypoints)
         
         base_num = 500
         self.sample_num_points = base_num * (self.min_num_points // base_num)
-        
-        traj_list = []
-        self.max_num_waypoints = 0
-        for traj_file in traj_files:
-            f_traj = open(traj_file, 'r')
-            traj = json.load(f_traj)
-            waypoints = np.array(traj['trajectory'], dtype=np.float32)
-            self.max_num_waypoints = max(self.max_num_waypoints, waypoints.shape[0])
-            traj_list.append(waypoints)
 
         self.type = "residual" if "residual" in dataset_dir else "absolute"
-        self.size = len(traj_list)
+        self.size = len(self.shape_list)
         self.traj_len = num_steps
         self.wpt_dim = wpt_dim
-        
-        # assign to data
-        self.shape_array = shape_list
-        self.traj_array = traj_list
-
-        if enable_affordance == True:
-            self.affordance_array = affordance_list
 
     def print_data_shape(self):
-        print(f"shape : {len(self.shape_array)}")
-        print(f"trajectory : {len(self.traj_array)}")
+        print(f'sample_num_points : {self.sample_num_points}')
+        print(f"shape : {len(self.shape_list)}")
+        if self.enable_affordance:
+            print(f"affordance : {len(self.affordance_list)}")
+        if self.enable_traj:
+            print(f"trajectory : {len(self.traj_list)}")
         
     def __len__(self):
         return self.size
     
     def __getitem__(self, index):
 
-        points = self.shape_array[index]
-        waypoints = self.traj_array[index]
+        num_pcd = len(self.shape_list[index])
 
+        # for point cloud processing
+        shape_id = np.random.randint(0, num_pcd)
+        points = self.shape_list[index][shape_id]
         centroid_points, centroid, max_ratio = normalize_pc(points[:,:3]) # points will be in a unit sphere
-        if self.type == "absolute":
-            waypoints[:,:3] = (waypoints[:,:3] - centroid) / max_ratio
-        elif self.type == "residual":
-            first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
-            first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
-
-            waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
-            waypoints[1:,:3] = waypoints[1:,:3] / max_ratio
-        else :
-            print(f"dataset type undefined : {self.type}")
-            exit(-1)
-        
         points = torch.from_numpy(centroid_points).unsqueeze(0).to('cuda').contiguous()
         input_pcid = furthest_point_sample(points, self.sample_num_points).long().reshape(-1)  # BN
         points = points[0, input_pcid, :].squeeze()
 
-        return points, waypoints
+        # for affordance processing if enabled
+        affordance = None
+        if self.enable_affordance:
+            affordance = self.affordance_list[index][shape_id]
+            affordance = torch.from_numpy(affordance).to('cuda')
+            affordance = affordance[input_pcid]
+
+        # for waypoint preprocessing
+        waypoints = None
+        if self.enable_traj:
+            waypoints = self.traj_list[index]
+            if self.type == "absolute":
+                waypoints[:,:3] = (waypoints[:,:3] - centroid) / max_ratio
+            elif self.type == "residual":
+                first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
+                first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
+
+                waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
+                waypoints[1:,:3] = waypoints[1:,:3] / max_ratio
+            else :
+                print(f"dataset type undefined : {self.type}")
+                exit(-1)
+        
+        # ret value
+        if self.enable_affordance and self.enable_traj:
+            return points, affordance, waypoints
+        if self.enable_traj:
+            return points, waypoints
+        if self.enable_affordance:
+            return points, affordance
+        return points
+
 
 if __name__=="__main__":
     
     # dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-absolute-30/01.16.13.53/train"
-    # dataset = KptReconDataset(dataset_dir)
+    # dataset = KptrajReconDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon/hook-kptraj_1104_aug-residual-30/01.16.13.55/train"
-    # dataset = KptReconDataset(dataset_dir)
+    # dataset = KptrajReconDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon/hook-kptraj_1104-absolute-30/01.16.13.41/train"
-    # dataset = KptReconDataset(dataset_dir)
+    # dataset = KptrajReconDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon/hook-kptraj_1104-residual-30/01.16.13.41/train"
-    # dataset = KptReconDataset(dataset_dir)
+    # dataset = KptrajReconDataset(dataset_dir)
     # dataset.print_data_shape()
     
     # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-absolute-30/01.16.13.56/train"
-    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset = KptrajReconShapeDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104_aug-residual-30/01.16.13.57/train"
-    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset = KptrajReconShapeDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-absolute-30/01.16.13.41/train"
-    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset = KptrajReconShapeDataset(dataset_dir)
     # dataset.print_data_shape()
     # dataset_dir = "../data/traj_recon_shape/hook-kptraj_1104-residual-30/01.16.13.42/train"
-    # dataset = KptReconShapeDataset(dataset_dir)
+    # dataset = KptrajReconShapeDataset(dataset_dir)
     # dataset.print_data_shape()
     
     dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28/train"
-    dataset = KptReconShapeDataset(dataset_dir)
+    dataset = KptrajReconAffordanceDataset(dataset_dir)
     dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29/train"
-    dataset = KptReconShapeDataset(dataset_dir)
-    dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30/train"
-    dataset = KptReconShapeDataset(dataset_dir)
-    dataset.print_data_shape()
-    dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34/train"
-    dataset = KptReconShapeDataset(dataset_dir)
-    dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29/train"
+    # dataset = KptrajReconAffordanceDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.11.13.38/train"
+    # dataset = KptrajReconAffordanceDataset(dataset_dir)
+    # dataset.print_data_shape()
+    # dataset_dir = "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.11.13.39/train"
+    # dataset = KptrajReconAffordanceDataset(dataset_dir)
+    # dataset.print_data_shape()
 

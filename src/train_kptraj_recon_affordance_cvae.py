@@ -66,8 +66,8 @@ def train(args):
     save_freq = config['save_freq']
 
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train')
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val')
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -110,7 +110,7 @@ def train(args):
     # will only work if 'kl_annealing' = 1 in "model_inputs"
     kl_weight = kl_annealing(kl_anneal_cyclical=True, 
                 niter=stop_epoch, 
-                start=0.001, stop=0.01, kl_anneal_cycle=10, kl_anneal_ratio=1)
+                start=0.0, stop=0.1, kl_anneal_cycle=5, kl_anneal_ratio=0.5)
 
     # train for every epoch
     for epoch in range(start_epoch, stop_epoch + 1):
@@ -122,7 +122,7 @@ def train(args):
         train_kl_losses = []
         train_recon_losses = []
         train_total_losses = []
-        for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches):
+        for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
 
             # set models to training mode
             network.train()
@@ -178,7 +178,7 @@ def train(args):
         val_recon_losses = []
         val_total_losses = []
         # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-        for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches):
+        for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
 
             # set models to evaluation mode
             network.eval()
@@ -258,7 +258,6 @@ def recovery_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or n
 
 def test(args):
 
-
     # ================== config ==================
 
     checkpoint_dir = f'{args.checkpoint_dir}'
@@ -273,7 +272,7 @@ def test(args):
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-    output_dir = f'inference_gifs/{checkpoint_subdir}/{checkpoint_subsubdir}'
+    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}'
     os.makedirs(output_dir, exist_ok=True)
 
     config = None
@@ -281,7 +280,7 @@ def test(args):
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
     # sample_num_points = int(weight_subpath.split('_')[0])
-    sample_num_points = 3000
+    sample_num_points = 2000
     print(f'num of points = {sample_num_points}')
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
@@ -299,13 +298,17 @@ def test(args):
 
     # inference
     inference_shape_dir = '../shapes/hook_validation_small'
-    inference_shape_paths = glob.glob(f'{inference_shape_dir}/*/base.ply')
+    inference_shape_paths = glob.glob(f'{inference_shape_dir}/*/affordance*.npy')
     pcds = []
+    affords = []
     urdfs = []
     for inference_shape_path in inference_shape_paths:
-        pcd = o3d.io.read_point_cloud(inference_shape_path)
-        points = np.asarray(pcd.points, dtype=np.float32)
-        urdfs.append(f'{inference_shape_path[:-4]}.urdf')
+        # pcd = o3d.io.read_point_cloud(inference_shape_path)
+        # points = np.asarray(pcd.points, dtype=np.float32)
+        urdf_prefix = os.path.split(inference_shape_path)[0]
+        points = np.load(inference_shape_path)[:, :3].astype(np.float32)
+        affords = np.load(inference_shape_path)[:, 3].astype(np.float32)
+        urdfs.append(f'{urdf_prefix}/base.urdf') 
         pcds.append(points)
     
     # ================== Model ==================
@@ -321,6 +324,7 @@ def test(args):
     # ================== Simulator ==================
 
     # Create pybullet GUI
+    # physicsClientId = p.connect(p.DIRECT)
     physicsClientId = p.connect(p.GUI)
     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
     p.resetDebugVisualizerCamera(
@@ -352,20 +356,24 @@ def test(args):
         
         # urdf file
         hook_urdf = urdfs[sid]
-        hook_id = p.loadURDF(hook_urdf)
-        p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
+        hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
+        # p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
 
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd) # points will be in a unit sphere
+        contact_point = centroid_pcd[0]
 
-        points = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
-        input_pcid = furthest_point_sample(points, sample_num_points).long().reshape(-1)  # BN
-        points = points[0, input_pcid, :].squeeze()
-        points = points.repeat(batch_size, 1, 1)
+        points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        points_batch = points_batch[0, input_pcid, :].squeeze()
+        points_batch = points_batch.repeat(batch_size, 1, 1)
 
-        traj = network.sample(points)
+        contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
 
-        recovered_trajs = recovery_trajectory(traj, hook_pose, centroid, scale, dataset_mode)
+        recon_traj = network.sample(points_batch, contact_point_batch)
+        recon_traj = recon_traj.cpu().detach().numpy()
+
+        recovered_trajs = recovery_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode)
 
         wpt_ids = []
         for i, recovered_traj in enumerate(recovered_trajs):
@@ -379,7 +387,7 @@ def test(args):
                 wpt_ids.append(wpt_id)
 
         # capture a list of images and save as gif
-        delta = 2
+        delta = 10
         delta_sum = 0
         cameraYaw = 90
         rgbs = []
@@ -409,7 +417,7 @@ def test(args):
             if delta_sum >= 360:
                 break
 
-        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}.gif", save_all=True, append_images=rgbs, duration=40, loop=0)
+        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
         p.removeBody(hook_id)
         for wpt_id in wpt_ids:
             p.removeBody(wpt_id)

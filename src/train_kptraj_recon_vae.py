@@ -240,7 +240,7 @@ def test(args):
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-    output_dir = f'inference_gifs/{checkpoint_subdir}/{checkpoint_subsubdir}'
+    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}'
     os.makedirs(output_dir, exist_ok=True)
 
     config = None

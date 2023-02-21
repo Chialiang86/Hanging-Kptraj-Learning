@@ -28,7 +28,10 @@ class kl_annealing():
     def get_beta(self):
         return self.L[self.index]
 
-kla = kl_annealing(kl_anneal_cyclical=True, niter=500, start=0.001, stop=0.01, kl_anneal_cycle=1, kl_anneal_ratio=0.25)
+# kla = kl_annealing(kl_anneal_cyclical=True, niter=200, start=0, stop=0.1, kl_anneal_cycle=5, kl_anneal_ratio=0.5)
+kla = kl_annealing(kl_anneal_cyclical=True, 
+                niter=200, 
+                start=0.0, stop=0.1, kl_anneal_cycle=5, kl_anneal_ratio=0.5)
 plt.figure(figsize=(12,4))
 plt.plot(kla.L, label='KL loss weight')
 plt.title('KL Annealing (weight of KL loss)')
