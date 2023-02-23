@@ -1,0 +1,4433 @@
+num of points = 3500
+---------------------------------------------
+[ training stage ]
+ - time :  00:00:20 
+ - epoch :     0/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.53280
+ - train_recon_avg_loss :    0.26925
+ - train_total_avg_loss :    0.80205
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:00:24 
+ - epoch :     0/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.02929
+ - val_recon_avg_loss :    0.09032
+ - val_total_avg_loss :    0.11961
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:00:44 
+ - epoch :     1/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00202
+ - train_recon_avg_loss :    0.13214
+ - train_total_avg_loss :    0.13416
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:00:47 
+ - epoch :     1/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.01864
+ - val_recon_avg_loss :    0.08973
+ - val_total_avg_loss :    0.10837
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:01:07 
+ - epoch :     2/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00162
+ - train_recon_avg_loss :    0.13068
+ - train_total_avg_loss :    0.13230
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:01:10 
+ - epoch :     2/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.01486
+ - val_recon_avg_loss :    0.08435
+ - val_total_avg_loss :    0.09921
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:01:30 
+ - epoch :     3/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00169
+ - train_recon_avg_loss :    0.12236
+ - train_total_avg_loss :    0.12406
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:01:33 
+ - epoch :     3/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.01871
+ - val_recon_avg_loss :    0.08826
+ - val_total_avg_loss :    0.10697
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:01:53 
+ - epoch :     4/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00134
+ - train_recon_avg_loss :    0.11664
+ - train_total_avg_loss :    0.11797
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:01:56 
+ - epoch :     4/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.01153
+ - val_recon_avg_loss :    0.09643
+ - val_total_avg_loss :    0.10797
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:02:16 
+ - epoch :     5/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00131
+ - train_recon_avg_loss :    0.11773
+ - train_total_avg_loss :    0.11904
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:02:19 
+ - epoch :     5/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00843
+ - val_recon_avg_loss :    0.10748
+ - val_total_avg_loss :    0.11591
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:02:39 
+ - epoch :     6/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00113
+ - train_recon_avg_loss :    0.11151
+ - train_total_avg_loss :    0.11264
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:02:42 
+ - epoch :     6/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00761
+ - val_recon_avg_loss :    0.11532
+ - val_total_avg_loss :    0.12293
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:03:02 
+ - epoch :     7/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00131
+ - train_recon_avg_loss :    0.11232
+ - train_total_avg_loss :    0.11363
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:03:05 
+ - epoch :     7/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00711
+ - val_recon_avg_loss :    0.10314
+ - val_total_avg_loss :    0.11025
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:03:25 
+ - epoch :     8/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00104
+ - train_recon_avg_loss :    0.11479
+ - train_total_avg_loss :    0.11583
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:03:28 
+ - epoch :     8/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00712
+ - val_recon_avg_loss :    0.11955
+ - val_total_avg_loss :    0.12666
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:03:48 
+ - epoch :     9/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00091
+ - train_recon_avg_loss :    0.11246
+ - train_total_avg_loss :    0.11337
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:03:51 
+ - epoch :     9/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00367
+ - val_recon_avg_loss :    0.13356
+ - val_total_avg_loss :    0.13723
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:04:11 
+ - epoch :    10/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00101
+ - train_recon_avg_loss :    0.10908
+ - train_total_avg_loss :    0.11008
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:04:14 
+ - epoch :    10/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00230
+ - val_recon_avg_loss :    0.12624
+ - val_total_avg_loss :    0.12854
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:04:34 
+ - epoch :    11/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00076
+ - train_recon_avg_loss :    0.11303
+ - train_total_avg_loss :    0.11379
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:04:38 
+ - epoch :    11/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00382
+ - val_recon_avg_loss :    0.13201
+ - val_total_avg_loss :    0.13583
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:04:57 
+ - epoch :    12/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00067
+ - train_recon_avg_loss :    0.11384
+ - train_total_avg_loss :    0.11451
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:05:01 
+ - epoch :    12/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00226
+ - val_recon_avg_loss :    0.12928
+ - val_total_avg_loss :    0.13154
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:05:21 
+ - epoch :    13/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00037
+ - train_recon_avg_loss :    0.11134
+ - train_total_avg_loss :    0.11171
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:05:24 
+ - epoch :    13/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00201
+ - val_recon_avg_loss :    0.14561
+ - val_total_avg_loss :    0.14762
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:05:44 
+ - epoch :    14/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00054
+ - train_recon_avg_loss :    0.10748
+ - train_total_avg_loss :    0.10802
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:05:47 
+ - epoch :    14/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00214
+ - val_recon_avg_loss :    0.13436
+ - val_total_avg_loss :    0.13650
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:06:07 
+ - epoch :    15/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00030
+ - train_recon_avg_loss :    0.10767
+ - train_total_avg_loss :    0.10798
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:06:10 
+ - epoch :    15/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00253
+ - val_recon_avg_loss :    0.13275
+ - val_total_avg_loss :    0.13528
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:06:30 
+ - epoch :    16/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00032
+ - train_recon_avg_loss :    0.10665
+ - train_total_avg_loss :    0.10697
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:06:33 
+ - epoch :    16/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00207
+ - val_recon_avg_loss :    0.13024
+ - val_total_avg_loss :    0.13230
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:06:53 
+ - epoch :    17/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00047
+ - train_recon_avg_loss :    0.10711
+ - train_total_avg_loss :    0.10757
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:06:56 
+ - epoch :    17/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00257
+ - val_recon_avg_loss :    0.13515
+ - val_total_avg_loss :    0.13772
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:07:16 
+ - epoch :    18/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00041
+ - train_recon_avg_loss :    0.10723
+ - train_total_avg_loss :    0.10764
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:07:19 
+ - epoch :    18/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00198
+ - val_recon_avg_loss :    0.11199
+ - val_total_avg_loss :    0.11397
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:07:39 
+ - epoch :    19/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00035
+ - train_recon_avg_loss :    0.10732
+ - train_total_avg_loss :    0.10766
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:07:42 
+ - epoch :    19/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00297
+ - val_recon_avg_loss :    0.13119
+ - val_total_avg_loss :    0.13416
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:08:02 
+ - epoch :    20/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00025
+ - train_recon_avg_loss :    0.10680
+ - train_total_avg_loss :    0.10705
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:08:05 
+ - epoch :    20/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00162
+ - val_recon_avg_loss :    0.14618
+ - val_total_avg_loss :    0.14780
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:08:25 
+ - epoch :    21/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00021
+ - train_recon_avg_loss :    0.10687
+ - train_total_avg_loss :    0.10708
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:08:28 
+ - epoch :    21/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00157
+ - val_recon_avg_loss :    0.11921
+ - val_total_avg_loss :    0.12078
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:08:48 
+ - epoch :    22/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00018
+ - train_recon_avg_loss :    0.10540
+ - train_total_avg_loss :    0.10558
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:08:52 
+ - epoch :    22/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00156
+ - val_recon_avg_loss :    0.12984
+ - val_total_avg_loss :    0.13139
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:09:11 
+ - epoch :    23/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00019
+ - train_recon_avg_loss :    0.10660
+ - train_total_avg_loss :    0.10679
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:09:15 
+ - epoch :    23/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00175
+ - val_recon_avg_loss :    0.11684
+ - val_total_avg_loss :    0.11859
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:09:34 
+ - epoch :    24/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00025
+ - train_recon_avg_loss :    0.10640
+ - train_total_avg_loss :    0.10665
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:09:38 
+ - epoch :    24/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00145
+ - val_recon_avg_loss :    0.12701
+ - val_total_avg_loss :    0.12846
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:09:58 
+ - epoch :    25/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00020
+ - train_recon_avg_loss :    0.10641
+ - train_total_avg_loss :    0.10661
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:10:01 
+ - epoch :    25/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00207
+ - val_recon_avg_loss :    0.10610
+ - val_total_avg_loss :    0.10817
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:10:21 
+ - epoch :    26/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00018
+ - train_recon_avg_loss :    0.10702
+ - train_total_avg_loss :    0.10720
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:10:24 
+ - epoch :    26/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00132
+ - val_recon_avg_loss :    0.12223
+ - val_total_avg_loss :    0.12355
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:10:44 
+ - epoch :    27/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00018
+ - train_recon_avg_loss :    0.10525
+ - train_total_avg_loss :    0.10543
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:10:47 
+ - epoch :    27/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00186
+ - val_recon_avg_loss :    0.10365
+ - val_total_avg_loss :    0.10551
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:11:07 
+ - epoch :    28/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00012
+ - train_recon_avg_loss :    0.10533
+ - train_total_avg_loss :    0.10546
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:11:10 
+ - epoch :    28/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00130
+ - val_recon_avg_loss :    0.11207
+ - val_total_avg_loss :    0.11336
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:11:30 
+ - epoch :    29/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00017
+ - train_recon_avg_loss :    0.10513
+ - train_total_avg_loss :    0.10530
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:11:33 
+ - epoch :    29/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00118
+ - val_recon_avg_loss :    0.11166
+ - val_total_avg_loss :    0.11284
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:11:53 
+ - epoch :    30/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00013
+ - train_recon_avg_loss :    0.10836
+ - train_total_avg_loss :    0.10849
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:11:56 
+ - epoch :    30/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00124
+ - val_recon_avg_loss :    0.11238
+ - val_total_avg_loss :    0.11361
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:12:16 
+ - epoch :    31/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10495
+ - train_total_avg_loss :    0.10507
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:12:19 
+ - epoch :    31/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00134
+ - val_recon_avg_loss :    0.09641
+ - val_total_avg_loss :    0.09775
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:12:39 
+ - epoch :    32/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00012
+ - train_recon_avg_loss :    0.10651
+ - train_total_avg_loss :    0.10663
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:12:42 
+ - epoch :    32/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00093
+ - val_recon_avg_loss :    0.10497
+ - val_total_avg_loss :    0.10590
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:13:02 
+ - epoch :    33/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00022
+ - train_recon_avg_loss :    0.10628
+ - train_total_avg_loss :    0.10649
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:13:05 
+ - epoch :    33/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00071
+ - val_recon_avg_loss :    0.10125
+ - val_total_avg_loss :    0.10196
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:13:25 
+ - epoch :    34/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00014
+ - train_recon_avg_loss :    0.10621
+ - train_total_avg_loss :    0.10634
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:13:28 
+ - epoch :    34/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00053
+ - val_recon_avg_loss :    0.11958
+ - val_total_avg_loss :    0.12011
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:13:48 
+ - epoch :    35/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00019
+ - train_recon_avg_loss :    0.11176
+ - train_total_avg_loss :    0.11195
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:13:51 
+ - epoch :    35/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00088
+ - val_recon_avg_loss :    0.08597
+ - val_total_avg_loss :    0.08684
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:14:11 
+ - epoch :    36/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00016
+ - train_recon_avg_loss :    0.10527
+ - train_total_avg_loss :    0.10543
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:14:14 
+ - epoch :    36/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00062
+ - val_recon_avg_loss :    0.14179
+ - val_total_avg_loss :    0.14241
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:14:34 
+ - epoch :    37/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00015
+ - train_recon_avg_loss :    0.10525
+ - train_total_avg_loss :    0.10540
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:14:37 
+ - epoch :    37/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00061
+ - val_recon_avg_loss :    0.10821
+ - val_total_avg_loss :    0.10882
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:14:57 
+ - epoch :    38/200   
+ - lr : 9.50E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10535
+ - train_total_avg_loss :    0.10546
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:15:00 
+ - epoch :    38/200   
+ - lr : 9.50E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00074
+ - val_recon_avg_loss :    0.09535
+ - val_total_avg_loss :    0.09610
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:15:20 
+ - epoch :    39/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00012
+ - train_recon_avg_loss :    0.10790
+ - train_total_avg_loss :    0.10802
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:15:23 
+ - epoch :    39/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00065
+ - val_recon_avg_loss :    0.11284
+ - val_total_avg_loss :    0.11348
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:15:44 
+ - epoch :    40/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00013
+ - train_recon_avg_loss :    0.10568
+ - train_total_avg_loss :    0.10581
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:15:47 
+ - epoch :    40/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00040
+ - val_recon_avg_loss :    0.09222
+ - val_total_avg_loss :    0.09262
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:16:06 
+ - epoch :    41/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10453
+ - train_total_avg_loss :    0.10464
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:16:09 
+ - epoch :    41/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00060
+ - val_recon_avg_loss :    0.09345
+ - val_total_avg_loss :    0.09405
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:16:28 
+ - epoch :    42/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10433
+ - train_total_avg_loss :    0.10444
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:16:31 
+ - epoch :    42/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00064
+ - val_recon_avg_loss :    0.08585
+ - val_total_avg_loss :    0.08649
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:16:51 
+ - epoch :    43/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10564
+ - train_total_avg_loss :    0.10575
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:16:54 
+ - epoch :    43/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00039
+ - val_recon_avg_loss :    0.08336
+ - val_total_avg_loss :    0.08375
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:17:13 
+ - epoch :    44/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10420
+ - train_total_avg_loss :    0.10430
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:17:16 
+ - epoch :    44/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00033
+ - val_recon_avg_loss :    0.12129
+ - val_total_avg_loss :    0.12162
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:17:35 
+ - epoch :    45/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00009
+ - train_recon_avg_loss :    0.10486
+ - train_total_avg_loss :    0.10495
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:17:38 
+ - epoch :    45/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00023
+ - val_recon_avg_loss :    0.10222
+ - val_total_avg_loss :    0.10246
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:17:57 
+ - epoch :    46/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00013
+ - train_recon_avg_loss :    0.10555
+ - train_total_avg_loss :    0.10568
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:18:00 
+ - epoch :    46/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00038
+ - val_recon_avg_loss :    0.09017
+ - val_total_avg_loss :    0.09055
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:18:20 
+ - epoch :    47/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10394
+ - train_total_avg_loss :    0.10406
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:18:23 
+ - epoch :    47/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00095
+ - val_recon_avg_loss :    0.07861
+ - val_total_avg_loss :    0.07956
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:18:42 
+ - epoch :    48/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00008
+ - train_recon_avg_loss :    0.10595
+ - train_total_avg_loss :    0.10603
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:18:45 
+ - epoch :    48/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00081
+ - val_recon_avg_loss :    0.07974
+ - val_total_avg_loss :    0.08055
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:19:04 
+ - epoch :    49/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00008
+ - train_recon_avg_loss :    0.10765
+ - train_total_avg_loss :    0.10773
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:19:07 
+ - epoch :    49/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00032
+ - val_recon_avg_loss :    0.07886
+ - val_total_avg_loss :    0.07918
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:19:27 
+ - epoch :    50/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00009
+ - train_recon_avg_loss :    0.10467
+ - train_total_avg_loss :    0.10476
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:19:30 
+ - epoch :    50/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00024
+ - val_recon_avg_loss :    0.08351
+ - val_total_avg_loss :    0.08375
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:19:49 
+ - epoch :    51/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00006
+ - train_recon_avg_loss :    0.10511
+ - train_total_avg_loss :    0.10517
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:19:52 
+ - epoch :    51/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00026
+ - val_recon_avg_loss :    0.08509
+ - val_total_avg_loss :    0.08535
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:20:11 
+ - epoch :    52/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00007
+ - train_recon_avg_loss :    0.10588
+ - train_total_avg_loss :    0.10595
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:20:14 
+ - epoch :    52/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00078
+ - val_recon_avg_loss :    0.07957
+ - val_total_avg_loss :    0.08035
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:20:34 
+ - epoch :    53/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00012
+ - train_recon_avg_loss :    0.10488
+ - train_total_avg_loss :    0.10499
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:20:37 
+ - epoch :    53/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00044
+ - val_recon_avg_loss :    0.07159
+ - val_total_avg_loss :    0.07203
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:20:56 
+ - epoch :    54/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00033
+ - train_recon_avg_loss :    0.10566
+ - train_total_avg_loss :    0.10599
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:20:59 
+ - epoch :    54/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00026
+ - val_recon_avg_loss :    0.07676
+ - val_total_avg_loss :    0.07702
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:21:18 
+ - epoch :    55/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00011
+ - train_recon_avg_loss :    0.10644
+ - train_total_avg_loss :    0.10655
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:21:21 
+ - epoch :    55/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00013
+ - val_recon_avg_loss :    0.07770
+ - val_total_avg_loss :    0.07783
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:21:40 
+ - epoch :    56/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00006
+ - train_recon_avg_loss :    0.10477
+ - train_total_avg_loss :    0.10484
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:21:44 
+ - epoch :    56/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00022
+ - val_recon_avg_loss :    0.08411
+ - val_total_avg_loss :    0.08433
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:22:03 
+ - epoch :    57/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00006
+ - train_recon_avg_loss :    0.10434
+ - train_total_avg_loss :    0.10440
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:22:06 
+ - epoch :    57/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00015
+ - val_recon_avg_loss :    0.07580
+ - val_total_avg_loss :    0.07595
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:22:25 
+ - epoch :    58/200   
+ - lr : 9.02E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00014
+ - train_recon_avg_loss :    0.10493
+ - train_total_avg_loss :    0.10507
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:22:28 
+ - epoch :    58/200   
+ - lr : 9.02E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00024
+ - val_recon_avg_loss :    0.07420
+ - val_total_avg_loss :    0.07444
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:22:47 
+ - epoch :    59/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00010
+ - train_recon_avg_loss :    0.10515
+ - train_total_avg_loss :    0.10525
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:22:50 
+ - epoch :    59/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00022
+ - val_recon_avg_loss :    0.08075
+ - val_total_avg_loss :    0.08097
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:23:10 
+ - epoch :    60/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00006
+ - train_recon_avg_loss :    0.10441
+ - train_total_avg_loss :    0.10447
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:23:13 
+ - epoch :    60/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00040
+ - val_recon_avg_loss :    0.07519
+ - val_total_avg_loss :    0.07558
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:23:32 
+ - epoch :    61/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00009
+ - train_recon_avg_loss :    0.10461
+ - train_total_avg_loss :    0.10469
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:23:35 
+ - epoch :    61/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00021
+ - val_recon_avg_loss :    0.07673
+ - val_total_avg_loss :    0.07694
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:23:54 
+ - epoch :    62/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10762
+ - train_total_avg_loss :    0.10767
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:23:57 
+ - epoch :    62/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00012
+ - val_recon_avg_loss :    0.07210
+ - val_total_avg_loss :    0.07222
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:24:16 
+ - epoch :    63/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10368
+ - train_total_avg_loss :    0.10373
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:24:20 
+ - epoch :    63/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00015
+ - val_recon_avg_loss :    0.07619
+ - val_total_avg_loss :    0.07634
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:24:39 
+ - epoch :    64/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10491
+ - train_total_avg_loss :    0.10496
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:24:42 
+ - epoch :    64/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00017
+ - val_recon_avg_loss :    0.08174
+ - val_total_avg_loss :    0.08191
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:25:01 
+ - epoch :    65/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10701
+ - train_total_avg_loss :    0.10705
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:25:04 
+ - epoch :    65/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00014
+ - val_recon_avg_loss :    0.07749
+ - val_total_avg_loss :    0.07763
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:25:23 
+ - epoch :    66/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10460
+ - train_total_avg_loss :    0.10465
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:25:26 
+ - epoch :    66/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00012
+ - val_recon_avg_loss :    0.08012
+ - val_total_avg_loss :    0.08024
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:25:46 
+ - epoch :    67/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10336
+ - train_total_avg_loss :    0.10341
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:25:49 
+ - epoch :    67/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00026
+ - val_recon_avg_loss :    0.06797
+ - val_total_avg_loss :    0.06823
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:26:08 
+ - epoch :    68/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10415
+ - train_total_avg_loss :    0.10420
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:26:11 
+ - epoch :    68/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00012
+ - val_recon_avg_loss :    0.06943
+ - val_total_avg_loss :    0.06955
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:26:30 
+ - epoch :    69/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10450
+ - train_total_avg_loss :    0.10454
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:26:33 
+ - epoch :    69/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00009
+ - val_recon_avg_loss :    0.07274
+ - val_total_avg_loss :    0.07283
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:26:52 
+ - epoch :    70/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10389
+ - train_total_avg_loss :    0.10392
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:26:56 
+ - epoch :    70/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00008
+ - val_recon_avg_loss :    0.06851
+ - val_total_avg_loss :    0.06859
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:27:15 
+ - epoch :    71/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10824
+ - train_total_avg_loss :    0.10828
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:27:18 
+ - epoch :    71/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.06991
+ - val_total_avg_loss :    0.06998
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:27:37 
+ - epoch :    72/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10705
+ - train_total_avg_loss :    0.10709
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:27:40 
+ - epoch :    72/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00025
+ - val_recon_avg_loss :    0.08080
+ - val_total_avg_loss :    0.08105
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:27:59 
+ - epoch :    73/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10915
+ - train_total_avg_loss :    0.10920
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:28:02 
+ - epoch :    73/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00013
+ - val_recon_avg_loss :    0.07677
+ - val_total_avg_loss :    0.07689
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:28:21 
+ - epoch :    74/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10414
+ - train_total_avg_loss :    0.10417
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:28:25 
+ - epoch :    74/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.08563
+ - val_total_avg_loss :    0.08567
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:28:44 
+ - epoch :    75/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10425
+ - train_total_avg_loss :    0.10428
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:28:47 
+ - epoch :    75/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00016
+ - val_recon_avg_loss :    0.07045
+ - val_total_avg_loss :    0.07061
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:29:07 
+ - epoch :    76/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00009
+ - train_recon_avg_loss :    0.10451
+ - train_total_avg_loss :    0.10460
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:29:10 
+ - epoch :    76/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00023
+ - val_recon_avg_loss :    0.07576
+ - val_total_avg_loss :    0.07599
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:29:30 
+ - epoch :    77/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10515
+ - train_total_avg_loss :    0.10519
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:29:33 
+ - epoch :    77/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00010
+ - val_recon_avg_loss :    0.07785
+ - val_total_avg_loss :    0.07795
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:29:53 
+ - epoch :    78/200   
+ - lr : 8.57E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00006
+ - train_recon_avg_loss :    0.10437
+ - train_total_avg_loss :    0.10442
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:29:57 
+ - epoch :    78/200   
+ - lr : 8.57E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00013
+ - val_recon_avg_loss :    0.07880
+ - val_total_avg_loss :    0.07892
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:30:17 
+ - epoch :    79/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00007
+ - train_recon_avg_loss :    0.10373
+ - train_total_avg_loss :    0.10379
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:30:20 
+ - epoch :    79/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00052
+ - val_recon_avg_loss :    0.07708
+ - val_total_avg_loss :    0.07760
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:30:41 
+ - epoch :    80/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00008
+ - train_recon_avg_loss :    0.10373
+ - train_total_avg_loss :    0.10381
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:30:44 
+ - epoch :    80/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.07062
+ - val_total_avg_loss :    0.07070
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:31:05 
+ - epoch :    81/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10451
+ - train_total_avg_loss :    0.10453
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:31:08 
+ - epoch :    81/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.07377
+ - val_total_avg_loss :    0.07383
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:31:32 
+ - epoch :    82/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10894
+ - train_total_avg_loss :    0.10897
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:31:37 
+ - epoch :    82/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.06919
+ - val_total_avg_loss :    0.06925
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:32:05 
+ - epoch :    83/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10329
+ - train_total_avg_loss :    0.10332
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:32:09 
+ - epoch :    83/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.07166
+ - val_total_avg_loss :    0.07171
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:32:29 
+ - epoch :    84/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10759
+ - train_total_avg_loss :    0.10763
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:32:32 
+ - epoch :    84/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00071
+ - val_recon_avg_loss :    0.08007
+ - val_total_avg_loss :    0.08078
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:32:55 
+ - epoch :    85/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00009
+ - train_recon_avg_loss :    0.10811
+ - train_total_avg_loss :    0.10820
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:33:01 
+ - epoch :    85/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00009
+ - val_recon_avg_loss :    0.20217
+ - val_total_avg_loss :    0.20227
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:33:23 
+ - epoch :    86/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10632
+ - train_total_avg_loss :    0.10636
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:33:26 
+ - epoch :    86/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.19922
+ - val_total_avg_loss :    0.19928
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:33:48 
+ - epoch :    87/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10291
+ - train_total_avg_loss :    0.10293
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:33:55 
+ - epoch :    87/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.18818
+ - val_total_avg_loss :    0.18821
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:34:30 
+ - epoch :    88/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10344
+ - train_total_avg_loss :    0.10346
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:34:33 
+ - epoch :    88/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.18275
+ - val_total_avg_loss :    0.18282
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:34:53 
+ - epoch :    89/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10471
+ - train_total_avg_loss :    0.10475
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:34:57 
+ - epoch :    89/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.21612
+ - val_total_avg_loss :    0.21616
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:35:23 
+ - epoch :    90/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10402
+ - train_total_avg_loss :    0.10405
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:35:26 
+ - epoch :    90/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.18984
+ - val_total_avg_loss :    0.18989
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:35:48 
+ - epoch :    91/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10788
+ - train_total_avg_loss :    0.10790
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:35:51 
+ - epoch :    91/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00010
+ - val_recon_avg_loss :    0.20369
+ - val_total_avg_loss :    0.20379
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:36:12 
+ - epoch :    92/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10619
+ - train_total_avg_loss :    0.10622
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:36:16 
+ - epoch :    92/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.19296
+ - val_total_avg_loss :    0.19303
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:36:37 
+ - epoch :    93/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10806
+ - train_total_avg_loss :    0.10808
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:36:40 
+ - epoch :    93/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.21769
+ - val_total_avg_loss :    0.21776
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:37:01 
+ - epoch :    94/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10444
+ - train_total_avg_loss :    0.10447
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:37:05 
+ - epoch :    94/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00007
+ - val_recon_avg_loss :    0.19826
+ - val_total_avg_loss :    0.19833
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:37:26 
+ - epoch :    95/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10322
+ - train_total_avg_loss :    0.10327
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:37:29 
+ - epoch :    95/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00009
+ - val_recon_avg_loss :    0.20534
+ - val_total_avg_loss :    0.20543
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:37:50 
+ - epoch :    96/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10751
+ - train_total_avg_loss :    0.10754
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:37:54 
+ - epoch :    96/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.20399
+ - val_total_avg_loss :    0.20404
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:38:15 
+ - epoch :    97/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10506
+ - train_total_avg_loss :    0.10509
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:38:18 
+ - epoch :    97/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.18840
+ - val_total_avg_loss :    0.18844
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:38:39 
+ - epoch :    98/200   
+ - lr : 8.15E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10363
+ - train_total_avg_loss :    0.10365
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:38:42 
+ - epoch :    98/200   
+ - lr : 8.15E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00009
+ - val_recon_avg_loss :    0.18456
+ - val_total_avg_loss :    0.18465
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:39:03 
+ - epoch :    99/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10443
+ - train_total_avg_loss :    0.10446
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:39:07 
+ - epoch :    99/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.17133
+ - val_total_avg_loss :    0.17140
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:39:28 
+ - epoch :   100/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10313
+ - train_total_avg_loss :    0.10316
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:39:31 
+ - epoch :   100/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19883
+ - val_total_avg_loss :    0.19886
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:39:52 
+ - epoch :   101/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10735
+ - train_total_avg_loss :    0.10737
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:39:56 
+ - epoch :   101/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.18956
+ - val_total_avg_loss :    0.18959
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:40:17 
+ - epoch :   102/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10348
+ - train_total_avg_loss :    0.10350
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:40:20 
+ - epoch :   102/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.18779
+ - val_total_avg_loss :    0.18783
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:40:41 
+ - epoch :   103/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10330
+ - train_total_avg_loss :    0.10333
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:40:44 
+ - epoch :   103/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.12184
+ - val_total_avg_loss :    0.12187
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:41:05 
+ - epoch :   104/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10351
+ - train_total_avg_loss :    0.10353
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:41:09 
+ - epoch :   104/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.17981
+ - val_total_avg_loss :    0.17987
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:41:30 
+ - epoch :   105/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10320
+ - train_total_avg_loss :    0.10323
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:41:33 
+ - epoch :   105/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.19226
+ - val_total_avg_loss :    0.19232
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:41:54 
+ - epoch :   106/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10434
+ - train_total_avg_loss :    0.10437
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:41:57 
+ - epoch :   106/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.14720
+ - val_total_avg_loss :    0.14725
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:42:19 
+ - epoch :   107/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10300
+ - train_total_avg_loss :    0.10304
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:42:22 
+ - epoch :   107/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.09417
+ - val_total_avg_loss :    0.09422
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:42:43 
+ - epoch :   108/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10260
+ - train_total_avg_loss :    0.10263
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:42:46 
+ - epoch :   108/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20157
+ - val_total_avg_loss :    0.20159
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:43:07 
+ - epoch :   109/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10332
+ - train_total_avg_loss :    0.10334
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:43:11 
+ - epoch :   109/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.19165
+ - val_total_avg_loss :    0.19170
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:43:32 
+ - epoch :   110/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10310
+ - train_total_avg_loss :    0.10313
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:43:35 
+ - epoch :   110/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.20644
+ - val_total_avg_loss :    0.20649
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:43:56 
+ - epoch :   111/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10405
+ - train_total_avg_loss :    0.10407
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:43:59 
+ - epoch :   111/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.18352
+ - val_total_avg_loss :    0.18358
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:44:20 
+ - epoch :   112/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10504
+ - train_total_avg_loss :    0.10509
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:44:24 
+ - epoch :   112/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.19786
+ - val_total_avg_loss :    0.19790
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:44:45 
+ - epoch :   113/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10323
+ - train_total_avg_loss :    0.10325
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:44:48 
+ - epoch :   113/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.16610
+ - val_total_avg_loss :    0.16614
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:45:09 
+ - epoch :   114/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10395
+ - train_total_avg_loss :    0.10397
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:45:12 
+ - epoch :   114/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00008
+ - val_recon_avg_loss :    0.20059
+ - val_total_avg_loss :    0.20067
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:45:33 
+ - epoch :   115/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.10429
+ - train_total_avg_loss :    0.10432
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:45:37 
+ - epoch :   115/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.17245
+ - val_total_avg_loss :    0.17249
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:45:58 
+ - epoch :   116/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10403
+ - train_total_avg_loss :    0.10406
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:46:01 
+ - epoch :   116/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.18423
+ - val_total_avg_loss :    0.18427
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:46:22 
+ - epoch :   117/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10370
+ - train_total_avg_loss :    0.10372
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:46:25 
+ - epoch :   117/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.15967
+ - val_total_avg_loss :    0.15972
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:46:46 
+ - epoch :   118/200   
+ - lr : 7.74E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00004
+ - train_recon_avg_loss :    0.10286
+ - train_total_avg_loss :    0.10290
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:46:50 
+ - epoch :   118/200   
+ - lr : 7.74E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00014
+ - val_recon_avg_loss :    0.19353
+ - val_total_avg_loss :    0.19366
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:47:10 
+ - epoch :   119/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10937
+ - train_total_avg_loss :    0.10941
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:47:14 
+ - epoch :   119/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00009
+ - val_recon_avg_loss :    0.21356
+ - val_total_avg_loss :    0.21365
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:47:35 
+ - epoch :   120/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10465
+ - train_total_avg_loss :    0.10467
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:47:38 
+ - epoch :   120/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.07056
+ - val_total_avg_loss :    0.07059
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:47:59 
+ - epoch :   121/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10329
+ - train_total_avg_loss :    0.10330
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:48:02 
+ - epoch :   121/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.07216
+ - val_total_avg_loss :    0.07218
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:48:23 
+ - epoch :   122/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10364
+ - train_total_avg_loss :    0.10366
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:48:27 
+ - epoch :   122/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.18079
+ - val_total_avg_loss :    0.18083
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:48:48 
+ - epoch :   123/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10745
+ - train_total_avg_loss :    0.10747
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:48:51 
+ - epoch :   123/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.14326
+ - val_total_avg_loss :    0.14330
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:49:12 
+ - epoch :   124/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10361
+ - train_total_avg_loss :    0.10363
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:49:16 
+ - epoch :   124/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.15759
+ - val_total_avg_loss :    0.15761
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:49:37 
+ - epoch :   125/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10348
+ - train_total_avg_loss :    0.10350
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:49:40 
+ - epoch :   125/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.14285
+ - val_total_avg_loss :    0.14291
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:50:01 
+ - epoch :   126/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10283
+ - train_total_avg_loss :    0.10286
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:50:04 
+ - epoch :   126/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.16916
+ - val_total_avg_loss :    0.16919
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:50:25 
+ - epoch :   127/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10314
+ - train_total_avg_loss :    0.10316
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:50:29 
+ - epoch :   127/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.16067
+ - val_total_avg_loss :    0.16070
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:50:50 
+ - epoch :   128/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10308
+ - train_total_avg_loss :    0.10311
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:50:53 
+ - epoch :   128/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00014
+ - val_recon_avg_loss :    0.17965
+ - val_total_avg_loss :    0.17978
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:51:14 
+ - epoch :   129/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00005
+ - train_recon_avg_loss :    0.10965
+ - train_total_avg_loss :    0.10969
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:51:18 
+ - epoch :   129/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.07700
+ - val_total_avg_loss :    0.07703
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:51:39 
+ - epoch :   130/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10560
+ - train_total_avg_loss :    0.10562
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:51:42 
+ - epoch :   130/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.11750
+ - val_total_avg_loss :    0.11753
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:52:03 
+ - epoch :   131/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10384
+ - train_total_avg_loss :    0.10385
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:52:06 
+ - epoch :   131/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.18652
+ - val_total_avg_loss :    0.18654
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:52:27 
+ - epoch :   132/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10722
+ - train_total_avg_loss :    0.10724
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:52:31 
+ - epoch :   132/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.20442
+ - val_total_avg_loss :    0.20445
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:52:52 
+ - epoch :   133/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10388
+ - train_total_avg_loss :    0.10390
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:52:55 
+ - epoch :   133/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.20700
+ - val_total_avg_loss :    0.20703
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:53:16 
+ - epoch :   134/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10388
+ - train_total_avg_loss :    0.10389
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:53:19 
+ - epoch :   134/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19527
+ - val_total_avg_loss :    0.19530
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:53:40 
+ - epoch :   135/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10313
+ - train_total_avg_loss :    0.10315
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:53:44 
+ - epoch :   135/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.20205
+ - val_total_avg_loss :    0.20208
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:54:05 
+ - epoch :   136/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10563
+ - train_total_avg_loss :    0.10564
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:54:08 
+ - epoch :   136/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.06918
+ - val_total_avg_loss :    0.06924
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:54:29 
+ - epoch :   137/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00003
+ - train_recon_avg_loss :    0.11200
+ - train_total_avg_loss :    0.11204
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:54:33 
+ - epoch :   137/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19588
+ - val_total_avg_loss :    0.19591
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:54:54 
+ - epoch :   138/200   
+ - lr : 7.35E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10379
+ - train_total_avg_loss :    0.10380
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:54:57 
+ - epoch :   138/200   
+ - lr : 7.35E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19351
+ - val_total_avg_loss :    0.19354
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:55:18 
+ - epoch :   139/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10325
+ - train_total_avg_loss :    0.10327
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:55:22 
+ - epoch :   139/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.18123
+ - val_total_avg_loss :    0.18127
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:55:43 
+ - epoch :   140/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10318
+ - train_total_avg_loss :    0.10320
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  00:55:46 
+ - epoch :   140/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.16802
+ - val_total_avg_loss :    0.16803
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:56:06 
+ - epoch :   141/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10365
+ - train_total_avg_loss :    0.10367
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:56:10 
+ - epoch :   141/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.11689
+ - val_total_avg_loss :    0.11692
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:56:29 
+ - epoch :   142/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10348
+ - train_total_avg_loss :    0.10349
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:56:32 
+ - epoch :   142/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.13024
+ - val_total_avg_loss :    0.13026
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:56:52 
+ - epoch :   143/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10288
+ - train_total_avg_loss :    0.10290
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:56:55 
+ - epoch :   143/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00005
+ - val_recon_avg_loss :    0.17984
+ - val_total_avg_loss :    0.17989
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:57:16 
+ - epoch :   144/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10331
+ - train_total_avg_loss :    0.10333
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:57:19 
+ - epoch :   144/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19394
+ - val_total_avg_loss :    0.19396
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:57:40 
+ - epoch :   145/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10502
+ - train_total_avg_loss :    0.10503
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:57:43 
+ - epoch :   145/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.17685
+ - val_total_avg_loss :    0.17686
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:58:04 
+ - epoch :   146/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10333
+ - train_total_avg_loss :    0.10334
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:58:08 
+ - epoch :   146/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.19352
+ - val_total_avg_loss :    0.19356
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:58:29 
+ - epoch :   147/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10318
+ - train_total_avg_loss :    0.10320
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:58:32 
+ - epoch :   147/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.06898
+ - val_total_avg_loss :    0.06900
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:58:53 
+ - epoch :   148/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10564
+ - train_total_avg_loss :    0.10565
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:58:57 
+ - epoch :   148/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.17209
+ - val_total_avg_loss :    0.17211
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:59:18 
+ - epoch :   149/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10532
+ - train_total_avg_loss :    0.10533
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:59:21 
+ - epoch :   149/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19083
+ - val_total_avg_loss :    0.19086
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:59:42 
+ - epoch :   150/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10323
+ - train_total_avg_loss :    0.10324
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:59:45 
+ - epoch :   150/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18955
+ - val_total_avg_loss :    0.18957
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:00:06 
+ - epoch :   151/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10437
+ - train_total_avg_loss :    0.10439
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:00:10 
+ - epoch :   151/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.19655
+ - val_total_avg_loss :    0.19658
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:00:31 
+ - epoch :   152/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10436
+ - train_total_avg_loss :    0.10438
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:00:34 
+ - epoch :   152/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.20660
+ - val_total_avg_loss :    0.20663
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:00:55 
+ - epoch :   153/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10297
+ - train_total_avg_loss :    0.10298
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:00:59 
+ - epoch :   153/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.20615
+ - val_total_avg_loss :    0.20619
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:01:20 
+ - epoch :   154/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10336
+ - train_total_avg_loss :    0.10338
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:01:23 
+ - epoch :   154/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.07146
+ - val_total_avg_loss :    0.07148
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:01:43 
+ - epoch :   155/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10298
+ - train_total_avg_loss :    0.10300
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:01:47 
+ - epoch :   155/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19752
+ - val_total_avg_loss :    0.19755
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:02:06 
+ - epoch :   156/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10333
+ - train_total_avg_loss :    0.10334
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:02:10 
+ - epoch :   156/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20352
+ - val_total_avg_loss :    0.20354
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:02:29 
+ - epoch :   157/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10283
+ - train_total_avg_loss :    0.10284
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:02:32 
+ - epoch :   157/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20843
+ - val_total_avg_loss :    0.20845
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:02:52 
+ - epoch :   158/200   
+ - lr : 6.98E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10313
+ - train_total_avg_loss :    0.10315
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:02:55 
+ - epoch :   158/200   
+ - lr : 6.98E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.18524
+ - val_total_avg_loss :    0.18527
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:03:15 
+ - epoch :   159/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10295
+ - train_total_avg_loss :    0.10297
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:03:18 
+ - epoch :   159/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19797
+ - val_total_avg_loss :    0.19800
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:03:38 
+ - epoch :   160/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00002
+ - train_recon_avg_loss :    0.10259
+ - train_total_avg_loss :    0.10261
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  01:03:41 
+ - epoch :   160/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18516
+ - val_total_avg_loss :    0.18519
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:04:00 
+ - epoch :   161/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10299
+ - train_total_avg_loss :    0.10300
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:04:04 
+ - epoch :   161/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19235
+ - val_total_avg_loss :    0.19237
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:04:23 
+ - epoch :   162/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10324
+ - train_total_avg_loss :    0.10325
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:04:26 
+ - epoch :   162/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18289
+ - val_total_avg_loss :    0.18291
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:04:46 
+ - epoch :   163/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10380
+ - train_total_avg_loss :    0.10382
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:04:49 
+ - epoch :   163/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.18858
+ - val_total_avg_loss :    0.18861
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:05:09 
+ - epoch :   164/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10289
+ - train_total_avg_loss :    0.10290
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:05:12 
+ - epoch :   164/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19863
+ - val_total_avg_loss :    0.19865
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:05:32 
+ - epoch :   165/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10264
+ - train_total_avg_loss :    0.10265
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:05:35 
+ - epoch :   165/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20682
+ - val_total_avg_loss :    0.20685
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:05:55 
+ - epoch :   166/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10361
+ - train_total_avg_loss :    0.10362
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:05:58 
+ - epoch :   166/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18329
+ - val_total_avg_loss :    0.18331
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:06:17 
+ - epoch :   167/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10298
+ - train_total_avg_loss :    0.10299
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:06:21 
+ - epoch :   167/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.18315
+ - val_total_avg_loss :    0.18318
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:06:40 
+ - epoch :   168/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10299
+ - train_total_avg_loss :    0.10300
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:06:43 
+ - epoch :   168/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.18864
+ - val_total_avg_loss :    0.18866
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:07:03 
+ - epoch :   169/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10238
+ - train_total_avg_loss :    0.10240
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:07:06 
+ - epoch :   169/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19362
+ - val_total_avg_loss :    0.19364
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:07:26 
+ - epoch :   170/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10359
+ - train_total_avg_loss :    0.10361
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:07:29 
+ - epoch :   170/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00004
+ - val_recon_avg_loss :    0.17900
+ - val_total_avg_loss :    0.17904
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:07:49 
+ - epoch :   171/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10833
+ - train_total_avg_loss :    0.10835
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:07:52 
+ - epoch :   171/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.08681
+ - val_total_avg_loss :    0.08683
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:08:12 
+ - epoch :   172/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10552
+ - train_total_avg_loss :    0.10553
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:08:15 
+ - epoch :   172/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19901
+ - val_total_avg_loss :    0.19903
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:08:34 
+ - epoch :   173/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10286
+ - train_total_avg_loss :    0.10288
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:08:38 
+ - epoch :   173/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.07941
+ - val_total_avg_loss :    0.07942
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:08:57 
+ - epoch :   174/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10508
+ - train_total_avg_loss :    0.10509
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:09:00 
+ - epoch :   174/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.16277
+ - val_total_avg_loss :    0.16280
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:09:20 
+ - epoch :   175/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10348
+ - train_total_avg_loss :    0.10350
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:09:24 
+ - epoch :   175/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.13814
+ - val_total_avg_loss :    0.13816
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:09:45 
+ - epoch :   176/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10264
+ - train_total_avg_loss :    0.10265
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:09:48 
+ - epoch :   176/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.17234
+ - val_total_avg_loss :    0.17237
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:10:09 
+ - epoch :   177/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10317
+ - train_total_avg_loss :    0.10318
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:10:12 
+ - epoch :   177/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.10674
+ - val_total_avg_loss :    0.10677
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:10:32 
+ - epoch :   178/200   
+ - lr : 6.63E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10334
+ - train_total_avg_loss :    0.10336
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:10:35 
+ - epoch :   178/200   
+ - lr : 6.63E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.10267
+ - val_total_avg_loss :    0.10268
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:10:55 
+ - epoch :   179/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10309
+ - train_total_avg_loss :    0.10310
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:10:58 
+ - epoch :   179/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.14512
+ - val_total_avg_loss :    0.14515
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:11:19 
+ - epoch :   180/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10287
+ - train_total_avg_loss :    0.10289
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  01:11:23 
+ - epoch :   180/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.18216
+ - val_total_avg_loss :    0.18217
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:11:43 
+ - epoch :   181/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10320
+ - train_total_avg_loss :    0.10322
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:11:46 
+ - epoch :   181/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.11859
+ - val_total_avg_loss :    0.11860
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:12:06 
+ - epoch :   182/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10312
+ - train_total_avg_loss :    0.10313
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:12:09 
+ - epoch :   182/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.16092
+ - val_total_avg_loss :    0.16094
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:12:29 
+ - epoch :   183/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10347
+ - train_total_avg_loss :    0.10349
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:12:32 
+ - epoch :   183/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20024
+ - val_total_avg_loss :    0.20026
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:12:52 
+ - epoch :   184/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10287
+ - train_total_avg_loss :    0.10288
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:12:55 
+ - epoch :   184/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20419
+ - val_total_avg_loss :    0.20421
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:13:15 
+ - epoch :   185/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10281
+ - train_total_avg_loss :    0.10283
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:13:19 
+ - epoch :   185/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.17443
+ - val_total_avg_loss :    0.17445
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:13:39 
+ - epoch :   186/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10362
+ - train_total_avg_loss :    0.10363
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:13:42 
+ - epoch :   186/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.18790
+ - val_total_avg_loss :    0.18791
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:14:02 
+ - epoch :   187/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.11151
+ - train_total_avg_loss :    0.11152
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:14:05 
+ - epoch :   187/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00006
+ - val_recon_avg_loss :    0.19962
+ - val_total_avg_loss :    0.19968
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:14:25 
+ - epoch :   188/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10642
+ - train_total_avg_loss :    0.10644
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:14:29 
+ - epoch :   188/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.07801
+ - val_total_avg_loss :    0.07803
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:14:49 
+ - epoch :   189/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10261
+ - train_total_avg_loss :    0.10262
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:14:52 
+ - epoch :   189/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19809
+ - val_total_avg_loss :    0.19810
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:15:12 
+ - epoch :   190/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10325
+ - train_total_avg_loss :    0.10326
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:15:16 
+ - epoch :   190/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18377
+ - val_total_avg_loss :    0.18379
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:15:36 
+ - epoch :   191/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10294
+ - train_total_avg_loss :    0.10295
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:15:39 
+ - epoch :   191/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00003
+ - val_recon_avg_loss :    0.19791
+ - val_total_avg_loss :    0.19793
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:15:59 
+ - epoch :   192/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10557
+ - train_total_avg_loss :    0.10558
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:16:02 
+ - epoch :   192/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.18928
+ - val_total_avg_loss :    0.18929
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:16:22 
+ - epoch :   193/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10505
+ - train_total_avg_loss :    0.10506
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:16:25 
+ - epoch :   193/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19888
+ - val_total_avg_loss :    0.19890
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:16:45 
+ - epoch :   194/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10399
+ - train_total_avg_loss :    0.10400
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:16:49 
+ - epoch :   194/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.20610
+ - val_total_avg_loss :    0.20611
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:17:08 
+ - epoch :   195/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10703
+ - train_total_avg_loss :    0.10705
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:17:12 
+ - epoch :   195/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20398
+ - val_total_avg_loss :    0.20399
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:17:31 
+ - epoch :   196/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10337
+ - train_total_avg_loss :    0.10338
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:17:35 
+ - epoch :   196/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.20235
+ - val_total_avg_loss :    0.20236
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:17:54 
+ - epoch :   197/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10274
+ - train_total_avg_loss :    0.10275
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:17:57 
+ - epoch :   197/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.21428
+ - val_total_avg_loss :    0.21430
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:18:17 
+ - epoch :   198/200   
+ - lr : 6.30E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10247
+ - train_total_avg_loss :    0.10248
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:18:20 
+ - epoch :   198/200   
+ - lr : 6.30E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.19344
+ - val_total_avg_loss :    0.19345
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:18:40 
+ - epoch :   199/200   
+ - lr : 5.99E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10338
+ - train_total_avg_loss :    0.10339
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  01:18:43 
+ - epoch :   199/200   
+ - lr : 5.99E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00001
+ - val_recon_avg_loss :    0.20673
+ - val_total_avg_loss :    0.20674
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  01:19:02 
+ - epoch :   200/200   
+ - lr : 5.99E-04 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00001
+ - train_recon_avg_loss :    0.10242
+ - train_total_avg_loss :    0.10243
+---------------------------------------------
+
+Saving checkpoint ...... 
+---------------------------------------------
+[ validation stage ]
+ - time :  01:19:06 
+ - epoch :   200/200   
+ - lr : 5.99E-04 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.00002
+ - val_recon_avg_loss :    0.20351
+ - val_total_avg_loss :    0.20353
+---------------------------------------------
+

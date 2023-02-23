@@ -1,0 +1,29 @@
+dataset_module: 'dataset'
+dataset_class: 'KptrajReconAffordanceDataset'
+enable_affordance: 1
+module: 'traj_recon_affordance_nofp_4d_cvae' 
+model: 'TrajReconAffordanceNoFP4D'
+
+inputs:
+  pcd_feat_dim: 128
+  traj_feat_dim: 128
+  # cp_feat_dim: 32 # no this feature
+  hidden_dim: 128
+  z_feat_dim: 128 
+  num_steps: 30
+  wpt_dim: 6
+  lbd_kl: 1.0 
+  lbd_recon: 1.0
+  lbd_dir: 100.0
+  kl_annealing: 0
+
+lr: 0.001
+lr_decay_rate: 0.95
+lr_decay_epoch: 20
+weight_decay: 0.0001
+save_freq: 20
+
+batch_size: 16
+
+start_epoch: 0
+stop_epoch: 200

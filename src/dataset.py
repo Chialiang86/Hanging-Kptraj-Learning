@@ -241,9 +241,9 @@ class KptrajReconAffordanceDataset(Dataset):
         shape_id = np.random.randint(0, num_pcd)
         points = self.shape_list[index][shape_id]
         centroid_points, centroid, max_ratio = normalize_pc(points[:,:3]) # points will be in a unit sphere
-        points = torch.from_numpy(centroid_points).unsqueeze(0).to('cuda').contiguous()
-        input_pcid = furthest_point_sample(points, self.sample_num_points).long().reshape(-1)  # BN
-        points = points[0, input_pcid, :].squeeze()
+        centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to('cuda').contiguous()
+        input_pcid = furthest_point_sample(centroid_points, self.sample_num_points).long().reshape(-1)  # BN
+        centroid_points = centroid_points[0, input_pcid, :].squeeze()
 
         # for affordance processing if enabled
         affordance = None
@@ -267,15 +267,15 @@ class KptrajReconAffordanceDataset(Dataset):
             else :
                 print(f"dataset type undefined : {self.type}")
                 exit(-1)
-        
+
         # ret value
         if self.enable_affordance and self.enable_traj:
-            return points, affordance, waypoints
+            return centroid_points, affordance, waypoints
         if self.enable_traj:
-            return points, waypoints
+            return centroid_points, waypoints
         if self.enable_affordance:
-            return points, affordance
-        return points
+            return centroid_points, affordance
+        return centroid_points
 
 
 if __name__=="__main__":

@@ -14,7 +14,7 @@ inputs:
   wpt_dim: 6
   lbd_kl: 1.0 
   lbd_recon: 1.0
-  lbd_dir: 100.0
+  lbd_dir: 1.0
   kl_annealing: 0
 
 lr: 0.001

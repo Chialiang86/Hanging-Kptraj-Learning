@@ -1,4 +1,4 @@
-import argparse, yaml, os, time, glob, cv2, imageio
+import argparse, yaml, os, time, glob, cv2, imageio, copy
 import open3d as o3d
 import numpy as np
 from datetime import datetime
@@ -205,7 +205,9 @@ def test(args):
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-    output_dir = f'inference_affordances/{checkpoint_subdir}/{checkpoint_subsubdir}'
+
+    inference_subdir = os.path.split(inference_dir)[-1]
+    output_dir = f'inference_affordances/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
     os.makedirs(output_dir, exist_ok=True)
 
     config = None
@@ -230,17 +232,19 @@ def test(args):
     # inference
     inference_shape_paths = glob.glob(f'{inference_dir}/*/affordance*.npy')
     pcds = []
-    affords = []
+    affordances = []
     urdfs = []
     for inference_shape_path in inference_shape_paths:
         # pcd = o3d.io.read_point_cloud(inference_shape_path)
         # points = np.asarray(pcd.points, dtype=np.float32)
         urdf_prefix = os.path.split(inference_shape_path)[0]
-        points = np.load(inference_shape_path)[:, :3].astype(np.float32)
-        afford = np.load(inference_shape_path)[:, 3].astype(np.float32)
+        data = np.load(inference_shape_path)
+        points = data[:, :3].astype(np.float32)
         urdfs.append(f'{urdf_prefix}/base.urdf') 
         pcds.append(points)
-        affords.append(afford)
+        if data.shape[1] > 3:
+            affordance = data[:, 3].astype(np.float32)
+            affordances.append(affordance)
     
     # ================== Model ==================
 
@@ -258,16 +262,19 @@ def test(args):
     rotate_per_frame = (2 * np.pi) / frames
 
     batch_size = 1
+    within_5mm_cnt = 0
+    within_10mm_cnt = 0
     for sid, pcd in enumerate(tqdm(pcds)):
         
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd) # points will be in a unit sphere
+        pcd_copy = copy.deepcopy(pcd)
+        centroid_pcd, centroid, scale = normalize_pc(pcd_copy) # points will be in a unit sphere
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
         affords = network.inference(points_batch)
-        affords /= torch.max(affords)
+        affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
         affords = affords.squeeze().cpu().detach().numpy()
 
         points = pcd
@@ -275,28 +282,41 @@ def test(args):
 
         contact_point_cond = np.where(affords == np.max(affords))[0]
         contact_point = points[contact_point_cond][0]
+        contact_point_gt = pcd[0]
 
-        contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.01)
-        contact_point_coor.translate(contact_point.reshape((3, 1)))
+        difference = np.linalg.norm(contact_point - contact_point_gt, ord=2)
+        if difference < 0.005:
+            within_5mm_cnt += 1
+        if difference < 0.01:
+            within_10mm_cnt += 1
 
-        point_cloud = o3d.geometry.PointCloud()
-        point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors)
+        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.01)
+        # contact_point_coor.translate(contact_point.reshape((3, 1)))
 
-        img_list = []
-        for _ in range(frames):
-            r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
-            point_cloud.rotate(r, center=(0, 0, 0))
-            contact_point_coor.rotate(r, center=(0, 0, 0))
-            geometries = [point_cloud, contact_point_coor]
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(colors)
 
-            img = capture_from_viewer(geometries)
-            img_list.append(img)
+        # img_list = []
+        # for _ in range(frames):
+        #     r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
+        #     point_cloud.rotate(r, center=(0, 0, 0))
+        #     contact_point_coor.rotate(r, center=(0, 0, 0))
+        #     geometries = [point_cloud, contact_point_coor]
+
+        #     img = capture_from_viewer(geometries)
+        #     img_list.append(img)
         
-        save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
-        imageio.mimsave(save_path, img_list, fps=10)
+        # save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+        # imageio.mimsave(save_path, img_list, fps=10)
+        # print(f'{save_path} saved')
 
-
+    print('======================================')
+    print('inference_dir: {}'.format(inference_dir))
+    print('weight_path: {}'.format(weight_path))
+    print('within 5mm rate: {:.4f} ({}/{})'.format(within_5mm_cnt / len(pcds), within_5mm_cnt, len(pcds)))
+    print('within 10mm rate: {:.4f} ({}/{})'.format(within_10mm_cnt / len(pcds), within_10mm_cnt, len(pcds)))
+    print('======================================')
         
 def main(args):
     dataset_dir = args.dataset_dir

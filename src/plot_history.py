@@ -42,11 +42,13 @@ def main(root_name : str):
 
         if training_model_type == 'vae' or training_model_type == 'cvae':
             training_res = {
+                'dir_loss': [],
                 'kl_loss': [],
                 'recon_loss': [],
                 'total_loss': []
             }
             validation_res = {
+                'dir_loss': [],
                 'kl_loss': [],
                 'recon_loss': [],
                 'total_loss': []
@@ -77,11 +79,13 @@ def main(root_name : str):
                     time_line = lines[i + 1]
                     epoch_line = lines[i + 2]
                     lr_line = lines[i + 3]
-                    kl_loss_line = lines[i + 4]
-                    recon_loss_line = lines[i + 5]
-                    total_liss_line = lines[i + 6]
+                    dir_loss_line = lines[i + 4]
+                    kl_loss_line = lines[i + 5]
+                    recon_loss_line = lines[i + 6]
+                    total_liss_line = lines[i + 7]
 
                     training_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
+                    training_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                     training_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                     training_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
                     training_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
@@ -109,11 +113,13 @@ def main(root_name : str):
                     time_line = lines[i + 1]
                     epoch_line = lines[i + 2]
                     lr_line = lines[i + 3]
-                    kl_loss_line = lines[i + 4]
-                    recon_loss_line = lines[i + 5]
-                    total_liss_line = lines[i + 6]
+                    dir_loss_line = lines[i + 4]
+                    kl_loss_line = lines[i + 5]
+                    recon_loss_line = lines[i + 6]
+                    total_liss_line = lines[i + 7]
 
                     validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
+                    validation_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                     validation_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                     validation_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
                     validation_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))

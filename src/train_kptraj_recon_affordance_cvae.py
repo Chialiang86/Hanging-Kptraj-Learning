@@ -119,6 +119,7 @@ def train(args):
         val_batches = enumerate(val_loader, 0)
 
         # training
+        train_dir_losses = []
         train_kl_losses = []
         train_recon_losses = []
         train_total_losses = []
@@ -139,6 +140,10 @@ def train(args):
             losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
             total_loss = losses['total']
 
+            if losses['dir'] is not None:
+                train_dir_losses.append(losses['dir'].item())
+            else:
+                train_dir_losses.append(0)
             train_kl_losses.append(losses['kl'].item())
             train_recon_losses.append(losses['recon'].item())
             train_total_losses.append(losses['total'].item())
@@ -150,6 +155,7 @@ def train(args):
 
         network_lr_scheduler.step()
         
+        train_dir_avg_loss = np.mean(np.asarray(train_dir_losses))
         train_kl_avg_loss = np.mean(np.asarray(train_kl_losses))
         train_recon_avg_loss = np.mean(np.asarray(train_recon_losses))
         train_total_avg_loss = np.mean(np.asarray(train_total_losses))
@@ -159,6 +165,7 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - train_dir_avg_loss : {train_dir_avg_loss:>10.5f}\n'''
                 f''' - train_kl_avg_loss : {train_kl_avg_loss:>10.5f}\n'''
                 f''' - train_recon_avg_loss : {train_recon_avg_loss:>10.5f}\n'''
                 f''' - train_total_avg_loss : {train_total_avg_loss:>10.5f}\n'''
@@ -174,6 +181,7 @@ def train(args):
                 torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
+        val_dir_losses = []
         val_kl_losses = []
         val_recon_losses = []
         val_total_losses = []
@@ -189,10 +197,15 @@ def train(args):
 
             with torch.no_grad():
                 losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
+                if losses['dir'] is not None:
+                    val_dir_losses.append(losses['dir'].item())
+                else:
+                    val_dir_losses.append(0)
                 val_kl_losses.append(losses['kl'].item())
                 val_recon_losses.append(losses['recon'].item())
                 val_total_losses.append(losses['total'].item())
 
+        val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
         val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
         val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
         val_total_avg_loss = np.mean(np.asarray(val_total_losses))
@@ -202,6 +215,7 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - val_dir_avg_loss : {val_dir_avg_loss:>10.5f}\n'''
                 f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
                 f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
                 f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''

@@ -261,7 +261,6 @@ class TrajReconAffordance(nn.Module):
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
     def forward(self, pcs, traj, contact_point):
-        # pcs[:, 0] = contact_point
         pcs = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs)
 
@@ -320,6 +319,7 @@ class TrajReconAffordance(nn.Module):
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
         recon_loss = None
+        dir_loss = None
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
@@ -351,6 +351,7 @@ class TrajReconAffordance(nn.Module):
 
         kl_loss = KL(mu, logvar)
         losses = {}
+        losses['dir'] = dir_loss
         losses['kl'] = kl_loss
         losses['recon'] = recon_loss
 

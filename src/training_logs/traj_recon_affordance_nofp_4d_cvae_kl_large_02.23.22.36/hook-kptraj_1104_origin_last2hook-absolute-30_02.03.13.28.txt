@@ -1,0 +1,45 @@
+num of points = 3500
+---------------------------------------------
+[ training stage ]
+ - time :  00:00:42 
+ - epoch :     0/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.58046
+ - train_recon_avg_loss :    0.26248
+ - train_total_avg_loss :    0.84295
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:00:49 
+ - epoch :     0/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.10721
+ - val_recon_avg_loss :    0.09004
+ - val_total_avg_loss :    0.19725
+---------------------------------------------
+
+---------------------------------------------
+[ training stage ]
+ - time :  00:01:29 
+ - epoch :     1/200   
+ - lr : 1.00E-03 
+ - train_dir_avg_loss :    0.00000
+ - train_kl_avg_loss :    0.00145
+ - train_recon_avg_loss :    0.13221
+ - train_total_avg_loss :    0.13366
+---------------------------------------------
+
+---------------------------------------------
+[ validation stage ]
+ - time :  00:01:36 
+ - epoch :     1/200   
+ - lr : 1.00E-03 
+ - val_dir_avg_loss :    0.00000
+ - val_kl_avg_loss :    0.07871
+ - val_recon_avg_loss :    0.08314
+ - val_total_avg_loss :    0.16185
+---------------------------------------------
+

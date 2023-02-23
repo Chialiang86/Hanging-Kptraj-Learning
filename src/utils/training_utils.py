@@ -35,13 +35,21 @@ class kl_annealing():
         return self.L[self.index]
 
 def normalize_pc(points : np.ndarray):
-    points_copy = copy.deepcopy(points)
-    centroid = np.mean(points_copy, axis=0, dtype=np.float32)
-    points_copy -= centroid
-    max_ratio = np.max(np.sqrt(np.sum(abs(points_copy)**2,axis=-1)))
-    points_copy /= max_ratio
+    centroid = np.mean(points, axis=0, dtype=np.float32)
+    points -= centroid
+    max_ratio = np.max(np.sqrt(np.sum(abs(points)**2,axis=-1)))
+    points /= max_ratio
     
-    return points_copy, centroid, max_ratio
+    return points, centroid, max_ratio
+
+# def normalize_pc_copy(points : np.ndarray):
+#     points_copy = copy.deepcopy(points)
+#     centroid = np.mean(points_copy, axis=0, dtype=np.float32)
+#     points_copy -= centroid
+#     max_ratio = np.max(np.sqrt(np.sum(abs(points_copy)**2,axis=-1)))
+#     points_copy /= max_ratio
+    
+#     return points_copy, centroid, max_ratio
 
 def force_mkdir(folder):
     if os.path.exists(folder):

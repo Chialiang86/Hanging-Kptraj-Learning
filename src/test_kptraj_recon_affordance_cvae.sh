@@ -19,15 +19,20 @@ traj_recon_shape_checkpoints=(
     # "checkpoints/traj_recon_affordance_cvae_kl_annealing_02.11.13.44/hook-kptraj_1104_origin_last2hook-absolute-30_02.03.13.28"
     # "checkpoints/traj_recon_affordance_cvae_kl_annealing_02.11.13.44/hook-kptraj_1104_origin_last2hook-residual-30_02.03.13.29"
     
-    "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-absolute-30_02.11.13.38"
-    "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-residual-30_02.11.13.39"
-    "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook-absolute-30_02.03.13.28"
-    "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook-residual-30_02.03.13.29"
+    # "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-absolute-30_02.11.13.38"
+    # "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-residual-30_02.11.13.39"
+    # "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook-absolute-30_02.03.13.28"
+    # "checkpoints/traj_recon_affordance_cvae_kl_large_02.11.13.44/hook-kptraj_1104_origin_last2hook-residual-30_02.03.13.29"
     
     # "checkpoints/traj_recon_affordance_cvae_kl_small_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-absolute-30_02.11.13.38"
     # "checkpoints/traj_recon_affordance_cvae_kl_small_02.11.13.44/hook-kptraj_1104_origin_last2hook_aug-residual-30_02.11.13.39"
     # "checkpoints/traj_recon_affordance_cvae_kl_small_02.11.13.44/hook-kptraj_1104_origin_last2hook-absolute-30_02.03.13.28"
     # "checkpoints/traj_recon_affordance_cvae_kl_small_02.11.13.44/hook-kptraj_1104_origin_last2hook-residual-30_02.03.13.29"
+
+    "checkpoints/traj_recon_affordance_cvae_kl_large_02.20.18.38/hook-kptraj_1104_origin_last2hook_aug-absolute-30_02.11.13.38"
+    "checkpoints/traj_recon_affordance_cvae_kl_large_02.20.18.38/hook-kptraj_1104_origin_last2hook_aug-residual-30_02.11.13.39"
+    "checkpoints/traj_recon_affordance_cvae_kl_large_02.20.18.38/hook-kptraj_1104_origin_last2hook-absolute-30_02.03.13.28"
+    "checkpoints/traj_recon_affordance_cvae_kl_large_02.20.18.38/hook-kptraj_1104_origin_last2hook-residual-30_02.03.13.29"
 )
 
 num_of_points=(

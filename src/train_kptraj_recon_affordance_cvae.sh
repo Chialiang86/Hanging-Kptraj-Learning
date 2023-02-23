@@ -1,16 +1,18 @@
 # bin/sh
 
 model_configs=(
-    "traj_recon_affordance_cvae_kl_large" 
+    "traj_recon_affordance_nofp_4d_cvae_kl_large" 
+    # "traj_recon_affordance_nofp_cvae_kl_large" 
+    # "traj_recon_affordance_cvae_kl_large" 
     # "traj_recon_affordance_cvae_kl_small" 
     # "traj_recon_affordance_cvae_kl_annealing"
 )
 
 traj_recon_affordance_datasets=(
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.11.13.38"
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.11.13.39"
     "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28"
     "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29"
+    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.11.13.38"
+    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.11.13.39"
 )
 
 training_tag='' # $1

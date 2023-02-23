@@ -1,0 +1,19 @@
+dataset_module: 'dataset'
+dataset_class: 'KptrajReconAffordanceDataset'
+enable_affordance: 1
+module: 'affordance' 
+model: 'Affordance'
+
+inputs:
+  model.use_xyz: 1
+
+lr: 0.001
+lr_decay_rate: 0.95
+lr_decay_epoch: 20
+weight_decay: 0.0001
+save_freq: 20
+
+batch_size: 16
+
+start_epoch: 0
+stop_epoch: 100
