@@ -1,0 +1,57 @@
+current_dir=/home/chialiang/pybullet-robot-envs/pybullet_robot_envs/envs/panda_envs
+/home/chialiang/Desktop/motion-planning
+[Results]|Iterations 1|Nodes 1760|Time 0.14351892471313477
+[Before Smoothness]|Length 2
+[After Smoothness]|Length 2
+[Success]|1
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce GTX 1080 Ti/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 510.85.02
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 510.85.02
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce GTX 1080 Ti/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed

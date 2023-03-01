@@ -1,4 +1,4 @@
-import argparse, yaml, os, time, glob
+import argparse, json, yaml, sys, os, time, glob
 import open3d as o3d
 import numpy as np
 from datetime import datetime
@@ -19,6 +19,7 @@ from PIL import Image
 from scipy.spatial.transform import Rotation as R
 from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
                                pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
+from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation
 
 def train_val_dataset(dataset, val_split=0.25):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
@@ -65,6 +66,9 @@ def train(args):
     weight_decay = config['weight_decay']
     save_freq = config['save_freq']
 
+    # TODO: checkpoint dir to load and train
+    # TODO: config file should add a new key : point number
+    
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
     train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
     val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
@@ -72,22 +76,10 @@ def train(args):
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
     sample_num_points = train_set.sample_num_points
-    print(f'num of points = {sample_num_points}')
+    print(f'dataset: {dataset_dir}')
+    print(f'checkpoint_dir: {checkpoint_dir}')
+    print(f'num of points in point cloud: {sample_num_points}')
 
-    '''
-    model_inputs:
-        pcd_feat_dim: 256
-        traj_feat_dim: 256
-        cp_feat_dim: 32
-        hidden_dim: 256
-        z_feat_dim: 128 # not used
-        num_steps: 30
-        wpt_dim: 6
-        lbd_kl: 1.0 # no use
-        lbd_recon: 1.0
-        lbd_dir: 1.0
-        kl_annealing: 0
-    '''
     network_class = get_model_module(module_name, model_name)
     network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
     
@@ -131,16 +123,12 @@ def train(args):
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()
             sample_cp = sample_pcds[:, 0]
-
-            # input_pcid1 = torch.arange(batch_size).unsqueeze(1).repeat(1, 4000).long().reshape(-1)  # BN
-            # input_pcid2 = furthest_point_sample(sample_pcds, 4000).long().reshape(-1)  # BN
-            # input_pcs = sample_pcds[input_pcid1, input_pcid2, :].reshape(batch_size, 4000, -1)
             
             # forward pass
             losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
             total_loss = losses['total']
 
-            if losses['dir'] is not None:
+            if 'dir' in losses.keys() and losses['dir'] is not None:
                 train_dir_losses.append(losses['dir'].item())
             else:
                 train_dir_losses.append(0)
@@ -176,9 +164,10 @@ def train(args):
         if (epoch - start_epoch) % save_freq == 0 and (epoch - start_epoch) > 0:
             with torch.no_grad():
                 print('Saving checkpoint ...... ')
+                # torch.save(network, os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
                 torch.save(network.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
-                torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
-                torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
+                # torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
+                # torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
         val_dir_losses = []
@@ -224,7 +213,7 @@ def train(args):
 
         kl_weight.update()
 
-def recovery_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
+def recover_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
                         center : torch.Tensor or np.ndarray, scale : float, dataset_mode : int=0):
     # traj : dim = batch x num_steps x 6
     # dataset_mode : 0 for abosute, 1 for residual 
@@ -277,24 +266,26 @@ def test(args):
     checkpoint_dir = f'{args.checkpoint_dir}'
     config_file = args.config
     verbose = args.verbose
+    visualize = args.visualize
     device = args.device
     dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    print("===============================================================================================")
+    print(f'using {weight_path}')
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}'
-    os.makedirs(output_dir, exist_ok=True)
+
 
     config = None
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
     # sample_num_points = int(weight_subpath.split('_')[0])
-    sample_num_points = 2000
+    sample_num_points = 1000
     print(f'num of points = {sample_num_points}')
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
@@ -303,27 +294,124 @@ def test(args):
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # params for training
+    # params for network
     module_name = config['module']
     model_name = config['model']
     model_inputs = config['inputs']
+    batch_size = config['batch_size']
 
-    # ================== Load Inference Shape ==================
+    # # params for training
+    # dataset_name = config['dataset_module']
+    # dataset_class_name = config['dataset_class']
+    # module_name = config['module']
+    # model_name = config['model']
+    # model_inputs = config['inputs']
+
+    # dataset_dir = args.dataset_dir
+    # print(f'dataset_dir: {dataset_dir}')
+    # print(f'weight path: {weight_path}')
+    
+    # network_class = get_model_module(module_name, model_name)
+    # network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+    # network.load_state_dict(torch.load(weight_path))
+
+    # dataset_class = get_dataset_module(dataset_name, dataset_class_name)
+    # val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
+    # val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+
+    #  # validation
+    # val_dir_losses = []
+    # val_kl_losses = []
+    # val_recon_losses = []
+    # val_total_losses = []
+
+    # val_batches = enumerate(val_loader, 0)
+    # # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
+    # for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
+
+    #     # set models to evaluation mode
+    #     network.eval()
+
+    #     sample_pcds = sample_pcds.to(device).contiguous() 
+    #     sample_trajs = sample_trajs.to(device).contiguous()
+    #     sample_cp = sample_pcds[:, 0]
+
+    #     with torch.no_grad():
+    #         losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=1.0)  # B x 2, B x F x N
+    #         if losses['dir'] is not None:
+    #             val_dir_losses.append(losses['dir'].item())
+    #         else:
+    #             val_dir_losses.append(0)
+    #         val_kl_losses.append(losses['kl'].item())
+    #         val_recon_losses.append(losses['recon'].item())
+    #         val_total_losses.append(losses['total'].item())
+
+    # val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
+    # val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
+    # val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
+    # val_total_avg_loss = np.mean(np.asarray(val_total_losses))
+    # print(
+    #         f'''---------------------------------------------\n'''
+    #         f'''[ validation stage ]\n'''
+    #         f''' - val_dir_avg_loss : {val_dir_avg_loss:>10.5f}\n'''
+    #         f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
+    #         f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
+    #         f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
+    #         f'''---------------------------------------------\n'''
+    #     )
+
+    # # ================== Load Inference Shape ==================
 
     # inference
-    inference_shape_dir = '../shapes/hook_validation_small'
-    inference_shape_paths = glob.glob(f'{inference_shape_dir}/*/affordance*.npy')
-    pcds = []
-    affords = []
-    urdfs = []
-    for inference_shape_path in inference_shape_paths:
-        # pcd = o3d.io.read_point_cloud(inference_shape_path)
-        # points = np.asarray(pcd.points, dtype=np.float32)
-        urdf_prefix = os.path.split(inference_shape_path)[0]
-        points = np.load(inference_shape_path)[:, :3].astype(np.float32)
-        affords = np.load(inference_shape_path)[:, 3].astype(np.float32)
-        urdfs.append(f'{urdf_prefix}/base.urdf') 
-        pcds.append(points)
+    inference_obj_dir = args.obj_shape_root
+    assert os.path.exists(inference_obj_dir), f'{inference_obj_dir} not exists'
+    inference_obj_whole_dirs = glob.glob(f'{inference_obj_dir}/*')
+
+    inference_hook_shape_root = args.hook_shape_root
+    assert os.path.exists(inference_hook_shape_root), f'{inference_hook_shape_root} not exists'
+
+    inference_hook_dir = args.inference_dir # for hook shapes
+    inference_hook_whole_dirs = glob.glob(f'{inference_hook_dir}/*')
+
+    inference_obj_paths = []
+    inference_hook_paths = []
+
+    for inference_obj_path in inference_obj_whole_dirs:
+        paths = glob.glob(f'{inference_obj_path}/*.json')
+        assert len(paths) == 1, f'multiple object contact informations : {paths}'
+        inference_obj_paths.extend(paths) 
+
+    for inference_hook_path in inference_hook_whole_dirs:
+        # if 'Hook' in inference_hook_path:
+        paths = glob.glob(f'{inference_hook_path}/affordance-0.npy')
+        inference_hook_paths.extend(paths) 
+
+    obj_contact_poses = []
+    obj_urdfs = []
+    for inference_obj_path in inference_obj_paths:
+        obj_contact_info = json.load(open(inference_obj_path, 'r'))
+        obj_contact_poses.append(obj_contact_info['contact_pose'])
+
+        obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
+        assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
+        obj_urdfs.append(obj_urdf)
+
+    hook_pcds = []
+    hook_affords = []
+    hook_urdfs = []
+    for inference_hook_path in inference_hook_paths:
+        hook_name = inference_hook_path.split('/')[-2]
+        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+        affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+
+        hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
+        assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
+        hook_urdfs.append(hook_urdf) 
+        hook_pcds.append(points)
+
+    inference_subdir = os.path.split(inference_hook_dir)[-1]
+    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    os.makedirs(output_dir, exist_ok=True)
     
     # ================== Model ==================
 
@@ -342,8 +430,8 @@ def test(args):
     physicsClientId = p.connect(p.GUI)
     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
     p.resetDebugVisualizerCamera(
-        cameraDistance=0.2,
-        cameraYaw=90,
+        cameraDistance=0.1,
+        cameraYaw=80,
         cameraPitch=-10,
         cameraTargetPosition=[0.0, 0.0, 0.0]
     )
@@ -366,15 +454,16 @@ def test(args):
     # ================== Inference ==================
 
     batch_size = 8
-    for sid, pcd in enumerate(pcds):
+    all_scores = []
+    for sid, pcd in enumerate(hook_pcds):
         
         # urdf file
-        hook_urdf = urdfs[sid]
+        hook_urdf = hook_urdfs[sid]
         hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
         # p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
 
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd) # points will be in a unit sphere
+        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
@@ -387,54 +476,85 @@ def test(args):
         recon_traj = network.sample(points_batch, contact_point_batch)
         recon_traj = recon_traj.cpu().detach().numpy()
 
-        recovered_trajs = recovery_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode)
+        recovered_trajs = recover_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode)
 
-        wpt_ids = []
-        for i, recovered_traj in enumerate(recovered_trajs):
-            colors = list(np.random.rand(3)) + [1]
-            for wpt_i, wpt in enumerate(recovered_traj):
-                wpt_id = p.createMultiBody(
-                    baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-                    baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-                    basePosition=wpt[:3]
-                )
-                wpt_ids.append(wpt_id)
+        # conting inference score using object and object contact information
+        max_obj_success_cnt = 0
+        for traj_id, recovered_traj in enumerate(recovered_trajs):
 
-        # capture a list of images and save as gif
-        delta = 10
-        delta_sum = 0
-        cameraYaw = 90
-        rgbs = []
-        while True:
-            keys = p.getKeyboardEvents()
-            p.resetDebugVisualizerCamera(
-                cameraDistance=0.12,
-                cameraYaw=cameraYaw,
-                cameraPitch=-10,
-                cameraTargetPosition=[0.0, 0.0, 0.0]
-            )
+            obj_success_cnt = 0
+            for i in range(len(obj_contact_poses)):
 
-            cam_info = p.getDebugVisualizerCamera()
-            width = cam_info[0]
-            height = cam_info[1]
-            view_mat = cam_info[2]
-            proj_mat = cam_info[3]
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = img_info[2]
-            rgbs.append(Image.fromarray(rgb))
+                obj_id = p.loadURDF(obj_urdfs[i])
+                reversed_recovered_traj = recovered_traj[::-1][:-5]
+                reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
+                score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
+                p.removeBody(obj_id)
+                p.removeAllUserDebugItems()
 
-            cameraYaw += delta 
-            delta_sum += delta 
-            cameraYaw = cameraYaw % 360
-            if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-                break
-            if delta_sum >= 360:
-                break
+                obj_success_cnt += 1 if np.max(score) > 0 else 0
+                print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
 
-        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                if len(rgbs) > 0 and traj_id == 0:
+                    rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+
+            max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
+            print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
+
+        all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+                
+        # if visualize:
+        #     wpt_ids = []
+        #     for i, recovered_traj in enumerate(recovered_trajs):
+        #         colors = list(np.random.rand(3)) + [1]
+        #         for wpt_i, wpt in enumerate(recovered_traj):
+        #             wpt_id = p.createMultiBody(
+        #                 baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+        #                 baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+        #                 basePosition=wpt[:3]
+        #             )
+        #             wpt_ids.append(wpt_id)
+
+        #     # capture a list of images and save as gif
+        #     delta = 10
+        #     delta_sum = 0
+        #     cameraYaw = 90
+        #     rgbs = []
+        #     while True:
+        #         keys = p.getKeyboardEvents()
+        #         p.resetDebugVisualizerCamera(
+        #             cameraDistance=0.08,
+        #             cameraYaw=cameraYaw,
+        #             cameraPitch=-10,
+        #             cameraTargetPosition=[0.0, 0.0, 0.0]
+        #         )
+
+        #         cam_info = p.getDebugVisualizerCamera()
+        #         width = cam_info[0]
+        #         height = cam_info[1]
+        #         view_mat = cam_info[2]
+        #         proj_mat = cam_info[3]
+        #         img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+        #         rgb = img_info[2]
+        #         rgbs.append(Image.fromarray(rgb))
+
+        #         cameraYaw += delta 
+        #         delta_sum += delta 
+        #         cameraYaw = cameraYaw % 360
+        #         if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+        #             break
+        #         if delta_sum >= 360:
+        #             break
+
+        #     for wpt_id in wpt_ids:
+        #         p.removeBody(wpt_id)
+
+        #     rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+
         p.removeBody(hook_id)
-        for wpt_id in wpt_ids:
-            p.removeBody(wpt_id)
+
+    all_scores = np.asarray(all_scores)
+    print(f'[summary] all success rate: {np.mean(all_scores)}')
         
 def main(args):
     dataset_dir = args.dataset_dir
@@ -455,10 +575,12 @@ def main(args):
 if __name__=="__main__":
 
     default_dataset = [
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34"
+        # "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000"
+        "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000"
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34"
     ]
 
     parser = argparse.ArgumentParser()
@@ -472,6 +594,10 @@ if __name__=="__main__":
     # testing
     parser.add_argument('--weight_subpath', '-wp', type=str, default='5000_points-network_epoch-150.pth', help="subpath of saved weight")
     parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
+    parser.add_argument('--visualize', '-v', action='store_true')
+    parser.add_argument('--inference_dir', '-id', type=str, default='')
+    parser.add_argument('--obj_shape_root', '-osr', type=str, default='../shapes/inference_objs')
+    parser.add_argument('--hook_shape_root', '-hsr', type=str, default='../shapes/hook_all_new_0')
     
     # other info
     parser.add_argument('--device', '-dv', type=str, default="cuda")

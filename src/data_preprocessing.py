@@ -133,9 +133,9 @@ def main(args):
     assert os.path.exists(kptraj_dir), f'{kptraj_dir} not exists'
 
     shape_root = args.shape_root
-    shape_dir = os.path.join(shape_root, args.shape_dir)
+    src_shape_dir = os.path.join(shape_root, args.shape_dir)
     assert os.path.exists(shape_root), f'{shape_root} not exists'
-    assert os.path.exists(shape_dir), f'{shape_dir} not exists'
+    assert os.path.exists(src_shape_dir), f'{src_shape_dir} not exists'
 
     data_root = args.data_root
     assert os.path.exists(data_root), f'{data_root} not exists'
@@ -219,10 +219,10 @@ def main(args):
             p.resetBasePositionAndOrientation(hook_id,  hook_pose[:3], hook_pose[3:])
 
         # data_dir
-        data_dir = traj_recon_data_train_dir if np.asarray([hook_id in kptraj_file for hook_id in train_hook_ids]).any() else (
+        tgt_data_dir = traj_recon_data_train_dir if np.asarray([hook_id in kptraj_file for hook_id in train_hook_ids]).any() else (
                         traj_recon_data_val_dir if np.asarray([hook_id in kptraj_file for hook_id in val_hook_ids]).any() else traj_recon_data_test_dir
                     ) 
-
+        
         # load json
         whole_kptraj_file = os.path.join(kptraj_dir, kptraj_file)
         f_kptraj = open(whole_kptraj_file, 'r')
@@ -232,51 +232,51 @@ def main(args):
         kptrajs = json_kptraj['trajectory']
 
         # preprocess the trajectories in the json file
-        for i, kptraj in enumerate(kptrajs):
-            subdir_name = f'{data_dir}/{shape_name_postfix}-{i}'
+        for kptraj_id, kptraj in enumerate(kptrajs):
+            tgt_data_whole_dir = f'{tgt_data_dir}/{shape_name_postfix}'
             
             # ================================= #
             # for point cloud or affordance map #
             # ================================= #
 
             # copy point cloud paths to dest directory
-            shape_path_complete_todo = []
+            src_shape_path_todo = []
             target_shape_path_todo = []
             if 'shape' in dataset_category:
                 # copy point cloud to dest
-                shape_paths_complete = glob.glob(f'{shape_dir}/{shape_name}/base*.ply')
-                for shape_path_complete in shape_paths_complete:
-                    shape_id = os.path.split(shape_path_complete)[1].split('.')[0].split('-')[-1] # shape-0.ply -> 0
-                    target_shape_path = f'{subdir_name}/shape-{shape_id}.ply'
+                src_shape_paths = glob.glob(f'{src_shape_dir}/{shape_name}/base*.ply')
+                for src_shape_path in src_shape_paths:
 
-                    pcd = o3d.io.read_point_cloud(shape_path_complete)
+                    pcd = o3d.io.read_point_cloud(src_shape_path)
                     num_pts = np.asarray(pcd.points).shape[0]
                     if num_pts >= args.shape_num_pts: # check num of points
-                        shape_path_complete_todo.append(shape_path_complete)
+                        shape_id = os.path.split(src_shape_path)[1].split('.')[0].split('-')[-1] # shape-0.ply -> 0
+                        target_shape_path = f'{tgt_data_whole_dir}/shape-{shape_id}.ply'
+                        src_shape_path_todo.append(src_shape_path)
                         target_shape_path_todo.append(target_shape_path)
                 
-                if len(shape_path_complete_todo) == 0:
+                if len(target_shape_path_todo) == 0:
                     f_out.write(f'{shape_name} doesn\'t contain enough points\n')
                     less_pts_num += 1
                     continue
             
-            affordance_path_complete_todo = []
+            src_affordance_path_todo = []
             target_affordance_path_todo = []
             # copy affordance paths to dest directory
             if 'affordance' in dataset_category:
                 # copy point cloud to dest
-                affordance_paths_complete = glob.glob(f'{shape_dir}/{shape_name}/affordance*.npy')
-                for affordance_path_complete in affordance_paths_complete:
-                    shape_id = os.path.split(affordance_path_complete)[1].split('.')[0].split('-')[-1] # affordance-0.npy -> 0
-                    target_affordance_path = f'{subdir_name}/affordance-{shape_id}.npy'
+                src_affordance_paths = glob.glob(f'{src_shape_dir}/{shape_name}/affordance*.npy')
+                for src_affordance_path in src_affordance_paths:
 
-                    affordance_map = np.load(affordance_path_complete)
-                    num_pts = affordance_map.shape[0]
+                    src_affordance_map = np.load(src_affordance_path)
+                    num_pts = src_affordance_map.shape[0]
                     if num_pts >= args.shape_num_pts: # check num of points
-                        affordance_path_complete_todo.append(affordance_path_complete)
+                        shape_id = os.path.split(src_affordance_path)[1].split('.')[0].split('-')[-1] # affordance-0.npy -> 0
+                        target_affordance_path = f'{tgt_data_whole_dir}/affordance-{shape_id}.npy'
+                        src_affordance_path_todo.append(src_affordance_path)
                         target_affordance_path_todo.append(target_affordance_path)
 
-                if len(affordance_path_complete_todo) == 0:
+                if len(target_affordance_path_todo) == 0:
                     f_out.write(f'{shape_name} doesn\'t contain enough points\n')
                     less_pts_num += 1
                     continue
@@ -372,18 +372,18 @@ def main(args):
             # ========================== #
 
             # output info
-            os.makedirs(subdir_name, exist_ok=True)
+            os.makedirs(tgt_data_whole_dir, exist_ok=True)
 
             if 'shape' in dataset_category:
-                for shape_path_complete, target_shape_path in zip(shape_path_complete_todo, target_shape_path_todo):
-                    shutil.copyfile(shape_path_complete, target_shape_path)
+                for src_shape_path, target_shape_path in zip(src_shape_path_todo, target_shape_path_todo):
+                    shutil.copyfile(src_shape_path, target_shape_path)
             
             if 'affordance' in dataset_category:
-                for affordance_path_complete, target_affordance_path in zip(affordance_path_complete_todo, target_affordance_path_todo):
-                    shutil.copyfile(affordance_path_complete, target_affordance_path)
+                for src_affordance_path, target_affordance_path in zip(src_affordance_path_todo, target_affordance_path_todo):
+                    shutil.copyfile(src_affordance_path, target_affordance_path)
 
             kptraj_json = { "trajectory": wpts_shorten }
-            output_traj = f'{subdir_name}/traj.json'
+            output_traj = f'{tgt_data_whole_dir}/traj-{kptraj_id}.json'
             f_kptraj = open(output_traj, 'w')
             json.dump(kptraj_json, f_kptraj, indent=4)
         
@@ -405,7 +405,7 @@ if __name__=="__main__":
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
     parser.add_argument('--shape_dir', '-sd', type=str, default='hook_all')
     parser.add_argument('--shape_num_pts', '-snp', type=int, default=1000, help='the number of points threshold, if the number of points larger than this threshold, then this script will save it')
-    parser.add_argument('--data_root', '-dr', type=str, default='../data', help='the output dataset directory root')
+    parser.add_argument('--data_root', '-dr', type=str, default='../dataset', help='the output dataset directory root')
     parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
     parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
     parser.add_argument('--visualize', '-v', action='store_true')

@@ -7,7 +7,7 @@ VAT-Mart/
 */*/*/*/__pycache__
 */*/*/*/*/__pycache__
 */*/*/*/*/*/__pycache__
-data/*
+dataset/*
 legacy/*
 raw/*
 shapes/*
@@ -15,3 +15,5 @@ src/checkpoints/*
 src/figures/*
 src/inference_gifs/*
 src/logs/*
+src/training_logs/*
+*/legacy/*

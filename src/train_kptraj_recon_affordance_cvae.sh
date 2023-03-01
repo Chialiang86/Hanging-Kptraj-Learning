@@ -1,18 +1,27 @@
 # bin/sh
 
+
 model_configs=(
-    "traj_recon_affordance_nofp_4d_cvae_kl_large" 
-    # "traj_recon_affordance_nofp_cvae_kl_large" 
+    # "traj_recon_affordance_cvae_kl_large_30" 
+    # "traj_recon_affordance_cvae_kl_small_30" 
+    # "traj_recon_affordance_cvae_kl_annealing_30"
     # "traj_recon_affordance_cvae_kl_large" 
     # "traj_recon_affordance_cvae_kl_small" 
-    # "traj_recon_affordance_cvae_kl_annealing"
+    "traj_recon_affordance_rot_3d_cvae_kl_large" 
+    "traj_recon_affordance_rot_3d_cvae_kl_small" 
+    # "traj_recon_affordance_nofp_cvae_kl_large" 
+    # "traj_recon_affordance_nofp_4d_cvae_kl_large" 
 )
 
 traj_recon_affordance_datasets=(
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28"
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29"
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.11.13.38"
-    "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.11.13.39"
+    "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000"
+    "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000"
+
+    # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28"
+    # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29"
+
+    # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.11.13.38"
+    # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.11.13.39"
 )
 
 training_tag='' # $1

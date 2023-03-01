@@ -72,13 +72,8 @@ def main(args):
 if __name__=="__main__":
 
     default_dataset = [
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30",
-        "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34"
-
-        # "../data/traj_recon_affordance/hook_all-kptraj_all_one_0214-absolute-40/02.15.17.24",
-        # "../data/traj_recon_affordance/hook_all-kptraj_all_one_0214-residual-40/02.15.17.24",
+        "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000",
+        "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000",
     ]
 
     parser = argparse.ArgumentParser()

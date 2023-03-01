@@ -4,23 +4,23 @@ module: 'traj_recon_shape_cvae'
 model: 'TrajReconShape'
 
 inputs:
-  pcd_feat_dim: 256
-  traj_feat_dim: 256
-  hidden_dim: 256
+  pcd_feat_dim: 512
+  traj_feat_dim: 128
+  hidden_dim: 128
   z_feat_dim: 128 # not used
-  num_steps: 30
+  num_steps: 40
   wpt_dim: 6
-  lbd_kl: 0.0001
+  lbd_kl: 0.001
   lbd_recon: 1.0
   kl_annealing: 0
 
 lr: 0.001
 lr_decay_rate: 0.95
-lr_decay_epoch: 20
+lr_decay_epoch: 1000
 weight_decay: 0.0001
-save_freq: 20
+save_freq: 2000
 
 batch_size: 16
 
 start_epoch: 0
-stop_epoch: 200
+stop_epoch: 30000

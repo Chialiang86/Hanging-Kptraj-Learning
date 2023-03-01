@@ -292,8 +292,7 @@ class TrajReconAffordance(nn.Module):
             ret_traj[:, 0, :3] = contact_point
 
             recon_dir = recon_traj[:, 0]
-            recon_dir = recon_dir.reshape(-1, 3, 2)
-            recon_dirmat = self.rot6d_to_rotmat(recon_dir)
+            recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
             recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
             ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
 
@@ -336,18 +335,6 @@ class TrajReconAffordance(nn.Module):
             wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * 6), input_wps.view(batch_size, (self.num_steps - 1) * 6))
             
             recon_loss = self.lbd_dir * dir_loss + wpt_loss
-            # recon_absolute = recon_traj[:, 0, :]
-            # recon_residual = recon_traj[:, 1:, :]
-            # input_absolute = traj[:, 0, :]
-            # input_residual = traj[:, 1:, :]
-            # recon_absolute_loss = self.MSELoss(recon_absolute.view(batch_size, 1 * 6), input_absolute.view(batch_size, 1 * 6))
-            # recon_residual_loss = self.MSELoss(recon_residual.view(batch_size, (self.num_steps - 1) * 6), input_residual.view(batch_size, (self.num_steps - 1) * 6))
-            # recon_loss = recon_absolute_loss * 100 + recon_residual_loss
-        
-        # recon_dir = recon_traj[:, 0, :]
-        # input_dir = traj[:, 0, :]
-        # dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-        # dir_loss = dir_loss.mean()
 
         kl_loss = KL(mu, logvar)
         losses = {}

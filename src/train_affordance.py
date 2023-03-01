@@ -8,17 +8,12 @@ from time import strftime
 
 from sklearn.model_selection import train_test_split
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
-from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc, kl_annealing
+from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc
 
 import torch
 from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
-import pybullet as p
-from PIL import Image
-from scipy.spatial.transform import Rotation as R
-from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
-                               pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
 
 def train_val_dataset(dataset, val_split=0.25):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
@@ -230,7 +225,8 @@ def test(args):
     # ================== Load Inference Shape ==================
 
     # inference
-    inference_shape_paths = glob.glob(f'{inference_dir}/*/affordance*.npy')
+    realworld = True if 'realworld_hook' in inference_dir else False
+    inference_shape_paths = glob.glob(f'{inference_dir}/*/*.npy') if realworld else glob.glob(f'{inference_dir}/*/affordance-0.npy')
     pcds = []
     affordances = []
     urdfs = []
@@ -251,7 +247,6 @@ def test(args):
     # load model
     network_class = get_model_module(module_name, model_name)
     network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
-    # network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
     network.load_state_dict(torch.load(weight_path))
 
     if verbose:
@@ -282,41 +277,43 @@ def test(args):
 
         contact_point_cond = np.where(affords == np.max(affords))[0]
         contact_point = points[contact_point_cond][0]
-        contact_point_gt = pcd[0]
 
-        difference = np.linalg.norm(contact_point - contact_point_gt, ord=2)
-        if difference < 0.005:
-            within_5mm_cnt += 1
-        if difference < 0.01:
-            within_10mm_cnt += 1
+        if not realworld:
+            contact_point_gt = pcd[0]
+            difference = np.linalg.norm(contact_point - contact_point_gt, ord=2)
+            if difference < 0.005:
+                within_5mm_cnt += 1
+            if difference < 0.01:
+                within_10mm_cnt += 1
 
-        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.01)
-        # contact_point_coor.translate(contact_point.reshape((3, 1)))
+        contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.01)
+        contact_point_coor.translate(contact_point.reshape((3, 1)))
 
-        # point_cloud = o3d.geometry.PointCloud()
-        # point_cloud.points = o3d.utility.Vector3dVector(points)
-        # point_cloud.colors = o3d.utility.Vector3dVector(colors)
+        point_cloud = o3d.geometry.PointCloud()
+        point_cloud.points = o3d.utility.Vector3dVector(points)
+        point_cloud.colors = o3d.utility.Vector3dVector(colors)
 
-        # img_list = []
-        # for _ in range(frames):
-        #     r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
-        #     point_cloud.rotate(r, center=(0, 0, 0))
-        #     contact_point_coor.rotate(r, center=(0, 0, 0))
-        #     geometries = [point_cloud, contact_point_coor]
+        img_list = []
+        for _ in range(frames):
+            r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
+            point_cloud.rotate(r, center=(0, 0, 0))
+            contact_point_coor.rotate(r, center=(0, 0, 0))
+            geometries = [point_cloud, contact_point_coor]
 
-        #     img = capture_from_viewer(geometries)
-        #     img_list.append(img)
+            img = capture_from_viewer(geometries)
+            img_list.append(img)
         
-        # save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
-        # imageio.mimsave(save_path, img_list, fps=10)
-        # print(f'{save_path} saved')
+        save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+        imageio.mimsave(save_path, img_list, fps=10)
+        print(f'{save_path} saved')
 
-    print('======================================')
-    print('inference_dir: {}'.format(inference_dir))
-    print('weight_path: {}'.format(weight_path))
-    print('within 5mm rate: {:.4f} ({}/{})'.format(within_5mm_cnt / len(pcds), within_5mm_cnt, len(pcds)))
-    print('within 10mm rate: {:.4f} ({}/{})'.format(within_10mm_cnt / len(pcds), within_10mm_cnt, len(pcds)))
-    print('======================================')
+    if not realworld:
+        print('======================================')
+        print('inference_dir: {}'.format(inference_dir))
+        print('weight_path: {}'.format(weight_path))
+        print('within 5mm rate: {:.4f} ({}/{})'.format(within_5mm_cnt / len(pcds), within_5mm_cnt, len(pcds)))
+        print('within 10mm rate: {:.4f} ({}/{})'.format(within_10mm_cnt / len(pcds), within_10mm_cnt, len(pcds)))
+        print('======================================')
         
 def main(args):
     dataset_dir = args.dataset_dir
@@ -338,12 +335,12 @@ if __name__=="__main__":
 
     default_dataset = [
 
-        "../data/traj_recon_affordance/hook_all-kptraj_all_one_0214-absolute-40/02.15.17.24",
-        # "../data/traj_recon_affordance/hook_all-kptraj_all_one_0214-residual-40/02.15.17.24",
-        # "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
-        # "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
-        # "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30",
-        # "../data/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34"
+        "../dataset/traj_recon_affordance/hook_all-kptraj_all_one_0214-absolute-40/02.15.17.24",
+        # "../dataset/traj_recon_affordance/hook_all-kptraj_all_one_0214-residual-40/02.15.17.24",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-absolute-30/02.03.13.30",
+        # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook_aug-residual-30/02.03.13.34"
     ]
 
     parser = argparse.ArgumentParser()

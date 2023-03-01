@@ -1,0 +1,66 @@
+current_dir=/home/chialiang/pybullet-robot-envs/pybullet_robot_envs/envs/panda_envs
+/home/chialiang/Desktop/motion-planning
+[Results]|Iterations 0|Nodes 8|Time 0.016966819763183594
+[Before Smoothness]|Length 6
+[After Smoothness]|Length 4
+(0.5164234991872808, 0.0031451187937706574, 1.2874603251558696, 0.8031740903503124, -0.051695247093512996, 0.5883316557922437, -0.07813350632504502) 7 <class 'tuple'>
+(0.5164234991872808, 0.0031451187937706574, 1.2874603251558696, 0.8031740903503124, -0.051695247093512996, 0.5883316557922437, -0.07813350632504502) 7 <class 'tuple'>
+(0.5106806383561475, -0.01945897335894862, 1.2784903282260798, 0.8239994502161802, -0.04619745790544481, 0.561318771828535, -0.061740888553799715) 7 <class 'tuple'>
+(0.5049377775250142, -0.04206306551166789, 1.2695203312962902, 0.8436198467496657, -0.04063211255236859, 0.5334850517129892, -0.0452579849130717) 7 <class 'tuple'>
+(0.49919491669388094, -0.06466715766438717, 1.2605503343665003, 0.8620065883559097, -0.03500734943423197, 0.504871197671966, -0.028708898931683813) 7 <class 'tuple'>
+(0.4944857708123517, -0.08320251322961697, 1.2531949368840727, 0.8761442455629703, -0.030356473135763614, 0.4808550167644127, -0.015106235737188733) 7 <class 'tuple'>
+[ 0.49448577 -0.08320251  1.25319494 -0.87614425  0.03035647 -0.48085502
+  0.01510624] 7 <class 'numpy.ndarray'>
+(0.4944857708123517, -0.08320251322961697, 1.2531949368840727, 0.8761442455629703, -0.030356473135763614, 0.4808550167644127, -0.015106235737188733) 7 <class 'tuple'>
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce GTX 1080 Ti/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 510.85.02
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 510.85.02
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce GTX 1080 Ti/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed
+b3Printf: b3Warning[examples/SharedMemory/PhysicsClientSharedMemory.cpp,1286]:
+
+b3Printf: User debug draw failed

@@ -257,17 +257,17 @@ class TrajReconAffordanceNoFP(nn.Module):
         # pcs[:, 0] = contact_point
 
         # align the the contact point to the origin (for both point cloud and trajectory)
-        pcs[:, :, :3] = pcs[:, :, :3] - contact_point.unsqueeze(1)
+        traj_copy = traj.clone()
+        pcs_copy = pcs.clone()
+        pcs_copy[:, :, :3] = pcs_copy[:, :, :3] - contact_point.unsqueeze(1)
         if self.dataset_type == 0: # absolute 
-            traj[:, :, :3] = traj[:, :, :3] - contact_point.unsqueeze(1)
-        if self.dataset_type == 1: # residual 
-            traj[:, 0, :3] = traj[:, 0, :3] - contact_point # will be [0, 0, 0]
+            traj_copy[:, :, :3] = traj_copy[:, :, :3] - contact_point.unsqueeze(1)
 
-        pcs = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pcs)
+        pcs_copy = pcs_copy.repeat(1, 1, 2)
+        whole_feats = self.pointnet2(pcs_copy)
 
         f_s = whole_feats[:, :, 0]
-        f_traj = self.mlp_traj(traj)
+        f_traj = self.mlp_traj(traj_copy)
 
         z_all, mu, logvar = self.all_encoder(f_s, f_traj)
         recon_traj = self.all_decoder(f_s, z_all)
@@ -298,7 +298,7 @@ class TrajReconAffordanceNoFP(nn.Module):
             ret_traj[:, 0, :3] = contact_point
 
             recon_dir = recon_traj[:, 0]
-            recon_dir = recon_dir.reshape(-1, 3, 2)
+            recon_dir = recon_dir.reshape(-1, 2, 3).permute(0, 2, 1)
             recon_dirmat = self.rot6d_to_rotmat(recon_dir)
             recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
             ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)

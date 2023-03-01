@@ -66,8 +66,8 @@ def train(args):
     save_freq = config['save_freq']
 
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train')
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val')
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -96,7 +96,7 @@ def train(args):
     # will only work if 'kl_annealing' = 1 in "model_inputs"
     kl_weight = kl_annealing(kl_anneal_cyclical=True, 
                 niter=stop_epoch, 
-                start=0.001, stop=0.01, kl_anneal_cycle=10, kl_anneal_ratio=1)
+                start=0.0, stop=0.1, kl_anneal_cycle=5, kl_anneal_ratio=0.5)
 
     # train for every epoch
     for epoch in range(start_epoch, stop_epoch + 1):
@@ -108,7 +108,7 @@ def train(args):
         train_kl_losses = []
         train_recon_losses = []
         train_total_losses = []
-        for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches):
+        for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
 
             # set models to training mode
             network.train()
@@ -155,15 +155,15 @@ def train(args):
             with torch.no_grad():
                 print('Saving checkpoint ...... ')
                 torch.save(network.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
-                torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
-                torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
+                # torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
+                # torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
         val_kl_losses = []
         val_recon_losses = []
         val_total_losses = []
         # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-        for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches):
+        for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
 
             # set models to evaluation mode
             network.eval()
@@ -238,7 +238,6 @@ def recovery_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or n
     return waypoints
 
 def test(args):
-
 
     # ================== config ==================
 
@@ -431,7 +430,11 @@ if __name__=="__main__":
     # testing
     parser.add_argument('--weight_subpath', '-wp', type=str, default='5000_points-network_epoch-150.pth', help="subpath of saved weight")
     parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
-    
+    parser.add_argument('--visualize', '-v', action='store_true')
+    parser.add_argument('--inference_dir', '-id', type=str, default='')
+    parser.add_argument('--obj_shape_root', '-osr', type=str, default='../shapes/inference_objs')
+    parser.add_argument('--hook_shape_root', '-hsr', type=str, default='../shapes/hook_all_new_0')
+   
     # other info
     parser.add_argument('--device', '-dv', type=str, default="cuda")
     parser.add_argument('--config', '-cfg', type=str, default='../config/traj_recon_shape_cvae_kl_large.yaml')
