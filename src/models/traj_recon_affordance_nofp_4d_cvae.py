@@ -331,8 +331,9 @@ class TrajReconAffordanceNoFP4D(nn.Module):
 
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
-        recon_loss = None
-        dir_loss = None
+        recon_loss = torch.Tensor([0])
+        dir_loss = torch.Tensor([0])
+        nn_loss = torch.Tensor([0])
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
@@ -367,6 +368,7 @@ class TrajReconAffordanceNoFP4D(nn.Module):
         losses['dir'] = dir_loss
         losses['kl'] = kl_loss
         losses['recon'] = recon_loss
+        losses['nn'] = nn_loss
 
         if self.kl_annealing == 0:
             losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon

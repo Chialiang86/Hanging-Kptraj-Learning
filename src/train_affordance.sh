@@ -7,7 +7,8 @@ model_configs=(
 affordance_datasets=(
     # "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-absolute-40/02.27.22.44-1000"
     # "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000"
-    "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-absolute-40/02.27.22.44-1000"
+    # "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-absolute-40/02.27.22.44-1000"
+    "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-absolute-40/03.05.12.50-1000"
 )
 
 training_tag='' # $1

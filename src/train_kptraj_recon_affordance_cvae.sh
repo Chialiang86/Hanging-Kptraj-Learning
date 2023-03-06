@@ -5,17 +5,26 @@ model_configs=(
     # "traj_recon_affordance_cvae_kl_large_30" 
     # "traj_recon_affordance_cvae_kl_small_30" 
     # "traj_recon_affordance_cvae_kl_annealing_30"
-    # "traj_recon_affordance_cvae_kl_large" 
-    # "traj_recon_affordance_cvae_kl_small" 
-    "traj_recon_affordance_rot_3d_cvae_kl_large" 
-    "traj_recon_affordance_rot_3d_cvae_kl_small" 
+
+    # "traj3d_recon_affordance_cvae_kl_large" 
+    # "traj3d_recon_affordance_cvae_kl_small" 
+
+    "traj_recon_affordance_cvae_kl_large" 
+    "traj_recon_affordance_cvae_kl_small" 
+
+    # "traj_recon_affordance_rot_3d_cvae_kl_large" 
+    # "traj_recon_affordance_rot_3d_cvae_kl_small" 
+
     # "traj_recon_affordance_nofp_cvae_kl_large" 
     # "traj_recon_affordance_nofp_4d_cvae_kl_large" 
 )
 
 traj_recon_affordance_datasets=(
-    "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000"
-    "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000"
+    # "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000"
+    # "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000"
+
+    "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-absolute-40/onetraj-1000"
+    "../dataset/traj_recon_affordance/hook_all_new-kptraj_all_new-residual-40/onetraj-1000"
 
     # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28"
     # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29"
@@ -36,7 +45,7 @@ if [ $# -ge 2 ]; then
 elif [ $# -ge 1 ]; then 
     
     training_tag=$1
-input_pcid1
+
 elif [[ $training_tag = "" ]]; then 
     training_tag=$time_stamp
 fi 

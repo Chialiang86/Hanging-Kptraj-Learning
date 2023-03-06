@@ -209,13 +209,15 @@ class KptrajReconShapeDataset(Dataset):
         return points
 
 class KptrajReconAffordanceRot3dDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, enable_affordance=False):
+    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, enable_affordance=False, enable_partseg=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+        assert wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6'
 
         dataset_subdirs = glob.glob(f'{dataset_dir}/*')
         self.enable_affordance = enable_affordance
         self.enable_traj = enable_traj
+        self.enable_partseg = enable_partseg
 
         self.type = "residual" if "residual" in dataset_dir else "absolute"
         self.traj_len = num_steps
@@ -225,6 +227,7 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
         self.shape_list = [] # torch tensor
         self.center_list = []
         self.scale_list = [] 
+        self.partseg_list = []
         self.affordance_list = []
         self.traj_list = []
         for dataset_subdir in dataset_subdirs:
@@ -232,6 +235,7 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
             affordance_list_tmp = []
+            partseg_list_tmp = []
             center_list_tmp = []
             scale_list_tmp = [] 
             for shape_file in shape_files:
@@ -255,15 +259,24 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
                     affordance = affordance[input_pcid]
                     affordance_list_tmp.append(affordance)
             
+                if enable_partseg == True:
+                    assert  pcd.shape[1] > 4, f'your affordance map does not contain part segmentation information'
+                    partseg = pcd[:,4]
+                    partseg = torch.from_numpy(partseg).to('cuda')
+                    partseg = partseg[input_pcid]
+                    partseg_list_tmp.append(partseg)
+
             self.shape_list.append(shape_list_tmp)
             self.center_list.append(center_list_tmp)
             self.scale_list.append(scale_list_tmp)
             if enable_affordance == True:
                 self.affordance_list.append(affordance_list_tmp)
+            if enable_affordance == True:
+                self.partseg_list.append(partseg_list_tmp)
 
             traj_list_tmp = []
             if enable_traj: 
-                traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
+                traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 6d format
                 for traj_file in traj_files:
                     
                     f_traj = open(traj_file, 'r')
@@ -279,13 +292,20 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
 
                 self.traj_list.append(traj_list_tmp)
 
-        if enable_traj and enable_affordance:
+        if enable_traj and enable_partseg and enable_affordance: # 111
+            assert len(self.shape_list) == len(self.traj_list) == len(self.partseg_list) == len(self.affordance_list), 'inconsistent length of shapes and partseg and trajectories and affordance'
+        elif enable_traj and enable_partseg: # 101
+            assert len(self.shape_list) == len(self.traj_list) == len(self.partseg_list), 'inconsistent length of shapes and partseg and trajectories'
+        elif enable_traj and enable_affordance: # 110
             assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance and trajectories'
-        elif enable_affordance:
+        elif enable_partseg and enable_affordance: # 011
+            assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance and trajectories'
+        elif enable_partseg: # 001
+            assert len(self.shape_list) == len(self.partseg_list), 'inconsistent length of shapes and partseg'
+        elif enable_affordance: # 010
             assert len(self.shape_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance'
-        elif enable_traj:
+        elif enable_traj: # 100
             assert len(self.shape_list) == len(self.traj_list), 'inconsistent length of shapes and trajectories'
-        
 
         self.size = len(self.shape_list)
 
@@ -314,6 +334,11 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
         if self.enable_affordance:
             affordance = self.affordance_list[index][shape_id]
 
+        # for partseg processing if enabled
+        partseg = None
+        if self.enable_partseg:
+            partseg = self.partseg_list[index][shape_id]
+            
         # for waypoint preprocessing
         waypoints = None
         if self.enable_traj:
@@ -330,38 +355,59 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
                 exit(-1)
 
         # ret value
-        if self.enable_affordance and self.enable_traj:
-            return points, affordance, waypoints
-        if self.enable_traj:
-            return points, waypoints
-        if self.enable_affordance:
+        if self.enable_traj and self.enable_affordance and self.enable_partseg: # 111
+            return points, affordance, partseg, waypoints[:,:self.wpt_dim]
+        elif self.enable_traj and self.enable_partseg: # 101
+            return points, partseg, waypoints[:,:self.wpt_dim]
+        elif self.enable_affordance and self.enable_traj:
+            return points, affordance, waypoints[:,:self.wpt_dim]
+        elif self.enable_affordance and self.enable_partseg:
+            return points, affordance, partseg
+        elif self.enable_partseg:
+            return points, partseg
+        elif self.enable_affordance:
             return points, affordance
+        elif self.enable_traj:
+            return points, waypoints[:,:self.wpt_dim]
         return points
-    
 class KptrajReconAffordanceDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, enable_affordance=False):
+    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, affordance_type=0):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+        assert wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6'
+
+        self.affordance_type = affordance_type
+        self.affordance_name = {
+            0:'none',
+            1:'affordance',
+            2:'parseg',
+            3:'both',
+            4:'fusion',
+        }[affordance_type]
 
         dataset_subdirs = glob.glob(f'{dataset_dir}/*')
-        self.enable_affordance = enable_affordance
         self.enable_traj = enable_traj
 
         self.type = "residual" if "residual" in dataset_dir else "absolute"
         self.traj_len = num_steps
         self.wpt_dim = wpt_dim
         self.sample_num_points = sample_num_points
-
+        
+        print(f'==================== self.wpt_dim = {self.wpt_dim } ====================')
         self.shape_list = [] # torch tensor
         self.center_list = []
         self.scale_list = [] 
         self.affordance_list = []
+        self.partseg_list = []
+        self.fusion_list = []
         self.traj_list = []
         for dataset_subdir in dataset_subdirs:
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
             affordance_list_tmp = []
+            fusion_list_tmp = []
+            partseg_list_tmp = []
             center_list_tmp = []
             scale_list_tmp = [] 
             for shape_file in shape_files:
@@ -379,17 +425,37 @@ class KptrajReconAffordanceDataset(Dataset):
                 center_list_tmp.append(center)
                 scale_list_tmp.append(scale)
 
-                if enable_affordance == True:
+                if self.affordance_name == 'affordance' or self.affordance_name == 'both':
                     affordance = pcd[:,3]
                     affordance = torch.from_numpy(affordance).to('cuda')
                     affordance = affordance[input_pcid]
                     affordance_list_tmp.append(affordance)
+
+                if self.affordance_name == 'partseg' or self.affordance_name == 'both':
+                    assert  pcd.shape[1] > 4, f'your affordance map does not contain part segmentation information'
+                    partseg = pcd[:,4]
+                    partseg = torch.from_numpy(partseg).to('cuda')
+                    partseg = partseg[input_pcid]
+                    partseg_list_tmp.append(partseg)
+
+                if self.affordance_name == 'fusion':
+                    assert  pcd.shape[1] > 4, f''
+                    affordance = pcd[:,3]
+                    partseg = pcd[:,4]
+                    fusion = (pcd[:,3] + pcd[:,4]) / 2 # just average it
+                    fusion = torch.from_numpy(fusion).to('cuda')
+                    fusion = fusion[input_pcid]
+                    fusion_list_tmp.append(fusion)
             
             self.shape_list.append(shape_list_tmp)
             self.center_list.append(center_list_tmp)
             self.scale_list.append(scale_list_tmp)
-            if enable_affordance == True:
+            if self.affordance_name == 'affordance' or self.affordance_name == 'both':
                 self.affordance_list.append(affordance_list_tmp)
+            if self.affordance_name == 'partseg' or self.affordance_name == 'both':
+                self.partseg_list.append(partseg_list_tmp)
+            if self.affordance_name == 'fusion':
+                self.fusion_list.append(fusion_list_tmp)
 
             traj_list_tmp = []
             if enable_traj: 
@@ -401,9 +467,11 @@ class KptrajReconAffordanceDataset(Dataset):
                     waypoints = np.asarray(traj_dict['trajectory'])
 
                     if self.type == "residual":
-                        first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
-                        first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
-                        waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
+                        
+                        if self.wpt_dim == 6:
+                            first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
+                            first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
+                            waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
 
                     waypoints = torch.FloatTensor(waypoints).to('cuda')
 
@@ -411,21 +479,32 @@ class KptrajReconAffordanceDataset(Dataset):
 
                 self.traj_list.append(traj_list_tmp)
 
-        if enable_traj and enable_affordance:
+        if enable_traj and self.affordance_name == 'both': 
+            assert len(self.shape_list) == len(self.traj_list) == len(self.partseg_list) == len(self.affordance_list), 'inconsistent length of shapes and partseg and trajectories and affordance'
+        elif enable_traj and self.affordance_name == "partseg":
+            assert len(self.shape_list) == len(self.traj_list) == len(self.partseg_list), 'inconsistent length of shapes and partseg and trajectories'
+        elif enable_traj and self.affordance_name == "affordance":
             assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance and trajectories'
-        elif enable_affordance:
+        elif enable_traj and self.affordance_name == "fusion":
+            assert len(self.shape_list) == len(self.traj_list) == len(self.fusion_list), 'inconsistent length of shapes and affordance and trajectories'
+        elif self.affordance_name == 'both':
+            assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance and trajectories'
+        elif self.affordance_name == 'partseg':
+            assert len(self.shape_list) == len(self.partseg_list), 'inconsistent length of shapes and partseg'
+        elif self.affordance_name == "affordance":
             assert len(self.shape_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance'
-        elif enable_traj:
+        elif self.affordance_name == "fusion":
+            assert len(self.shape_list) == len(self.fusion_list), 'inconsistent length of shapes and affordance'
+        elif enable_traj: # 100
             assert len(self.shape_list) == len(self.traj_list), 'inconsistent length of shapes and trajectories'
         
-
         self.size = len(self.shape_list)
 
     def print_data_shape(self):
         print(f'sample_num_points : {self.sample_num_points}')
-        print(f"shape : {len(self.shape_list)}")
-        if self.enable_affordance:
-            print(f"affordance : {len(self.affordance_list)}")
+        # print(f"shape : {len(self.shape_list)}")
+        # if self.affordance_name == 'affordance' or self.affordance_name == 'both':
+        #     print(f"affordance : {len(self.affordance_list)}")
         if self.enable_traj:
             print(f"trajectory : {len(self.traj_list)}")
         
@@ -443,8 +522,18 @@ class KptrajReconAffordanceDataset(Dataset):
 
         # for affordance processing if enabled
         affordance = None
-        if self.enable_affordance:
+        if self.affordance_name == 'affordance' or self.affordance_name == 'both':
             affordance = self.affordance_list[index][shape_id]
+
+        # for partseg processing if enabled
+        partseg = None
+        if self.affordance_name == 'partseg' or self.affordance_name == 'both':
+            partseg = self.partseg_list[index][shape_id]
+
+        # for fusion processing if enabled
+        fusion = None
+        if self.affordance_name == 'fusion':
+            fusion = self.fusion_list[index][shape_id]
 
         # for waypoint preprocessing
         waypoints = None
@@ -462,12 +551,24 @@ class KptrajReconAffordanceDataset(Dataset):
                 exit(-1)
 
         # ret value
-        if self.enable_affordance and self.enable_traj:
-            return points, affordance, waypoints
-        if self.enable_traj:
-            return points, waypoints
-        if self.enable_affordance:
+        if self.enable_traj and self.affordance_name == 'both': 
+            return points, affordance, partseg, waypoints[:,:self.wpt_dim]
+        elif self.affordance_name == 'affordance':
+            return points, affordance, waypoints[:,:self.wpt_dim]
+        elif self.enable_traj and self.affordance_name == 'partseg':
+            return points, partseg, waypoints[:,:self.wpt_dim]
+        elif self.enable_traj and self.affordance_name == 'fusion':
+            return points, fusion, waypoints[:,:self.wpt_dim]
+        elif self.affordance_name == 'both':
+            return points, affordance, partseg
+        elif self.affordance_name == 'affordance':
             return points, affordance
+        elif self.affordance_name == 'parseg':
+            return points, partseg
+        elif self.affordance_name == 'fusion':
+            return points, fusion
+        elif self.enable_traj:
+            return points, waypoints[:,:self.wpt_dim]
         return points
 
 if __name__=="__main__":

@@ -52,7 +52,8 @@ def train(args):
     dataset_class_name = config['dataset_class']
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
     
     # training batch and iters
     batch_size = config['batch_size']
@@ -70,8 +71,8 @@ def train(args):
     # TODO: config file should add a new key : point number
     
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -111,6 +112,7 @@ def train(args):
         val_batches = enumerate(val_loader, 0)
 
         # training
+        train_nn_losses = []
         train_dir_losses = []
         train_kl_losses = []
         train_recon_losses = []
@@ -128,10 +130,8 @@ def train(args):
             losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
             total_loss = losses['total']
 
-            if 'dir' in losses.keys() and losses['dir'] is not None:
-                train_dir_losses.append(losses['dir'].item())
-            else:
-                train_dir_losses.append(0)
+            train_nn_losses.append(losses['nn'].item())
+            train_dir_losses.append(losses['dir'].item())
             train_kl_losses.append(losses['kl'].item())
             train_recon_losses.append(losses['recon'].item())
             train_total_losses.append(losses['total'].item())
@@ -143,6 +143,7 @@ def train(args):
 
         network_lr_scheduler.step()
         
+        train_nn_avg_loss = np.mean(np.asarray(train_nn_losses))
         train_dir_avg_loss = np.mean(np.asarray(train_dir_losses))
         train_kl_avg_loss = np.mean(np.asarray(train_kl_losses))
         train_recon_avg_loss = np.mean(np.asarray(train_recon_losses))
@@ -153,6 +154,7 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - train_nn_avg_loss : {train_nn_avg_loss:>10.5f}\n'''
                 f''' - train_dir_avg_loss : {train_dir_avg_loss:>10.5f}\n'''
                 f''' - train_kl_avg_loss : {train_kl_avg_loss:>10.5f}\n'''
                 f''' - train_recon_avg_loss : {train_recon_avg_loss:>10.5f}\n'''
@@ -170,6 +172,7 @@ def train(args):
                 # torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
+        val_nn_losses = []
         val_dir_losses = []
         val_kl_losses = []
         val_recon_losses = []
@@ -186,14 +189,13 @@ def train(args):
 
             with torch.no_grad():
                 losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
-                if losses['dir'] is not None:
-                    val_dir_losses.append(losses['dir'].item())
-                else:
-                    val_dir_losses.append(0)
+                val_nn_losses.append(losses['nn'].item())
+                val_dir_losses.append(losses['dir'].item())
                 val_kl_losses.append(losses['kl'].item())
                 val_recon_losses.append(losses['recon'].item())
                 val_total_losses.append(losses['total'].item())
 
+        val_nn_avg_loss = np.mean(np.asarray(val_nn_losses))
         val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
         val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
         val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
@@ -204,6 +206,7 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - val_nn_avg_loss : {val_nn_avg_loss:>10.5f}\n'''
                 f''' - val_dir_avg_loss : {val_dir_avg_loss:>10.5f}\n'''
                 f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
                 f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
@@ -213,13 +216,17 @@ def train(args):
 
         kl_weight.update()
 
-def recover_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
-                        center : torch.Tensor or np.ndarray, scale : float, dataset_mode : int=0):
+def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
+                        center : torch.Tensor or np.ndarray, scale : float, dataset_mode : int=0, wpt_dim : int=6):
     # traj : dim = batch x num_steps x 6
     # dataset_mode : 0 for abosute, 1 for residual 
 
-    if type(traj) == torch.Tensor:
-        traj = traj.cpu().detach().numpy()
+    traj = None
+    if type(traj_src) == torch.Tensor:
+        traj = traj_src.cpu().detach().numpy()
+    elif type(traj_src) == np.ndarray:
+        traj = np.copy(traj_src)
+
     if type(center) == torch.Tensor:
         center = center.cpu().detach().numpy()
 
@@ -228,34 +235,97 @@ def recover_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np
     waypoints = []
 
     if dataset_mode == 0: # "absolute"
+
+        for traj_id in range(traj.shape[0]):
+            for wpt_id in range(traj.shape[1]):
+                traj[traj_id, wpt_id, :3] = traj[traj_id, wpt_id, :3] * scale + center
+
         for i in range(traj.shape[0]): # batches
             waypoints.append([])
-            for j in range(1, traj[i].shape[0]): # waypoints
-                traj[i, j, :3] = traj[i, j, :3] * scale + center
-                current_trans = base_trans @ get_matrix_from_pose(traj[i, j])
+            for j in range(0, traj[i].shape[0]): # waypoints
+
+                wpt = np.zeros(6)
+                if wpt_dim == 6:
+                    wpt = traj[i, j]
+                    current_trans = base_trans @ get_matrix_from_pose(wpt)
+                else :
+                    # contact pose rotation
+                    wpt[:3] = traj[i, j]
+
+                    # transform to world coordinate first
+                    current_trans = np.identity(4)
+                    current_trans[:3, 3] = traj[i, j]
+                    current_trans = base_trans @ current_trans
+
+                    if j < traj[i].shape[0] - 1:
+                        # transform to world coordinate first
+                        next_trans = np.identity(4)
+                        next_trans[:3, 3] = traj[i, j+1]
+                        next_trans = base_trans @ next_trans
+
+                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
+                        x_direction /= np.linalg.norm(x_direction, ord=2)
+                        y_direction = np.cross(x_direction, [0, 0, -1])
+                        y_direction /= np.linalg.norm(y_direction, ord=2)
+                        z_direction = np.cross(x_direction, y_direction)
+                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
+                        current_trans[:3, :3] = rotation_mat
+                        
+                    else :
+                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
+                
                 waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
     
     if dataset_mode == 1: # "residual"
-        for i in range(traj.shape[0]):
-            traj[i, 0, :3] = traj[i, 0, :3] * scale + center
-            current_trans = base_trans @ get_matrix_from_pose(traj[i, 0])
-            current_pose = get_pose_from_matrix(current_trans, pose_size=6)
-            waypoints.append([current_pose])
-            # waypoints.append([get_pose_from_matrix(current_trans, pose_size=6)])
-            for j in range(1, traj[i].shape[0]):
-                tmp_pose = np.zeros(6)
-                traj[i, j, :3] *= scale
-                tmp_pose[:3] = current_pose[:3] + traj[i, j, :3]
-                tmp_pose[3:] = R.from_matrix(
-                                        R.from_rotvec(
-                                            traj[i, j, 3:]
-                                        ).as_matrix() @ R.from_rotvec(
-                                            current_pose[3:]
-                                        ).as_matrix()
-                                    ).as_rotvec()
-                current_pose = tmp_pose
 
-                waypoints[-1].append(current_pose)
+        for traj_id in range(traj.shape[0]):
+            for wpt_id in range(traj.shape[1]):
+                traj[traj_id, wpt_id] = traj[traj_id, wpt_id] * scale
+
+        for i in range(traj.shape[0]):
+            waypoints.append([])
+            for j in range(0, traj[i].shape[0]):
+                
+                wpt = np.zeros(6)
+                if wpt_dim == 6:
+
+                    if j == 0 :
+                        wpt = traj[i, j]
+                    else :
+                        wpt[:3] = np.asarray(waypoints[-1][-1][:3]) + traj[i, j, :3]
+                        wpt[3:] = R.from_matrix(
+                                            R.from_rotvec(
+                                                traj[i, j, 3:]
+                                            ).as_matrix() @ R.from_rotvec(
+                                                waypoints[-1][-1][3:]
+                                            ).as_matrix()
+                                        ).as_rotvec()
+                    current_trans = base_trans @ get_matrix_from_pose(wpt)
+                
+                else :
+                    
+                    # transform to world coordinate first
+                    current_trans = np.identity(4)
+                    current_trans[:3, 3] = traj[i, j] if j == 0 else np.asarray(waypoints[-1][-1][:3]) + traj[i, j]
+                    current_trans = base_trans @ current_trans
+
+                    if j < traj[i].shape[0] - 1:
+                        # transform to world coordinate first
+                        next_trans = np.identity(4)
+                        next_trans[:3, 3] = traj[i, j+1]
+                        next_trans = base_trans @ next_trans
+
+                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
+                        x_direction /= np.linalg.norm(x_direction, ord=2)
+                        y_direction = np.cross(x_direction, [0, 0, -1])
+                        y_direction /= np.linalg.norm(y_direction, ord=2)
+                        z_direction = np.cross(x_direction, y_direction)
+                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
+                        current_trans[:3, :3] = rotation_mat
+                    else :
+                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
+
+                waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
     
     return waypoints
 
@@ -267,6 +337,7 @@ def test(args):
     config_file = args.config
     verbose = args.verbose
     visualize = args.visualize
+    evaluate = args.evaluate
     device = args.device
     dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
     weight_subpath = args.weight_subpath
@@ -278,7 +349,6 @@ def test(args):
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-
 
     config = None
     with open(config_file, 'r') as f:
@@ -297,15 +367,19 @@ def test(args):
     # params for network
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
     batch_size = config['batch_size']
+
+    wpt_dim = config['dataset_inputs']['wpt_dim']
+    print(f'wpt_dim: {wpt_dim}')
 
     # # params for training
     # dataset_name = config['dataset_module']
     # dataset_class_name = config['dataset_class']
     # module_name = config['module']
     # model_name = config['model']
-    # model_inputs = config['inputs']
+    # model_inputs = config['model_inputs']
 
     # dataset_dir = args.dataset_dir
     # print(f'dataset_dir: {dataset_dir}')
@@ -456,6 +530,9 @@ def test(args):
     batch_size = 8
     all_scores = []
     for sid, pcd in enumerate(hook_pcds):
+
+        if sid > 20:
+            break
         
         # urdf file
         hook_urdf = hook_urdfs[sid]
@@ -465,6 +542,7 @@ def test(args):
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
+        centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
         input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
@@ -473,88 +551,91 @@ def test(args):
 
         contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
 
-        recon_traj = network.sample(points_batch, contact_point_batch)
-        recon_traj = recon_traj.cpu().detach().numpy()
+        recon_traj = network.sample(points_batch, contact_point_batch).cpu().detach().numpy()
+        recon_traj = recon_traj[:, ::-1, :]
 
-        recovered_trajs = recover_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode)
+        recovered_trajs = recover_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode, wpt_dim)
 
         # conting inference score using object and object contact information
-        max_obj_success_cnt = 0
-        for traj_id, recovered_traj in enumerate(recovered_trajs):
+        if evaluate:
+            max_obj_success_cnt = 0
+            for traj_id, recovered_traj in enumerate(recovered_trajs):
 
-            obj_success_cnt = 0
-            for i in range(len(obj_contact_poses)):
+                obj_success_cnt = 0
+                for i in range(len(obj_contact_poses)):
 
-                obj_id = p.loadURDF(obj_urdfs[i])
-                reversed_recovered_traj = recovered_traj[::-1][:-5]
-                reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
-                score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
-                p.removeBody(obj_id)
-                p.removeAllUserDebugItems()
+                    obj_id = p.loadURDF(obj_urdfs[i])
+                    reversed_recovered_traj = recovered_traj[:-5]
+                    reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
+                    score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
+                    p.removeBody(obj_id)
+                    p.removeAllUserDebugItems()
 
-                obj_success_cnt += 1 if np.max(score) > 0 else 0
-                print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
+                    obj_success_cnt += 1 if np.max(score) > 0 else 0
+                    print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
 
-                if len(rgbs) > 0 and traj_id == 0:
-                    rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                    if len(rgbs) > 0 and traj_id == 0:  
+                        res = 'success' if np.max(score) > 0 else 'failed'
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
-            max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
-            print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
+                max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
+                print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
 
-        all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+            all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
                 
-        # if visualize:
-        #     wpt_ids = []
-        #     for i, recovered_traj in enumerate(recovered_trajs):
-        #         colors = list(np.random.rand(3)) + [1]
-        #         for wpt_i, wpt in enumerate(recovered_traj):
-        #             wpt_id = p.createMultiBody(
-        #                 baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-        #                 baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-        #                 basePosition=wpt[:3]
-        #             )
-        #             wpt_ids.append(wpt_id)
+        if visualize:
+            wpt_ids = []
+            for i, recovered_traj in enumerate(recovered_trajs):
+                colors = list(np.random.rand(3)) + [1]
+                for wpt_i, wpt in enumerate(recovered_traj):
+                    wpt_id = p.createMultiBody(
+                        baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+                        baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+                        basePosition=wpt[:3]
+                    )
+                    wpt_ids.append(wpt_id)
 
-        #     # capture a list of images and save as gif
-        #     delta = 10
-        #     delta_sum = 0
-        #     cameraYaw = 90
-        #     rgbs = []
-        #     while True:
-        #         keys = p.getKeyboardEvents()
-        #         p.resetDebugVisualizerCamera(
-        #             cameraDistance=0.08,
-        #             cameraYaw=cameraYaw,
-        #             cameraPitch=-10,
-        #             cameraTargetPosition=[0.0, 0.0, 0.0]
-        #         )
+            # capture a list of images and save as gif
+            delta = 10
+            delta_sum = 0
+            cameraYaw = 90
+            rgbs = []
+            while True:
+                keys = p.getKeyboardEvents()
+                p.resetDebugVisualizerCamera(
+                    cameraDistance=0.08,
+                    cameraYaw=cameraYaw,
+                    cameraPitch=-10,
+                    cameraTargetPosition=[0.0, 0.0, 0.0]
+                )
 
-        #         cam_info = p.getDebugVisualizerCamera()
-        #         width = cam_info[0]
-        #         height = cam_info[1]
-        #         view_mat = cam_info[2]
-        #         proj_mat = cam_info[3]
-        #         img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-        #         rgb = img_info[2]
-        #         rgbs.append(Image.fromarray(rgb))
+                cam_info = p.getDebugVisualizerCamera()
+                width = cam_info[0]
+                height = cam_info[1]
+                view_mat = cam_info[2]
+                proj_mat = cam_info[3]
+                img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+                rgb = img_info[2]
+                rgbs.append(Image.fromarray(rgb))
 
-        #         cameraYaw += delta 
-        #         delta_sum += delta 
-        #         cameraYaw = cameraYaw % 360
-        #         if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-        #             break
-        #         if delta_sum >= 360:
-        #             break
+                cameraYaw += delta 
+                delta_sum += delta 
+                cameraYaw = cameraYaw % 360
+                if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+                    break
+                if delta_sum >= 360:
+                    break
 
-        #     for wpt_id in wpt_ids:
-        #         p.removeBody(wpt_id)
+            for wpt_id in wpt_ids:
+                p.removeBody(wpt_id)
 
-        #     rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+            rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
         p.removeBody(hook_id)
 
-    all_scores = np.asarray(all_scores)
-    print(f'[summary] all success rate: {np.mean(all_scores)}')
+    if evaluate:
+        all_scores = np.asarray(all_scores)
+        print(f'[summary] all success rate: {np.mean(all_scores)}')
         
 def main(args):
     dataset_dir = args.dataset_dir
@@ -595,6 +676,7 @@ if __name__=="__main__":
     parser.add_argument('--weight_subpath', '-wp', type=str, default='5000_points-network_epoch-150.pth', help="subpath of saved weight")
     parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
     parser.add_argument('--visualize', '-v', action='store_true')
+    parser.add_argument('--evaluate', '-e', action='store_true')
     parser.add_argument('--inference_dir', '-id', type=str, default='')
     parser.add_argument('--obj_shape_root', '-osr', type=str, default='../shapes/inference_objs')
     parser.add_argument('--hook_shape_root', '-hsr', type=str, default='../shapes/hook_all_new_0')

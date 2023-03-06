@@ -95,7 +95,7 @@ def main(args):
     # params for network
     affordance_module_name = affordance_config['module']
     affordance_model_name = affordance_config['model']
-    affordance_model_inputs = affordance_config['inputs']
+    affordance_model_inputs = affordance_config['model_inputs']
 
     # load model
     affordance_network_class = get_model_module(affordance_module_name, affordance_model_name)
@@ -109,7 +109,7 @@ def main(args):
     # params for network
     trajectory_module_name = trajectory_config['module']
     trajectory_model_name = trajectory_config['model']
-    trajectory_model_inputs = trajectory_config['inputs']
+    trajectory_model_inputs = trajectory_config['model_inputs']
 
     # load model
     trajectory_network_class = get_model_module(trajectory_module_name, trajectory_model_name)

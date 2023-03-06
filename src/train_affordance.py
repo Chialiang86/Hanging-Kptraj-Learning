@@ -1,6 +1,8 @@
 import argparse, yaml, os, time, glob, cv2, imageio, copy
 import open3d as o3d
+import matplotlib.pyplot as plt
 import numpy as np
+
 from datetime import datetime
 
 from tqdm import tqdm
@@ -45,7 +47,8 @@ def train(args):
     dataset_class_name = config['dataset_class']
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
     
     # training batch and iters
     batch_size = config['batch_size']
@@ -60,8 +63,8 @@ def train(args):
     save_freq = config['save_freq']
 
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=0, enable_affordance=1)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=0, enable_affordance=1)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -195,8 +198,12 @@ def test(args):
     device = args.device
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
+    affordance_id = args.affordance_type
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    assert affordance_id == 0 or affordance_id == 1, 'affordance_type can noly be 0: affordance, or 1: part segmentation'
+
+    affordance_type = {0: 'affordance', 1:'partseg'}[affordance_id]
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
@@ -220,13 +227,13 @@ def test(args):
     # params for training
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
 
     # ================== Load Inference Shape ==================
 
     # inference
     realworld = True if 'realworld_hook' in inference_dir else False
-    inference_shape_paths = glob.glob(f'{inference_dir}/*/*.npy') if realworld else glob.glob(f'{inference_dir}/*/affordance-0.npy')
+    inference_shape_paths = glob.glob(f'{inference_dir}/*/affordance-0.npy') if args.visualize else glob.glob(f'{inference_dir}/*/*.npy')
     pcds = []
     affordances = []
     urdfs = []
@@ -238,8 +245,9 @@ def test(args):
         points = data[:, :3].astype(np.float32)
         urdfs.append(f'{urdf_prefix}/base.urdf') 
         pcds.append(points)
-        if data.shape[1] > 3:
-            affordance = data[:, 3].astype(np.float32)
+        if data.shape[1] > 3: # affordance only
+            affor_dim = 3 if affordance_type == 'affordance' else 4
+            affordance = data[:, affor_dim].astype(np.float32)
             affordances.append(affordance)
     
     # ================== Model ==================
@@ -259,6 +267,7 @@ def test(args):
     batch_size = 1
     within_5mm_cnt = 0
     within_10mm_cnt = 0
+    differences = []
     for sid, pcd in enumerate(tqdm(pcds)):
         
         # sample trajectories
@@ -278,9 +287,10 @@ def test(args):
         contact_point_cond = np.where(affords == np.max(affords))[0]
         contact_point = points[contact_point_cond][0]
 
-        if not realworld:
+        if not realworld and affordance_type == 'affordance':
             contact_point_gt = pcd[0]
             difference = np.linalg.norm(contact_point - contact_point_gt, ord=2)
+            differences.append(difference)
             if difference < 0.005:
                 within_5mm_cnt += 1
             if difference < 0.01:
@@ -293,24 +303,46 @@ def test(args):
         point_cloud.points = o3d.utility.Vector3dVector(points)
         point_cloud.colors = o3d.utility.Vector3dVector(colors)
 
-        img_list = []
-        for _ in range(frames):
-            r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
-            point_cloud.rotate(r, center=(0, 0, 0))
-            contact_point_coor.rotate(r, center=(0, 0, 0))
-            geometries = [point_cloud, contact_point_coor]
+        if args.visualize:
+            img_list = []
+            for _ in range(frames):
+                r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
+                point_cloud.rotate(r, center=(0, 0, 0))
+                contact_point_coor.rotate(r, center=(0, 0, 0))
+                geometries = [point_cloud, contact_point_coor]
 
-            img = capture_from_viewer(geometries)
-            img_list.append(img)
+                img = capture_from_viewer(geometries)
+                img_list.append(img)
+            
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            imageio.mimsave(save_path, img_list, fps=10)
+            print(f'{save_path} saved')
+
+    if affordance_type == 'affordance':
+        differences = np.asarray(differences)
+        interval = 0.001
+        low = np.floor(np.min(differences) / interval) * interval
+        high = np.ceil(np.max(differences) / interval) * interval
+        cnts = []
+        for inter in np.arange(low, high, interval):
+            cond = np.where((differences >= inter) & (differences < inter + interval))
+            cnt = len(cond[0])
+            cnts.append(cnt)
         
-        save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
-        imageio.mimsave(save_path, img_list, fps=10)
-        print(f'{save_path} saved')
+        xticks = [f'{np.round(num * 100000) / 100000}' for num in np.arange(low, high, interval)]
 
-    if not realworld:
+        plt.figure(figsize=(8, 12))
+        plt.ylabel('count')
+        plt.xlabel('num of points')
+        plt.xticks(range(len(cnts)), xticks, rotation='vertical')
+        plt.bar(range(len(cnts)), cnts)
+        plt.title('Distance Distribution')
+        plt.show()
+
         print('======================================')
         print('inference_dir: {}'.format(inference_dir))
         print('weight_path: {}'.format(weight_path))
+        print('mean distance: {:.4f}'.format(np.mean(differences)))
         print('within 5mm rate: {:.4f} ({}/{})'.format(within_5mm_cnt / len(pcds), within_5mm_cnt, len(pcds)))
         print('within 10mm rate: {:.4f} ({}/{})'.format(within_10mm_cnt / len(pcds), within_10mm_cnt, len(pcds)))
         print('======================================')
@@ -346,6 +378,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     # about dataset
     parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
+    parser.add_argument('--affordance_type', '-at', type=int, default=0, help="0: affordance, 1: part segmentation")
 
     # training mode
     parser.add_argument('--training_mode', '-tm', type=str, default='train', help="training mode : [train, test]")
@@ -361,6 +394,7 @@ if __name__=="__main__":
     parser.add_argument('--config', '-cfg', type=str, default='../config/affordance.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
+    parser.add_argument('--visualize', '-v', action='store_true')
     args = parser.parse_args()
 
     main(args)

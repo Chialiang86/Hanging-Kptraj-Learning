@@ -1,4 +1,4 @@
-import argparse, yaml, os, time, glob
+import argparse, yaml, json, os, time, glob
 import open3d as o3d
 import numpy as np
 from datetime import datetime
@@ -9,6 +9,7 @@ from time import strftime
 from sklearn.model_selection import train_test_split
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc, kl_annealing
+from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation
 
 import torch
 from torch.utils.data import DataLoader, Subset
@@ -51,7 +52,8 @@ def train(args):
     dataset_class_name = config['dataset_class']
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
     
     # training batch and iters
     batch_size = config['batch_size']
@@ -66,8 +68,8 @@ def train(args):
     save_freq = config['save_freq']
 
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -191,7 +193,7 @@ def train(args):
 
         kl_weight.update()
 
-def recovery_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
+def recover_trajectory(traj : torch.Tensor or np.ndarray, hook_pose : list or np.ndarray, 
                         center : torch.Tensor or np.ndarray, scale : float, dataset_mode : int=0):
     # traj : dim = batch x num_steps x 6
     # dataset_mode : 0 for abosute, 1 for residual 
@@ -244,17 +246,20 @@ def test(args):
     checkpoint_dir = f'{args.checkpoint_dir}'
     config_file = args.config
     verbose = args.verbose
+    visualize = args.visualize
     device = args.device
     dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    print("===============================================================================================")
+    print(f'using {weight_path}')
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
-    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}'
-    os.makedirs(output_dir, exist_ok=True)
+    # output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}'
+    # os.makedirs(output_dir, exist_ok=True)
 
     config = None
     with open(config_file, 'r') as f:
@@ -273,21 +278,73 @@ def test(args):
     # params for training
     module_name = config['module']
     model_name = config['model']
-    model_inputs = config['inputs']
+    model_inputs = config['model_inputs']
+    batch_size = config['batch_size']
 
     # ================== Load Inference Shape ==================
 
-    # inference
-    inference_shape_dir = '../shapes/hook_validation_small'
-    inference_shape_paths = glob.glob(f'{inference_shape_dir}/*/base.ply')
-    pcds = []
-    urdfs = []
-    for inference_shape_path in inference_shape_paths:
-        pcd = o3d.io.read_point_cloud(inference_shape_path)
-        points = np.asarray(pcd.points, dtype=np.float32)
-        urdfs.append(f'{inference_shape_path[:-4]}.urdf')
-        pcds.append(points)
-    
+    # # inference
+    # inference_shape_dir = '../shapes/hook_validation_small'
+    # inference_shape_paths = glob.glob(f'{inference_shape_dir}/*/base.ply')
+    # pcds = []
+    # urdfs = []
+    # for inference_shape_path in inference_shape_paths:
+    #     pcd = o3d.io.read_point_cloud(inference_shape_path)
+    #     points = np.asarray(pcd.points, dtype=np.float32)
+    #     urdfs.append(f'{inference_shape_path[:-4]}.urdf')
+    #     pcds.append(points)
+
+     # inference
+    inference_obj_dir = args.obj_shape_root
+    assert os.path.exists(inference_obj_dir), f'{inference_obj_dir} not exists'
+    inference_obj_whole_dirs = glob.glob(f'{inference_obj_dir}/*')
+
+    inference_hook_shape_root = args.hook_shape_root
+    assert os.path.exists(inference_hook_shape_root), f'{inference_hook_shape_root} not exists'
+
+    inference_hook_dir = args.inference_dir # for hook shapes
+    inference_hook_whole_dirs = glob.glob(f'{inference_hook_dir}/*')
+
+    inference_obj_paths = []
+    inference_hook_paths = []
+
+    for inference_obj_path in inference_obj_whole_dirs:
+        paths = glob.glob(f'{inference_obj_path}/*.json')
+        assert len(paths) == 1, f'multiple object contact informations : {paths}'
+        inference_obj_paths.extend(paths) 
+
+    for inference_hook_path in inference_hook_whole_dirs:
+        # if 'Hook' in inference_hook_path:
+        paths = glob.glob(f'{inference_hook_path}/affordance-0.npy')
+        inference_hook_paths.extend(paths) 
+
+    obj_contact_poses = []
+    obj_urdfs = []
+    for inference_obj_path in inference_obj_paths:
+        obj_contact_info = json.load(open(inference_obj_path, 'r'))
+        obj_contact_poses.append(obj_contact_info['contact_pose'])
+
+        obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
+        assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
+        obj_urdfs.append(obj_urdf)
+
+    hook_pcds = []
+    hook_affords = []
+    hook_urdfs = []
+    for inference_hook_path in inference_hook_paths:
+        hook_name = inference_hook_path.split('/')[-2]
+        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+        affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+
+        hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
+        assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
+        hook_urdfs.append(hook_urdf) 
+        hook_pcds.append(points)
+
+    inference_subdir = os.path.split(inference_hook_dir)[-1]
+    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    os.makedirs(output_dir, exist_ok=True)
+
     # ================== Model ==================
 
     # load model
@@ -328,71 +385,175 @@ def test(args):
     # ================== Inference ==================
 
     batch_size = 8
-    for sid, pcd in enumerate(pcds):
+    all_scores = []
+    for sid, pcd in enumerate(hook_pcds):
         
         # urdf file
-        hook_urdf = urdfs[sid]
-        hook_id = p.loadURDF(hook_urdf)
-        p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
+        hook_urdf = hook_urdfs[sid]
+        hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
+        # p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
 
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd) # points will be in a unit sphere
+        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        contact_point = centroid_pcd[0]
 
-        points = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
-        input_pcid = furthest_point_sample(points, sample_num_points).long().reshape(-1)  # BN
-        points = points[0, input_pcid, :].squeeze()
-        points = points.repeat(batch_size, 1, 1)
+        points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        points_batch = points_batch[0, input_pcid, :].squeeze()
+        points_batch = points_batch.repeat(batch_size, 1, 1)
 
-        traj = network.sample(points)
+        contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
 
-        recovered_trajs = recovery_trajectory(traj, hook_pose, centroid, scale, dataset_mode)
+        recon_traj = network.sample(points_batch)
+        recon_traj = recon_traj.cpu().detach().numpy()
 
-        wpt_ids = []
-        for i, recovered_traj in enumerate(recovered_trajs):
-            colors = list(np.random.rand(3)) + [1]
-            for wpt_i, wpt in enumerate(recovered_traj):
-                wpt_id = p.createMultiBody(
-                    baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-                    baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-                    basePosition=wpt[:3]
-                )
-                wpt_ids.append(wpt_id)
+        recovered_trajs = recover_trajectory(recon_traj, hook_pose, centroid, scale, dataset_mode)
 
-        # capture a list of images and save as gif
-        delta = 2
-        delta_sum = 0
-        cameraYaw = 90
-        rgbs = []
-        while True:
-            keys = p.getKeyboardEvents()
-            p.resetDebugVisualizerCamera(
-                cameraDistance=0.12,
-                cameraYaw=cameraYaw,
-                cameraPitch=-10,
-                cameraTargetPosition=[0.0, 0.0, 0.0]
-            )
+        # conting inference score using object and object contact information
+        max_obj_success_cnt = 0
+        for traj_id, recovered_traj in enumerate(recovered_trajs):
 
-            cam_info = p.getDebugVisualizerCamera()
-            width = cam_info[0]
-            height = cam_info[1]
-            view_mat = cam_info[2]
-            proj_mat = cam_info[3]
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = img_info[2]
-            rgbs.append(Image.fromarray(rgb))
+            obj_success_cnt = 0
+            for i in range(len(obj_contact_poses)):
 
-            cameraYaw += delta 
-            delta_sum += delta 
-            cameraYaw = cameraYaw % 360
-            if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-                break
-            if delta_sum >= 360:
-                break
+                obj_id = p.loadURDF(obj_urdfs[i])
+                reversed_recovered_traj = recovered_traj[::-1][:-5]
+                reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
+                score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
+                p.removeBody(obj_id)
+                p.removeAllUserDebugItems()
 
-        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}.gif", save_all=True, append_images=rgbs, duration=40, loop=0)
+                obj_success_cnt += 1 if np.max(score) > 0 else 0
+                print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
+
+                if len(rgbs) > 0 and traj_id == 0:
+                    rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+
+            max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
+            print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
+
+        all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+                
+        # if visualize:
+        #     wpt_ids = []
+        #     for i, recovered_traj in enumerate(recovered_trajs):
+        #         colors = list(np.random.rand(3)) + [1]
+        #         for wpt_i, wpt in enumerate(recovered_traj):
+        #             wpt_id = p.createMultiBody(
+        #                 baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+        #                 baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+        #                 basePosition=wpt[:3]
+        #             )
+        #             wpt_ids.append(wpt_id)
+
+        #     # capture a list of images and save as gif
+        #     delta = 10
+        #     delta_sum = 0
+        #     cameraYaw = 90
+        #     rgbs = []
+        #     while True:
+        #         keys = p.getKeyboardEvents()
+        #         p.resetDebugVisualizerCamera(
+        #             cameraDistance=0.08,
+        #             cameraYaw=cameraYaw,
+        #             cameraPitch=-10,
+        #             cameraTargetPosition=[0.0, 0.0, 0.0]
+        #         )
+
+        #         cam_info = p.getDebugVisualizerCamera()
+        #         width = cam_info[0]
+        #         height = cam_info[1]
+        #         view_mat = cam_info[2]
+        #         proj_mat = cam_info[3]
+        #         img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+        #         rgb = img_info[2]
+        #         rgbs.append(Image.fromarray(rgb))
+
+        #         cameraYaw += delta 
+        #         delta_sum += delta 
+        #         cameraYaw = cameraYaw % 360
+        #         if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+        #             break
+        #         if delta_sum >= 360:
+        #             break
+
+        #     for wpt_id in wpt_ids:
+        #         p.removeBody(wpt_id)
+
+        #     rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+
         p.removeBody(hook_id)
-        for wpt_id in wpt_ids:
-            p.removeBody(wpt_id)
+
+    all_scores = np.asarray(all_scores)
+    print(f'[summary] all success rate: {np.mean(all_scores)}')
+        
+
+    # batch_size = 8
+    # for sid, pcd in enumerate(pcds):
+        
+    #     # urdf file
+    #     hook_urdf = urdfs[sid]
+    #     hook_id = p.loadURDF(hook_urdf)
+    #     p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
+
+    #     # sample trajectories
+    #     centroid_pcd, centroid, scale = normalize_pc(pcd) # points will be in a unit sphere
+
+    #     points = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+    #     input_pcid = furthest_point_sample(points, sample_num_points).long().reshape(-1)  # BN
+    #     points = points[0, input_pcid, :].squeeze()
+    #     points = points.repeat(batch_size, 1, 1)
+
+    #     traj = network.sample(points)
+
+    #     recovered_trajs = recover_trajectory(traj, hook_pose, centroid, scale, dataset_mode)
+
+    #     wpt_ids = []
+    #     for i, recovered_traj in enumerate(recovered_trajs):
+    #         colors = list(np.random.rand(3)) + [1]
+    #         for wpt_i, wpt in enumerate(recovered_traj):
+    #             wpt_id = p.createMultiBody(
+    #                 baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+    #                 baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+    #                 basePosition=wpt[:3]
+    #             )
+    #             wpt_ids.append(wpt_id)
+
+    #     # capture a list of images and save as gif
+    #     delta = 2
+    #     delta_sum = 0
+    #     cameraYaw = 90
+    #     rgbs = []
+    #     while True:
+    #         keys = p.getKeyboardEvents()
+    #         p.resetDebugVisualizerCamera(
+    #             cameraDistance=0.12,
+    #             cameraYaw=cameraYaw,
+    #             cameraPitch=-10,
+    #             cameraTargetPosition=[0.0, 0.0, 0.0]
+    #         )
+
+    #         cam_info = p.getDebugVisualizerCamera()
+    #         width = cam_info[0]
+    #         height = cam_info[1]
+    #         view_mat = cam_info[2]
+    #         proj_mat = cam_info[3]
+    #         img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+    #         rgb = img_info[2]
+    #         rgbs.append(Image.fromarray(rgb))
+
+    #         cameraYaw += delta 
+    #         delta_sum += delta 
+    #         cameraYaw = cameraYaw % 360
+    #         if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+    #             break
+    #         if delta_sum >= 360:
+    #             break
+
+    #     rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}.gif", save_all=True, append_images=rgbs, duration=40, loop=0)
+    #     p.removeBody(hook_id)
+    #     for wpt_id in wpt_ids:
+    #         p.removeBody(wpt_id)
         
 def main(args):
     dataset_dir = args.dataset_dir

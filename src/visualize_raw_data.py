@@ -1,5 +1,6 @@
 import json, argparse, glob, os, shutil, time
 from scipy.spatial.transform import Rotation as R
+from PIL import Image
 import torch
 import open3d as o3d
 import numpy as np
@@ -91,11 +92,12 @@ def main(args):
 
     # Create pybullet GUI
     physicsClientId = p.connect(p.GUI)
+    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
     p.resetDebugVisualizerCamera(
-        cameraDistance=0.2,
-        cameraYaw=120,
+        cameraDistance=0.1,
+        cameraYaw=80,
         cameraPitch=-10,
-        cameraTargetPosition=[0.5, -0.05, 1.3]
+        cameraTargetPosition=[0.0, 0.0, 0.0]
     )
     p.resetSimulation()
     p.setPhysicsEngineParameter(numSolverIterations=150)
@@ -104,9 +106,9 @@ def main(args):
     p.setGravity(0, 0, 0)
 
     hook_pose = [
-        0.49995471253804147,
-        -0.057410801277958314,
-        1.2987927364900584,
+        0.0,
+        0.0,
+        0.0,
         4.329780281177466e-17,
         0.7071067811865475,
         0.7071067811865476,
@@ -129,9 +131,14 @@ def main(args):
     kptraj_files.sort()
     # shape_files = glob.glob(f'{shape_dir}/*/*.ply')
 
+    output_dir = f'inference_trajs/raw_data/{args.kptraj_dir}'
+    os.makedirs(output_dir, exist_ok=True)
+
     # for shape_file in shape_files
-    for kptraj_file in tqdm(kptraj_files):
+    for i, kptraj_file in enumerate(tqdm(kptraj_files)):
         if 'Hook' not in kptraj_file:
+            continue
+        if i < 5:
             continue
 
         # ../raw/keypoint_trajectory_1104/Hook_skew#3_aug.json -> Hook_skew
@@ -167,7 +174,11 @@ def main(args):
 
         kptrajs = json_kptraj['trajectory']
 
+        wpt_ids = []
         for i, kptraj in enumerate(kptrajs):
+
+            if i == 10:
+                break
             
             # decide sample frequency by waypoint intervals
             # mean_traj_wpt_dist = mean_waypt_dist(kptraj)
@@ -194,22 +205,70 @@ def main(args):
             colors = np.random.uniform(low=[0] * 3, high=[1] * 3).repeat(3).reshape((3,3)).T
             wpts = refine_waypoint_rotation(wpts)
             kptraj_shorten = shorten_kpt_trajectory(wpts, length=args.kptraj_length)
-            for wpt_id, wpt in enumerate(kptraj_shorten):
+            # for wpt_id, wpt in enumerate(kptraj_shorten):
 
-                wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(wpt)
+            #     wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(wpt)
 
-                draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001, color=colors)
-                # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001)
+            #     draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001, color=colors)
+            #     # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.001)
 
             # contact_quat = kptraj_shorten[-1][3:]
             # contact_pose = list(contact_point) + list(contact_quat)
             # wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(contact_pose)
             # draw_coordinate(get_pose_from_matrix(wpt_trans), size=0.005)
 
+            colors = list(np.random.rand(3)) + [1]
+            for wpt_i, wpt in enumerate(kptraj_shorten):
+                wpt_trans = get_matrix_from_pose(hook_pose) @ get_matrix_from_pose(wpt)
+                wpt_world = get_pose_from_matrix(wpt_trans)
+                wpt_id = p.createMultiBody(
+                    baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+                    baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+                    basePosition=wpt_world[:3]
+                )
+                wpt_ids.append(wpt_id)
+
+        # capture a list of images and save as gif
+        delta = 10
+        delta_sum = 0
+        cameraYaw = 90
+        rgbs = []
         while True:
             keys = p.getKeyboardEvents()
-            if ord('q') in keys and keys[ord('q')]&p.KEY_WAS_TRIGGERED:
+            p.resetDebugVisualizerCamera(
+                cameraDistance=0.08,
+                cameraYaw=cameraYaw,
+                cameraPitch=-10,
+                cameraTargetPosition=[0.0, 0.0, 0.0]
+            )
+
+            cam_info = p.getDebugVisualizerCamera()
+            width = cam_info[0]
+            height = cam_info[1]
+            view_mat = cam_info[2]
+            proj_mat = cam_info[3]
+            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            rgb = img_info[2]
+            rgbs.append(Image.fromarray(rgb))
+
+            cameraYaw += delta 
+            delta_sum += delta 
+            cameraYaw = cameraYaw % 360
+            if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
                 break
+            if delta_sum >= 360:
+                break
+
+        for wpt_id in wpt_ids:
+            p.removeBody(wpt_id)
+
+        rgbs[0].save(f"{output_dir}/{shape_name}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+        print(f"{output_dir}/{shape_name}.gif has been written")
+
+        # while True:
+        #     keys = p.getKeyboardEvents()
+        #     if ord('q') in keys and keys[ord('q')]&p.KEY_WAS_TRIGGERED:
+        #         break
 
         p.removeAllUserDebugItems()
         p.removeBody(hook_id)
@@ -217,11 +276,12 @@ def main(args):
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--kptraj_root', '-kr', type=str, default='../raw')
-    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_1104_aug')
+    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_all_new_devil')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
-    parser.add_argument('--shape_dir', '-sd', type=str, default='hook')
+    parser.add_argument('--shape_dir', '-sd', type=str, default='hook_all_new')
     parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
     parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
 
     args = parser.parse_args()
     main(args)
+

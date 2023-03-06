@@ -110,6 +110,7 @@ def refine_waypoint_rotation(wpts : np.ndarray or list):
             tmp_refined_rot = R.from_matrix(R.from_quat(tmp_rot).as_matrix() @ refine_mat).as_quat()
         tmp_refined_pose = list(tmp_pos) + list(tmp_refined_rot)
         refined_wpts.append(tmp_refined_pose)
+        
     return refined_wpts
 
 def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : int, hook_pose : list or np.ndarray, obj_contact_pose : list or np.ndarray, visualize=False):
@@ -145,6 +146,8 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
         p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
 
         # draw_coordinate(world_trans, size=0.002)
+
+        time.sleep(0.05)
         
         penetration = waypoint_score(hook_id=hook_id, obj_id=obj_id)
         score += penetration / PENETRATION_THRESHOLD

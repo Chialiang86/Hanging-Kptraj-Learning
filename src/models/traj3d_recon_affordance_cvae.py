@@ -110,7 +110,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
 
 
 class TrajEncoder(nn.Module):
-    def __init__(self, traj_feat_dim, num_steps=30, wpt_dim=6):
+    def __init__(self, traj_feat_dim, num_steps=30, wpt_dim=3):
 
         # traj_feat_dim = 128 for VAT-Mart
 
@@ -137,7 +137,6 @@ class TrajEncoder(nn.Module):
     # output: B
     def forward(self, x):
         batch_size = x.shape[0]
-        # print(x.view(batch_size, self.num_steps * 6).dtype, type(x.view(batch_size, self.num_steps * 6)))
         x = self.mlp(x.view(batch_size, self.num_steps * self.wpt_dim))
         return x
 
@@ -167,7 +166,7 @@ class AllEncoder(nn.Module):
 
 # CVAE decoder
 class AllDecoder(nn.Module):
-    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
+    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=3):
         super(AllDecoder, self).__init__()
 
         # self.mlp = nn.Sequential(
@@ -193,15 +192,15 @@ class AllDecoder(nn.Module):
         batch_size = z_all.shape[0]
         x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
         x = self.mlp(x)
-        x = x.view(batch_size, self.num_steps, 6)
+        x = x.view(batch_size, self.num_steps, 3)
         return x
 
-class TrajReconAffordanceRot3D(nn.Module):
+class Traj3DReconAffordance(nn.Module):
     def __init__(self, pcd_feat_dim=256, traj_feat_dim=128, cp_feat_dim=32,  
                         hidden_dim=128, z_feat_dim=64, 
-                        num_steps=30, wpt_dim=6,
+                        num_steps=30, wpt_dim=3,
                         lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, dataset_type=0):
-        super(TrajReconAffordanceRot3D, self).__init__()
+        super(Traj3DReconAffordance, self).__init__()
 
         self.z_dim = z_feat_dim
 
@@ -233,31 +232,6 @@ class TrajReconAffordanceRot3D(nn.Module):
 
         self.dataset_type = dataset_type # 0 for absolute, 1 for residule
 
-    # input sz bszx3x2
-    def rot6d_to_rotmat(self, d6s):
-        bsz = d6s.shape[0]
-        b1 = F.normalize(d6s[:, :, 0], p=2, dim=1)
-        a2 = d6s[:, :, 1]
-        b2 = F.normalize(a2 - torch.bmm(b1.view(bsz, 1, -1), a2.view(bsz, -1, 1)).view(bsz, 1) * b1, p=2, dim=1)
-        b3 = torch.cross(b1, b2, dim=1)
-        return torch.stack([b1, b2, b3], dim=1).permute(0, 2, 1)
-
-    # batch geodesic loss for rotation matrices
-    def bgdR(self, Rgts, Rps):
-        Rds = torch.bmm(Rgts.permute(0, 2, 1), Rps) # Rds[i, i] = the product of Rgts[i] and Rps[i]
-        Rt = torch.sum(Rds[:, torch.eye(3).bool()], 1) # batch trace
-        # necessary or it might lead to nans and the likes
-        theta = torch.clamp(0.5 * (Rt - 1), -1 + 1e-6, 1 - 1e-6)
-        return torch.acos(theta) # theta = 1 will be 0 (the best)
-
-    # 6D-Rot loss
-    # input sz bszx6
-    def get_6d_rot_loss(self, pred_6d, gt_6d):
-        pred_Rs = self.rot6d_to_rotmat(pred_6d.reshape(-1, 2, 3).permute(0, 2, 1))
-        gt_Rs = self.rot6d_to_rotmat(gt_6d.reshape(-1, 2, 3).permute(0, 2, 1))
-        theta = self.bgdR(gt_Rs, pred_Rs)
-        return theta
-
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
     def forward(self, pcs, traj, contact_point):
@@ -285,44 +259,42 @@ class TrajReconAffordanceRot3D(nn.Module):
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
         ret_traj = recon_traj
-        ret_traj[:, 0, :3] = contact_point
+        ret_traj[:, 0] = contact_point
 
         return ret_traj
-
-    # def sample_n(self, pcs, batch_size, rvs=100):
-    #     z_all = torch.Tensor(torch.randn(batch_size * rvs, self.z_dim)).cuda()
-
-    #     pcs = pcs.repeat(1, 1, 2)
-    #     pcs_feat = self.pointnet2(pcs)
-
-    #     net = pcs_feat[:, :, 0]
-    #     net = net.unsqueeze(dim=1).repeat(1, rvs, 1).view(batch_size * rvs, -1)
-
-    #     recon_traj = self.all_decoder(z_all, net)
-
-    #     return recon_traj
 
     def get_loss(self, pcs, traj, contact_point, lbd_kl=1.0):
         batch_size = traj.shape[0]
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
-        dir_loss = torch.Tensor([0])
         recon_loss = torch.Tensor([0])
+        dir_loss = torch.Tensor([0])
         nn_loss = torch.Tensor([0])
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
-            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * 6), input_wps.view(batch_size, self.num_steps * 6))
+            # recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
-        if self.dataset_type == 1: # residual
-            recon_absolute = recon_traj[:, 0, :]
-            input_absolute = traj[:, 0, :]
-            recon_residual = recon_traj[:, 1:, :]
-            input_residual = traj[:, 1:, :]
-            recon_absolute_loss = self.MSELoss(recon_absolute.view(batch_size, 1 * 6), input_absolute.view(batch_size, 1 * 6))
-            recon_residual_loss = self.MSELoss(recon_residual.view(batch_size, (self.num_steps - 1) * 6), input_residual.view(batch_size, (self.num_steps - 1) * 6))
-            recon_loss = recon_absolute_loss * 100 + recon_residual_loss
-            dir_loss = recon_absolute_loss
+            # recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * 6), input_wps.view(batch_size, self.num_steps * 6))
+            recon_loss_0to10 = self.MSELoss(recon_wps[:, :10].view(batch_size, 10 * self.wpt_dim), input_wps[:, :10].view(batch_size, 10 * self.wpt_dim))
+            recon_loss_10to20 = self.MSELoss(recon_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim), input_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim))
+            recon_loss_20tolast = self.MSELoss(recon_wps[:, 20:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 20:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
+            recon_loss = recon_loss_0to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+
+        if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
+            input_first_wpt = traj[:, 0]
+            recon_first_wpt = recon_traj[:, 0]
+            first_loss = self.MSELoss(input_first_wpt.view(batch_size, self.wpt_dim), recon_first_wpt.view(batch_size, self.wpt_dim))
+
+            input_wps = traj[:, 1:]
+            recon_wps = recon_traj[:, 1:]
+            # wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
+            recon_loss_1to10 = self.MSELoss(recon_wps[:, :9].view(batch_size, 9 * self.wpt_dim), input_wps[:, :9].view(batch_size, 9 * self.wpt_dim))
+            recon_loss_10to20 = self.MSELoss(recon_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim), input_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim))
+            recon_loss_20tolast = self.MSELoss(recon_wps[:, 19:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 19:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
+            wpt_loss = recon_loss_1to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+
+            recon_loss = 100 * first_loss + wpt_loss
 
         kl_loss = KL(mu, logvar)
         losses = {}
@@ -337,58 +309,4 @@ class TrajReconAffordanceRot3D(nn.Module):
             losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon
 
         return losses
-
-    # def get_loss_test_rotation(self, pcs, traj, batch_size):
-    #     recon_traj, mu, logvar = self.forward(pcs, traj)
-    #     recon_dir = recon_traj[:, 0, :]
-    #     recon_wps = recon_traj[:, 1:, :]
-    #     input_dir = traj[:, 0, :]
-    #     input_wps = traj[:, 1:, :]
-    #     recon_xyz_loss = self.MSELoss(recon_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3))
-    #     recon_rotation_loss = self.MSELoss(recon_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3))
-    #     recon_loss = recon_xyz_loss.mean() + recon_rotation_loss.mean() * 100
-
-    #     dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-    #     dir_loss = dir_loss.mean()
-    #     kl_loss = KL(mu, logvar)
-    #     losses = {}
-    #     losses['kl'] = kl_loss
-    #     losses['recon'] = recon_loss
-    #     losses['recon_xyz'] = recon_xyz_loss.mean()
-    #     losses['recon_rotation'] = recon_rotation_loss.mean()
-    #     losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon
-
-    #     return losses
-
-    # def inference_whole_pc(self, feat, dirs1, dirs2):
-    #     num_pts = feat.shape[-1]
-    #     batch_size = feat.shape[0]
-
-    #     feat = feat.permute(0, 2, 1)  # B x N x F
-    #     feat = feat.reshape(batch_size*num_pts, -1)
-
-    #     input_queries = torch.cat([dirs1, dirs2], dim=-1)
-    #     input_queries = input_queries.unsqueeze(dim=1).repeat(1, num_pts, 1)
-    #     input_queries = input_queries.reshape(batch_size*num_pts, -1)
-
-    #     pred_result_logits = self.critic(feat, input_queries)
-
-    #     soft_pred_results = torch.sigmoid(pred_result_logits)
-    #     soft_pred_results = soft_pred_results.reshape(batch_size, num_pts)
-
-    #     return soft_pred_results
-
-    # def inference(self, pcs, dirs1, dirs2):
-    #     pcs = pcs.repeat(1, 1, 2)
-    #     pcs_feat = self.pointnet2(pcs)
-
-    #     net = pcs_feat[:, :, 0]
-
-    #     input_queries = torch.cat([dirs1, dirs2], dim=1)
-
-    #     pred_result_logits = self.critic(net, input_queries)
-
-    #     pred_results = (pred_result_logits > 0)
-
-    #     return pred_results
     
