@@ -1,0 +1,96 @@
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-12000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-12000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.26666666666666666
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-20000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.3952380952380953
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.5095238095238096
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-12000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-12000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.24500000000000002
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-20000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.27
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.30500000000000005
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-12000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-12000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.21904761904761907
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-20000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.319047619047619
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.22857142857142856
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-12000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-12000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.305
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-20000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.29500000000000004
+===============================================================================================
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.23499999999999996
+===============================================================================================

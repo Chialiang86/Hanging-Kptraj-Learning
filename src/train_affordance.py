@@ -198,12 +198,10 @@ def test(args):
     device = args.device
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
-    affordance_id = args.affordance_type
+    evaluate = args.evaluate
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
-    assert affordance_id == 0 or affordance_id == 1, 'affordance_type can noly be 0: affordance, or 1: part segmentation'
-
-    affordance_type = {0: 'affordance', 1:'partseg'}[affordance_id]
+    assert evaluate == 0 or evaluate == 1, 'evaluate can noly be 0: affordance, or 1: part segmentation'
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
@@ -233,7 +231,9 @@ def test(args):
 
     # inference
     realworld = True if 'realworld_hook' in inference_dir else False
-    inference_shape_paths = glob.glob(f'{inference_dir}/*/affordance-0.npy') if args.visualize else glob.glob(f'{inference_dir}/*/*.npy')
+    inference_shape_paths = glob.glob(f'{inference_dir}/*/affordance-0.npy') \
+                                if args.visualize else (glob.glob(f'{inference_dir}/*/*.npy') \
+                                    if args.evaluate else glob.glob(f'{inference_dir}/*/affordance-0.npy'))
     pcds = []
     affordances = []
     urdfs = []
@@ -246,7 +246,7 @@ def test(args):
         urdfs.append(f'{urdf_prefix}/base.urdf') 
         pcds.append(points)
         if data.shape[1] > 3: # affordance only
-            affor_dim = 3 if affordance_type == 'affordance' else 4
+            affor_dim = 3 if evaluate == 1 else 4
             affordance = data[:, affor_dim].astype(np.float32)
             affordances.append(affordance)
     
@@ -277,6 +277,7 @@ def test(args):
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
+        # pcd_feat, affords = network.inference(points_batch)
         affords = network.inference(points_batch)
         affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
         affords = affords.squeeze().cpu().detach().numpy()
@@ -287,7 +288,47 @@ def test(args):
         contact_point_cond = np.where(affords == np.max(affords))[0]
         contact_point = points[contact_point_cond][0]
 
-        if not realworld and affordance_type == 'affordance':
+        # save_path = f"{output_dir}/{weight_subpath[:-4]}-cpfeat-{sid}.jpg"
+        # plt.plot(pcd_feat.cpu().detach().numpy()[0, :, 0])
+        # plt.title('The feature of contact point')
+        # plt.savefig(save_path)
+        # plt.clf()
+
+        # for part segmentation
+        # part_cond = np.where(affords > 0.5)[0]
+        # part_feat = pcd_feat[0, :, part_cond].cpu().detach().numpy()
+        # mean_feat = np.mean(part_feat, axis=1)
+        # max_feat = np.max(part_feat, axis=1)
+        # plt.plot(mean_feat)
+        # plt.title('The feature of contact point')
+        # plt.show()
+        # plt.clf()
+        # save_path = f"{output_dir}/{weight_subpath[:-4]}-cpfeat-{sid}.jpg"
+        # plt.plot(max_feat)
+        # plt.title('The feature of contact point')
+        # plt.savefig(save_path)
+        # plt.clf()
+
+        # print(pcd_feat[part_cond].shape)
+        # centroid_pcd_part = centroid_pcd[part_cond]
+        # centroid_pcd_part = torch.from_numpy(centroid_pcd_part).unsqueeze(0).to('cuda').contiguous()
+        # ind = furthest_point_sample(centroid_pcd_part, 200).long().reshape(-1).cpu().detach().numpy()  # BN
+        # input_pcid = part_cond[ind]
+
+        # plt.plot()
+        # plt.title('The feature of contact point')
+        # plt.savefig(save_path)
+        # plt.clf()
+
+        # part_colors = np.zeros(points.shape)
+        # part_colors[input_pcid] = colors[input_pcid]
+        # print(input_pcid.shape)
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(part_colors)
+        # o3d.visualization.draw_geometries([point_cloud])
+
+        if not realworld and evaluate:
             contact_point_gt = pcd[0]
             difference = np.linalg.norm(contact_point - contact_point_gt, ord=2)
             differences.append(difference)
@@ -318,26 +359,26 @@ def test(args):
             imageio.mimsave(save_path, img_list, fps=10)
             print(f'{save_path} saved')
 
-    if affordance_type == 'affordance':
-        differences = np.asarray(differences)
-        interval = 0.001
-        low = np.floor(np.min(differences) / interval) * interval
-        high = np.ceil(np.max(differences) / interval) * interval
-        cnts = []
-        for inter in np.arange(low, high, interval):
-            cond = np.where((differences >= inter) & (differences < inter + interval))
-            cnt = len(cond[0])
-            cnts.append(cnt)
+    if evaluate == 1:
+        # differences = np.asarray(differences)
+        # interval = 0.001
+        # low = np.floor(np.min(differences) / interval) * interval
+        # high = np.ceil(np.max(differences) / interval) * interval
+        # cnts = []
+        # for inter in np.arange(low, high, interval):
+        #     cond = np.where((differences >= inter) & (differences < inter + interval))
+        #     cnt = len(cond[0])
+        #     cnts.append(cnt)
         
-        xticks = [f'{np.round(num * 100000) / 100000}' for num in np.arange(low, high, interval)]
+        # xticks = [f'{np.round(num * 100000) / 100000}' for num in np.arange(low, high, interval)]
 
-        plt.figure(figsize=(8, 12))
-        plt.ylabel('count')
-        plt.xlabel('num of points')
-        plt.xticks(range(len(cnts)), xticks, rotation='vertical')
-        plt.bar(range(len(cnts)), cnts)
-        plt.title('Distance Distribution')
-        plt.show()
+        # plt.figure(figsize=(8, 12))
+        # plt.ylabel('count')
+        # plt.xlabel('num of points')
+        # plt.xticks(range(len(cnts)), xticks, rotation='vertical')
+        # plt.bar(range(len(cnts)), cnts)
+        # plt.title('Distance Distribution')
+        # plt.show()
 
         print('======================================')
         print('inference_dir: {}'.format(inference_dir))
@@ -367,7 +408,7 @@ if __name__=="__main__":
 
     default_dataset = [
 
-        "../dataset/traj_recon_affordance/hook_all-kptraj_all_one_0214-absolute-40/02.15.17.24",
+        "../dataset/traj_recon_affordance/kptraj_all_one_0214-absolute-40/02.15.17.24",
         # "../dataset/traj_recon_affordance/hook_all-kptraj_all_one_0214-residual-40/02.15.17.24",
         # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28",
         # "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-residual-30/02.03.13.29",
@@ -378,7 +419,6 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     # about dataset
     parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
-    parser.add_argument('--affordance_type', '-at', type=int, default=0, help="0: affordance, 1: part segmentation")
 
     # training mode
     parser.add_argument('--training_mode', '-tm', type=str, default='train', help="training mode : [train, test]")
@@ -395,6 +435,7 @@ if __name__=="__main__":
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     parser.add_argument('--visualize', '-v', action='store_true')
+    parser.add_argument('--evaluate', '-e', action='store_true')
     args = parser.parse_args()
 
     main(args)

@@ -1,0 +1,3456 @@
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.4272727272727273
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.4272727272727273
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.43636363636363645
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.4545454545454545
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.4545454545454545
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.4090909090909091
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af-03.06.19.15-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+num of points = 1000
+wpt_dim: 6
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.6363636363636364
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.6454545454545455
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.5545454545454546
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6363636363636364
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6363636363636364
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.5636363636363637
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.6454545454545455
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.6363636363636364
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.6636363636363636
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6363636363636365
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6181818181818182
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6181818181818182
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_align4d-02.28.19.50-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.1
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+destroy semaphore
+semaphore destroyed
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.11818181818181818
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.08181818181818183
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.2
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.18181818181818182
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn-03.04.18.36-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.13636363636363635
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.18181818181818182
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.19090909090909092
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.1
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.2636363636363636
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.2636363636363636
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_nn_mr-03.05.13.57-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.26363636363636367
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.8636363636363638
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.8636363636363638
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.890909090909091
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6545454545454545
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6545454545454545
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6818181818181819
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.03636363636363637
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.03636363636363637
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.045454545454545456
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.009090909090909092
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.018181818181818184
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af-03.06.19.10-kl_l/hook_all_new_0-kptraj_all_new_0-residual-40_02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.0
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.8181818181818183
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+destroy semaphore
+Thread TERMINATED
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.8181818181818182
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.8454545454545456
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6636363636363636
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-20000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.6727272727272727
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=NVIDIA Corporation
+GL_RENDERER=NVIDIA GeForce RTX 3090/PCIe/SSE2
+GL_VERSION=3.3.0 NVIDIA 520.61.05
+GL_SHADING_LANGUAGE_VERSION=3.30 NVIDIA via Cg compiler
+pthread_getconcurrency()=0
+Version = 3.3.0 NVIDIA 520.61.05
+Vendor = NVIDIA Corporation
+Renderer = NVIDIA GeForce RTX 3090/PCIe/SSE2
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = NVIDIA Corporation
+ven = NVIDIA Corporation
+num of points = 1000
+wpt_dim: 3
+===============================================================================================
+checkpoint: checkpoints/traj3d_af_mr-03.05.13.58-kl_l/hook_all_new_0-kptraj_all_new_0-absolute-40_02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.5727272727272728
+===============================================================================================
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed

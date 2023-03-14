@@ -306,21 +306,21 @@ class TrajReconAffordanceRot3D(nn.Module):
         batch_size = traj.shape[0]
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
-        dir_loss = torch.Tensor([0])
-        recon_loss = torch.Tensor([0])
-        nn_loss = torch.Tensor([0])
+        dir_loss = torch.Tensor([0]).to('cuda')
+        recon_loss = torch.Tensor([0]).to('cuda')
+        nn_loss = torch.Tensor([0]).to('cuda')
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
-            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * 6), input_wps.view(batch_size, self.num_steps * 6))
+            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
         if self.dataset_type == 1: # residual
             recon_absolute = recon_traj[:, 0, :]
             input_absolute = traj[:, 0, :]
             recon_residual = recon_traj[:, 1:, :]
             input_residual = traj[:, 1:, :]
-            recon_absolute_loss = self.MSELoss(recon_absolute.view(batch_size, 1 * 6), input_absolute.view(batch_size, 1 * 6))
-            recon_residual_loss = self.MSELoss(recon_residual.view(batch_size, (self.num_steps - 1) * 6), input_residual.view(batch_size, (self.num_steps - 1) * 6))
+            recon_absolute_loss = self.MSELoss(recon_absolute.view(batch_size, 1  * self.wpt_dim), input_absolute.view(batch_size, 1 * self.wpt_dim))
+            recon_residual_loss = self.MSELoss(recon_residual.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_residual.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
             recon_loss = recon_absolute_loss * 100 + recon_residual_loss
             dir_loss = recon_absolute_loss
 

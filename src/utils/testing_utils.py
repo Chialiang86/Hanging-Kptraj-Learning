@@ -8,7 +8,7 @@ from scipy.spatial.transform import Rotation as R
 from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
                                pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
 
-PENETRATION_THRESHOLD = 0.001
+PENETRATION_THRESHOLD = 0.0003 # 0.00003528
 
 def augment_next_waypoint(waypoint : list or np.ndarray,
                                 direction_vec : list or np.ndarray,
@@ -50,9 +50,8 @@ def augment_next_waypoint(waypoint : list or np.ndarray,
 
     return step_pose
 
-def waypoint_score(hook_id : int, obj_id : int):
+def penetration_score(hook_id : int, obj_id : int):
 
-    # thresh = 0.001
     p.performCollisionDetection()
 
     contact_points = p.getContactPoints(bodyA=hook_id, bodyB=obj_id)
@@ -63,12 +62,10 @@ def waypoint_score(hook_id : int, obj_id : int):
     for contact_point in contact_points:
         # contact distance, positive for separation, negative for penetration
         contact_distance = contact_point[8] 
-        penetration += contact_distance if contact_distance < 0 else 0.0
+        penetration = min(penetration, contact_distance) if contact_distance < 0 else 0.0
     
-    if len(contact_points) > 0:
-        penetration /= len(contact_points)
     # return penetration, within_thresh
-    return penetration
+    return -penetration
 
 def refine_waypoint_rotation(wpts : np.ndarray or list):
 
@@ -130,9 +127,8 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
     
     hook_trans = get_matrix_from_pose(list(hook_pose))
 
-    # score = PENETRATION_THRESHOLD
+    score = PENETRATION_THRESHOLD
     penetration_cost = 0.0
-    score = len(src_traj) * 0.5
     color = np.random.rand(1, 3)
     color = np.repeat(color, 3, axis=0)
     rgbs = []
@@ -147,10 +143,7 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
 
         # draw_coordinate(world_trans, size=0.002)
 
-        time.sleep(0.05)
-        
-        penetration = waypoint_score(hook_id=hook_id, obj_id=obj_id)
-        score += penetration / PENETRATION_THRESHOLD
+        penetration = penetration_score(hook_id=hook_id, obj_id=obj_id)
         penetration_cost += penetration
 
         if visualize:
@@ -165,7 +158,8 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
         # score -= waypoint_penetration
         # within_thresh_cnt += within_thresh
 
-    # score = score - penetration_cost
+    penetration_cost /= src_traj.shape[0]
+    score = score - penetration_cost
     
     # score /= within_thresh_cnt if within_thresh_cnt != 0 else 1.0
     # score += PENETRATION_THRESHOLD # hyper param, < 0 : not good

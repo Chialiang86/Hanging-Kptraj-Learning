@@ -380,7 +380,7 @@ class KptrajReconAffordanceDataset(Dataset):
         self.affordance_name = {
             0:'none',
             1:'affordance',
-            2:'parseg',
+            2:'partseg',
             3:'both',
             4:'fusion',
         }[affordance_type]
@@ -393,7 +393,6 @@ class KptrajReconAffordanceDataset(Dataset):
         self.wpt_dim = wpt_dim
         self.sample_num_points = sample_num_points
         
-        print(f'==================== self.wpt_dim = {self.wpt_dim } ====================')
         self.shape_list = [] # torch tensor
         self.center_list = []
         self.scale_list = [] 
@@ -470,11 +469,10 @@ class KptrajReconAffordanceDataset(Dataset):
                         
                         if self.wpt_dim == 6:
                             first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
-                            first_rot_matrix_xy = first_rot_matrix.T.reshape(-1)[:6] # the first, second column of the rotation matrix
+                            first_rot_matrix_xy = (first_rot_matrix.T).reshape(-1)[:6] # the first, second column of the rotation matrix
                             waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
 
                     waypoints = torch.FloatTensor(waypoints).to('cuda')
-
                     traj_list_tmp.append(waypoints)
 
                 self.traj_list.append(traj_list_tmp)
@@ -543,9 +541,9 @@ class KptrajReconAffordanceDataset(Dataset):
             wpts = self.traj_list[index][traj_id]
             waypoints = wpts.clone()
             if self.type == "absolute":
-                waypoints[:,:3] = (waypoints[:,:3] - center) / scale
+                waypoints[:, :3] = (waypoints[:, :3] - center) / scale
             elif self.type == "residual":
-                waypoints[1:,:3] = waypoints[1:,:3] / scale
+                waypoints[1:, :3] = waypoints[1:, :3] / scale
             else :
                 print(f"dataset type undefined : {self.type}")
                 exit(-1)
@@ -568,7 +566,7 @@ class KptrajReconAffordanceDataset(Dataset):
         elif self.affordance_name == 'fusion':
             return points, fusion
         elif self.enable_traj:
-            return points, waypoints[:,:self.wpt_dim]
+            return points, waypoints[:,:self.wpt_dim], center, scale # TODO: delete center and sacle
         return points
 
 if __name__=="__main__":

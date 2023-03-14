@@ -248,7 +248,7 @@ class TrajReconAffordance(nn.Module):
         Rt = torch.sum(Rds[:, torch.eye(3).bool()], 1) # batch trace
         # necessary or it might lead to nans and the likes
         theta = torch.clamp(0.5 * (Rt - 1), -1 + 1e-6, 1 - 1e-6)
-        return torch.acos(theta) # theta = 1 will be 0 (the best)
+        return torch.acos(theta) # theta = 1 will be 0 (the best) => actually 0.0014 (seems to be a bug of PyTorch)
 
     # 6D-Rot loss
     # input sz bszx6
@@ -289,58 +289,42 @@ class TrajReconAffordance(nn.Module):
             ret_traj[:, 0, :3] = contact_point
 
         if self.dataset_type == 1: # residual 
+            
+            # for the first waypoint
             ret_traj[:, 0, :3] = contact_point
-
             recon_dir = recon_traj[:, 0]
             recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
             recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
             ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
 
+            # for the remain waypoints
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
         return ret_traj
-    
-    def get_nn_loss(self, pcs : torch.Tensor, traj : torch.Tensor):
-        # similar to nearest 1 neighbor
-        # reference: https://discuss.pytorch.org/t/k-nearest-neighbor-in-pytorch/59695
-
-        traj_unsqueeze = traj[:, :, :3].unsqueeze(2) # (B x T x 3) => (B x T x 1 x 3)
-        pcs_unsqueeze = pcs.unsqueeze(1).repeat(1, traj.shape[1], 1, 1) # (B x N x 3) => (B x T x N x 3)
-        diff = pcs_unsqueeze - traj_unsqueeze # (B x T x N x 3)
-        dist = torch.norm(diff, dim=3) # (B x T x N)
-        mean_min_dist = dist.topk(1, largest=False).values # smallest value
-        return torch.mean(mean_min_dist).to('cuda')
 
     def get_loss(self, pcs, traj, contact_point, lbd_kl=1.0):
         batch_size = traj.shape[0]
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
-        recon_loss = torch.Tensor([0])
-        dir_loss = torch.Tensor([0])
-        nn_loss = torch.Tensor([0])
+        recon_loss = torch.Tensor([0]).to('cuda')
+        dir_loss = torch.Tensor([0]).to('cuda')
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
-            nn_loss = self.get_nn_loss(pcs, recon_wps)
-            # recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * 6), input_wps.view(batch_size, self.num_steps * 6))
-            recon_loss_0to10 = self.MSELoss(recon_wps[:, :10].view(batch_size, 10 * self.wpt_dim), input_wps[:, :10].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_10to20 = self.MSELoss(recon_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim), input_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_20tolast = self.MSELoss(recon_wps[:, 20:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 20:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
-            recon_loss = recon_loss_0to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
+            # recon_loss_pos = self.MSELoss(recon_wps[:, :, :3].reshape(batch_size, self.num_steps * 3), input_wps[:, :, :3].reshape(batch_size, self.num_steps * 3))
+            # recon_loss_rot = self.MSELoss(recon_wps[:, :, 3:].reshape(batch_size, self.num_steps * 3), input_wps[:, :, 3:].reshape(batch_size, self.num_steps * 3))
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
-            input_dir = traj[:, 0, :]
-            recon_dir = recon_traj[:, 0, :]
+            input_dir = traj[:, 0]
+            recon_dir = recon_traj[:, 0]
             dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
             dir_loss = dir_loss.mean()
 
             input_wps = traj[:, 1:, :]
             recon_wps = recon_traj[:, 1:, :]
-            # wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * 6), input_wps.view(batch_size, (self.num_steps - 1) * 6))
-            recon_loss_1to10 = self.MSELoss(recon_wps[:, :9].view(batch_size, 9 * self.wpt_dim), input_wps[:, :9].view(batch_size, 9 * self.wpt_dim))
-            recon_loss_10to20 = self.MSELoss(recon_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim), input_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_20tolast = self.MSELoss(recon_wps[:, 19:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 19:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
-            wpt_loss = recon_loss_1to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+            # wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
+            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
             
             recon_loss = self.lbd_dir * dir_loss + wpt_loss
 
@@ -348,12 +332,13 @@ class TrajReconAffordance(nn.Module):
         losses = {}
         losses['kl'] = kl_loss
         losses['recon'] = recon_loss
+        losses['traj_gt'] = traj
+        losses['traj_pred'] = recon_traj
         losses['dir'] = dir_loss
-        losses['nn'] = nn_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.01 * nn_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.01 * nn_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon
 
         return losses

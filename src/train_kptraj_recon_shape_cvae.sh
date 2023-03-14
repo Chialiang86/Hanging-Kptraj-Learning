@@ -2,8 +2,10 @@
 
 # model_configs=("traj_recon_ae" "traj_recon_vae")
 model_configs=(
-    "traj_recon_shape_cvae_kl_large" 
-    "traj_recon_shape_cvae_kl_small" 
+    # "traj_recon_shape_cvae_kl_large" 
+    # "traj_recon_shape_cvae_kl_small" 
+
+    "traj_sh"
 )
 
 traj_recon_shape_datasets=(
@@ -21,55 +23,51 @@ training_tag=''
 time_stamp=$(date +%m.%d.%H.%M)
 log='save'
 training_tag=''
-if [ $# -ge 2 ]; then 
 
-    log=$2
-    training_tag=$1
-
-elif [ $# -ge 1 ]; then 
+if [ $# -ge 1 ]; then 
     
-    training_tag=$1
+    training_tag="${time_stamp}-${1}"
+
+elif [ $# -ge 2 ]; then 
+
+    training_tag="${time_stamp}-${1}"
+    log=$2
 
 elif [[ $training_tag = "" ]]; then 
-    training_tag=$time_stamp
+
+    training_tag="${time_stamp}"
+
 fi 
+
 echo "training_tag : ${training_tag}"
 
 for model_config in "${model_configs[@]}"
 do
 
-    if [[ $model_config == *"_cvae"* ]]; then 
+    for traj_recon_shape_dataset in "${traj_recon_shape_datasets[@]}"
+    do 
+
+        dataset_name=($(echo $traj_recon_shape_dataset | tr "/" "\n"))
+        echo "=============================================="
+        echo "model_config=${model_config}" 
+        echo "dataset=${dataset_name[-1]}"
+        echo "=============================================="
         
-        for traj_recon_shape_dataset in "${traj_recon_shape_datasets[@]}"
-        do 
+        mkdir "training_logs/${model_config}_${training_tag}"
 
-            dataset_name=($(echo $traj_recon_shape_dataset | tr "/" "\n"))
-            echo "=============================================="
-            echo "model_config=${model_config}" 
-            echo "dataset=${dataset_name[-1]}"
-            echo "=============================================="
-            
-            mkdir "training_logs/${model_config}_${training_tag}"
+        if [ $log = 'save' ]; then 
 
-            if [ $log = 'save' ]; then 
+            # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
+            output_log="training_logs/${model_config}_${training_tag}/${dataset_name[-2]}_${dataset_name[-1]}.txt"
+            python3 train_kptraj_recon_shape_cvae.py --dataset_dir $traj_recon_shape_dataset --training_tag $training_tag --config "../config/${model_config}.yaml" > $output_log
+            python3 plot_history.py $output_log
 
-                # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
-                output_log="training_logs/${model_config}_${training_tag}/${dataset_name[-2]}_${dataset_name[-1]}.txt"
-                python3 train_kptraj_recon_shape_cvae.py --dataset_dir $traj_recon_shape_dataset --training_tag $training_tag --config "../config/${model_config}.yaml" > $output_log
-                python3 plot_history.py $output_log
+        else 
 
-            else 
+            python3 train_kptraj_recon_shape_cvae.py --dataset_dir $traj_recon_shape_dataset --training_tag $training_tag --config "../config/${model_config}.yaml"
 
-                python3 train_kptraj_recon_shape_cvae.py --dataset_dir $traj_recon_shape_dataset --training_tag $training_tag --config "../config/${model_config}.yaml"
+        fi 
 
-            fi 
-
-        done 
-
-    else 
-
-        echo "Wrong model type : ${model_config}"
-
-    fi 
+    done
 
 done 

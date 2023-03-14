@@ -30,7 +30,7 @@ def train_val_dataset(dataset, val_split=0.25):
 def train(args):
 
     time_stamp = datetime.today().strftime('%m.%d.%H.%M')
-    training_tag = time_stamp if args.training_tag == '' else args.training_tag
+    training_tag = time_stamp if args.training_tag == '' else f'{time_stamp}-{args.training_tag}'
     dataset_dir = args.dataset_dir
     dataset_root = args.dataset_dir.split('/')[-2] # dataset category
     dataset_subroot = args.dataset_dir.split('/')[-1] # time stamp
@@ -40,7 +40,7 @@ def train(args):
     dataset_mode = 0 if 'absolute' in dataset_dir else 1 # 0: absolute, 1: residual
 
     config_file_id = config_file.split('/')[-1][:-5]
-    checkpoint_dir = f'{args.checkpoint_dir}/{config_file_id}_{training_tag}/{dataset_root}_{dataset_subroot}'
+    checkpoint_dir = f'{args.checkpoint_dir}/{config_file_id}-{training_tag}/{dataset_root}-{dataset_subroot}'
     os.makedirs(checkpoint_dir, exist_ok=True)
 
     config = None

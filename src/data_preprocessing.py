@@ -189,9 +189,9 @@ def main(args):
     dataset_id = f'{time_stamp}-{args.shape_num_pts}' if args.data_tag == '' else f'{args.data_tag}-{args.shape_num_pts}'
 
     data_subroot = os.path.join(data_root, dataset_category)
-    traj_recon_data_train_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'train')
-    traj_recon_data_val_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'val')
-    traj_recon_data_test_dir = os.path.join(data_subroot, f'{args.shape_dir}-{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'test')
+    traj_recon_data_train_dir = os.path.join(data_subroot, f'{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'train')
+    traj_recon_data_val_dir = os.path.join(data_subroot, f'{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'val')
+    traj_recon_data_test_dir = os.path.join(data_subroot, f'{args.kptraj_dir}-{kptraj_type}-{args.kptraj_length}', f'{dataset_id}', 'test')
     os.makedirs(traj_recon_data_train_dir, exist_ok=True)
     os.makedirs(traj_recon_data_val_dir, exist_ok=True)
     os.makedirs(traj_recon_data_test_dir, exist_ok=True)

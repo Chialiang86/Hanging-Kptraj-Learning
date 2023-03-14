@@ -199,6 +199,7 @@ class Affordance(PointNet2ClassificationSSG):
             )
 
         return self.fc_layer(l_features[0])
+        # return l_features[0], self.fc_layer(l_features[0])
 
     def get_loss(self, pcs, affords):
         pcs = pcs.repeat(1, 1, 2)
@@ -209,6 +210,7 @@ class Affordance(PointNet2ClassificationSSG):
 
     def inference(self, pcs):
         pcs = pcs.repeat(1, 1, 2)
-        # affords_pred = self.sigmoid(self.forward(pcs))
-        affords_pred = self.forward(pcs)
+        affords_pred = self.sigmoid(self.forward(pcs))
         return affords_pred
+        # pcd_feat, affords_pred = self.forward(pcs)
+        # return pcd_feat, affords_pred

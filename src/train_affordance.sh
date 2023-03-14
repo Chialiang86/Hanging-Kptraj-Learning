@@ -15,18 +15,22 @@ training_tag='' # $1
 log='save' # $2
 time_stamp=$(date +%m.%d.%H.%M)
 training_tag=''
-if [ $# -ge 2 ]; then 
 
-    training_tag=$1
+if [ $# -ge 1 ]; then 
+    
+    training_tag="${time_stamp}-${1}"
+
+elif [ $# -ge 2 ]; then 
+
+    training_tag="${time_stamp}-${1}"
     log=$2
 
-elif [ $# -ge 1 ]; then 
-    
-    training_tag=$1
-
 elif [[ $training_tag = "" ]]; then 
-    training_tag=$time_stamp
+
+    training_tag="${time_stamp}"
+
 fi 
+
 echo "training_tag : ${training_tag}"
 echo "log : ${log}"
 
