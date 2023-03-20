@@ -286,7 +286,8 @@ class TrajReconAffordanceMutual(nn.Module):
         z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
 
-        return affordance, recon_traj, mu, logvar
+        # return affordance, recon_traj, mu, logvar
+        return affordance, f_s, recon_traj, mu, logvar # TODO: delete whole_feats
 
     def sample(self, pcs, contact_point):
         batch_size = pcs.shape[0]
@@ -328,7 +329,7 @@ class TrajReconAffordanceMutual(nn.Module):
     def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
         batch_size = traj.shape[0]
 
-        affordance_pred, recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
+        affordance_pred, f_s, recon_traj, mu, logvar = self.forward(pcs, traj, contact_point) # TODO: delete f_s
 
         nn_loss = torch.Tensor([0]).to('cuda')
         recon_loss = torch.Tensor([0]).to('cuda')
@@ -385,4 +386,4 @@ class TrajReconAffordanceMutual(nn.Module):
             losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.00001 * affordance_loss
 
 
-        return losses
+        return f_s, losses # TODO: delete f_s

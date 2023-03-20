@@ -19,13 +19,23 @@ def pose_6d_to_7d(pose : list or tuple or np.ndarray) -> np.ndarray:
 
     return np.array(pose)
 
+def pose_6d_to_7d(pose : list or tuple or np.ndarray) -> np.ndarray:
+    if len(pose) == 7:
+        return np.array(pose)
+    pos = np.asarray(pose[:3])
+    rot = R.from_rotvec(pose[3:]).as_quat()
+    pose_ret = list(pos) + list(rot)
+
+    return np.array(pose_ret)
+
 def pose_7d_to_6d(pose : list or tuple or np.ndarray) -> np.ndarray:
-    assert len(pose) == 7, f'pose must contain 7 elements, but got {len(pose)}'
+    if len(pose) == 6:
+        return np.array(pose)
     pos = np.asarray(pose[:3])
     rot = R.from_quat(pose[3:]).as_rotvec()
-    pose = list(pos) + list(rot)
+    pose_ret = list(pos) + list(rot)
 
-    return np.array(pose)
+    return np.array(pose_ret)
 
 def get_matrix_from_pose(pose : list or tuple or np.ndarray) -> np.ndarray:
     assert len(pose) == 6 or len(pose) == 7, f'pose must contain 6 or 7 elements, but got {len(pose)}'

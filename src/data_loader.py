@@ -40,48 +40,48 @@ def main(args):
 
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
 
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=0, enable_affordance=0)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-    train_set.print_data_shape()
-    train_batches = enumerate(train_loader, 0)
-    for i_batch, sample_pcds in tqdm(train_batches, total=len(train_loader)):
-        print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}')
-    
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=0, enable_affordance=1)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-    train_set.print_data_shape()
-    train_batches = enumerate(train_loader, 0)
-    for i_batch, (sample_pcds, sample_affords) in tqdm(train_batches, total=len(train_loader)):
-        print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, affordance shape: {sample_affords.shape}')
-
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=0)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, affordance_type=0)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     train_set.print_data_shape()
     train_batches = enumerate(train_loader, 0)
     for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
         print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, traj shape: {sample_trajs.shape}')
+    
+    # train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=0, affordance_type=1)
+    # train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    # train_set.print_data_shape()
+    # train_batches = enumerate(train_loader, 0)
+    # for i_batch, (sample_pcds, sample_affords) in tqdm(train_batches, total=len(train_loader)):
+    #     print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, affordance shape: {sample_affords.shape}')
 
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, enable_affordance=1)
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-    train_set.print_data_shape()
-    train_batches = enumerate(train_loader, 0)
-    for i_batch, (sample_pcds, sample_affords, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
-        print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, affordance shape: {sample_affords.shape}, traj shape: {sample_trajs.shape}')
+    # train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, affordance_type=0)
+    # train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    # train_set.print_data_shape()
+    # train_batches = enumerate(train_loader, 0)
+    # for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+    #     print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, traj shape: {sample_trajs.shape}')
+
+    # train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', enable_traj=1, affordance_type=0)
+    # train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    # train_set.print_data_shape()
+    # train_batches = enumerate(train_loader, 0)
+    # for i_batch, (sample_pcds, sample_affords, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+    #     print(f'batch {i_batch}: pcd shape: {sample_pcds.shape}, affordance shape: {sample_affords.shape}, traj shape: {sample_trajs.shape}')
     
 
 if __name__=="__main__":
 
     default_dataset = [
-        "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-absolute-40/02.27.10.29-1000",
-        "../dataset/traj_recon_affordance/hook_all_new_0-kptraj_all_new_0-residual-40/02.27.10.32-1000",
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40/03.15.13.59-1000",
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40/03.15.14.01-1000"
     ]
 
     parser = argparse.ArgumentParser()
     # about dataset
-    parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
+    parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[1])
 
     # other info
-    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_recon_affordance_cvae_kl_large.yaml')
+    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()

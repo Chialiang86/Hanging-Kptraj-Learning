@@ -12,15 +12,9 @@ import torch
 from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
-import pybullet as p
-import pybullet_data
-from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
-
-from PIL import Image
 from scipy.spatial.transform import Rotation as R
-from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
-                               pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
-from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation
+from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, draw_coordinate
+from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation, robot_kptraj_hanging
 
 def train_val_dataset(dataset, val_split=0.25):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
@@ -304,8 +298,8 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     if dataset_mode == 1: # "residual"
 
         for traj_id in range(traj.shape[0]):
-            traj[traj_id, 0, :3] = traj[traj_id, 0, :3] * scales[traj_id] + centers[traj_id]
-            traj[traj_id, :, :3] = traj[traj_id, :, :3] * scales[traj_id]
+            traj[traj_id, 0, :3] = (traj[traj_id, 0, :3] * scales[traj_id]) + centers[traj_id]
+            traj[traj_id, 1:, :3] = (traj[traj_id, 1:, :3] * scales[traj_id])
 
         for traj_id in range(traj.shape[0]):
             waypoints.append([])
@@ -317,9 +311,9 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                 if wpt_dim == 6:
 
                     if wpt_id == 0 :
-                        wpt = traj[traj_id, wpt_id]
-                        tmp_pos = wpt[:3]
-                        tmp_rot = wpt[3:]
+                        wpt_0 = traj[traj_id, wpt_id]
+                        tmp_pos = wpt_0[:3]
+                        tmp_rot = wpt_0[3:]
                     else :
                         tmp_pos = tmp_pos + np.asarray(traj[traj_id, wpt_id, :3])
                         tmp_rot = R.from_matrix(
@@ -329,8 +323,9 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                                                 tmp_rot
                                             ).as_matrix()
                                         ).as_rotvec()
-                        wpt[:3] = tmp_pos
-                        wpt[3:] = tmp_rot
+                        
+                    wpt[:3] = tmp_pos
+                    wpt[3:] = tmp_rot
                         
                     current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
                 
@@ -363,7 +358,11 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     return waypoints
 
 def val(args):
- # ================== config ==================
+
+    import pybullet as p
+    import pybullet_data
+    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
+    # ================== config ==================
 
     checkpoint_dir = f'{args.checkpoint_dir}'
     config_file = args.config
@@ -473,29 +472,29 @@ def val(args):
         with torch.no_grad():
             losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=1.0)  # B x 2, B x F x N
 
-            traj_gts = losses['traj_gt']
-            traj_preds = losses['traj_pred']
+            # traj_gts = losses['traj_gt']
+            # traj_preds = losses['traj_pred']
 
-            traj_preds_reshape = traj_preds[:, 0].reshape(-1, 2, 3).permute(0, 2, 1)
-            bsz = traj_preds_reshape.shape[0]
-            b1 = torch.nn.functional.normalize(traj_preds_reshape[:, :, 0], p=2, dim=1)
-            a2 = traj_preds_reshape[:, :, 1]
-            b2 = torch.nn.functional.normalize(a2 - torch.bmm(b1.view(bsz, 1, -1), a2.view(bsz, -1, 1)).view(bsz, 1) * b1, p=2, dim=1)
-            b3 = torch.cross(b1, b2, dim=1)
-            rotmats = torch.stack([b1, b2, b3], dim=1).permute(0, 2, 1)
+            # traj_preds_reshape = traj_preds[:, 0].reshape(-1, 2, 3).permute(0, 2, 1)
+            # bsz = traj_preds_reshape.shape[0]
+            # b1 = torch.nn.functional.normalize(traj_preds_reshape[:, :, 0], p=2, dim=1)
+            # a2 = traj_preds_reshape[:, :, 1]
+            # b2 = torch.nn.functional.normalize(a2 - torch.bmm(b1.view(bsz, 1, -1), a2.view(bsz, -1, 1)).view(bsz, 1) * b1, p=2, dim=1)
+            # b3 = torch.cross(b1, b2, dim=1)
+            # rotmats = torch.stack([b1, b2, b3], dim=1).permute(0, 2, 1)
 
-            traj_preds_recover = traj_preds.clone()
-            traj_preds_recover[:, 0, :3] = centers
-            traj_preds_recover[:, 0, 3:] = torch.Tensor(R.from_matrix(rotmats.cpu().numpy()).as_rotvec()).to(device)
+            # traj_preds_recover = traj_preds.clone()
+            # traj_preds_recover[:, 0, :3] = centers
+            # traj_preds_recover[:, 0, 3:] = torch.Tensor(R.from_matrix(rotmats.cpu().numpy()).as_rotvec()).to(device)
 
-            hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
-            recovered_trajs = recover_trajectory(traj_preds_recover, hook_poses, centers, scales, dataset_mode=dataset_mode, wpt_dim=wpt_dim)
+            # hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
+            # recovered_trajs = recover_trajectory(traj_preds_recover, hook_poses, centers, scales, dataset_mode=dataset_mode, wpt_dim=wpt_dim)
                 
-            for traj_id, recovered_traj in enumerate(recovered_trajs):
+            # for traj_id, recovered_traj in enumerate(recovered_trajs):
 
-                reversed_recovered_traj = recovered_traj[::-1]
-                reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
-                score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=contact_pose, visualize=True)
+            #     reversed_recovered_traj = recovered_traj[::-1]
+            #     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
+            #     score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=contact_pose, visualize=True)
 
             if losses['dir'] is not None:
                 val_dir_losses.append(losses['dir'].item())
@@ -522,8 +521,12 @@ def val(args):
             f'''---------------------------------------------\n'''
         )
 
-
 def test(args):
+
+    from PIL import Image
+    import pybullet as p
+    import pybullet_data
+    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
 
     # ================== config ================== #
 
@@ -594,10 +597,12 @@ def test(args):
         inference_hook_paths.extend(paths) 
 
     obj_contact_poses = []
+    obj_grasping_infos = []
     obj_urdfs = []
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][0])
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -617,7 +622,7 @@ def test(args):
         hook_pcds.append(points)
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
-    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
     os.makedirs(output_dir, exist_ok=True)
     
     # ================== Model ================== #
@@ -633,16 +638,18 @@ def test(args):
     # ================== Simulator ================== #
 
     # Create pybullet GUI
-    if visualize:
-        physics_client_id = p.connect(p.GUI)
-        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    else:
-        physics_client_id = p.connect(p.DIRECT)
+    physics_client_id = p.connect(p.GUI)
+    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # if visualize:
+    #     physics_client_id = p.connect(p.GUI)
+    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # else:
+    #     physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
-        cameraDistance=0.1,
-        cameraYaw=80,
-        cameraPitch=-10,
-        cameraTargetPosition=[0.0, 0.0, 0.0]
+        cameraDistance=0.2,
+        cameraYaw=90,
+        cameraPitch=-30,
+        cameraTargetPosition=[0.5, 0.0, 1.3]
     )
     p.resetSimulation()
     p.setPhysicsEngineParameter(numSolverIterations=150)
@@ -666,9 +673,9 @@ def test(args):
     p.loadURDF(os.path.join(pybullet_data.getDataPath(), "table/table.urdf"), [1, 0.0, 0.0])
 
     hook_pose = [
-        0.0,
-        0.0,
-        0.0,
+        0.5,
+        -0.1,
+        1.3,
         4.329780281177466e-17,
         0.7071067811865475,
         0.7071067811865476,
@@ -677,97 +684,6 @@ def test(args):
 
     # ================== Inference ==================
 
-    # dataset_dir = '../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000'
-    # traj_paths = glob.glob(f'{dataset_dir}/inference/*/*-0.json')
-    # traj_paths.sort()
-
-    # all_scores = []
-    # for sid, traj_path in enumerate(tqdm(traj_paths)):
-    #     traj_dict = json.load(open(traj_path, 'r'))
-    #     trajecotry = traj_dict['trajectory']
-
-    #     # urdf file
-    #     hook_name = traj_path.split('/')[-2]
-    #     hook_urdf = f'../shapes/hook_all_new_0/{hook_name}/base.urdf'
-    #     hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
-    #     # p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
-
-    #     recovered_trajs = recover_trajectory(np.asarray([trajecotry]), hook_pose, [0, 0, 0], 1, dataset_mode=1, wpt_dim=6)
-
-    #     # conting inference score using object and object contact information
-    #     if evaluate:
-    #         max_obj_success_cnt = 0
-    #         for traj_id, recovered_traj in enumerate(recovered_trajs):
-
-    #             if wpt_dim == 6:
-    #                 reversed_recovered_traj = recovered_traj[::-1]
-    #             else :
-    #                 reversed_recovered_traj = recovered_traj
-
-    #             obj_success_cnt = 0
-    #             for i in range(len(obj_contact_poses)):
-
-    #                 obj_id = p.loadURDF(obj_urdfs[i])
-    #                 reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
-    #                 score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
-    #                 p.removeBody(obj_id)
-    #                 p.removeAllUserDebugItems()
-
-    #                 obj_success_cnt += 1 if np.max(score) > 0 else 0
-
-    #             max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
-
-    #         all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
-
-    #     if True:
-    #         wpt_ids = []
-    #         for i, recovered_traj in enumerate(recovered_trajs):
-    #             colors = list(np.random.rand(3)) + [1]
-    #             for wpt_i, wpt in enumerate(recovered_traj):
-    #                 wpt_id = p.createMultiBody(
-    #                     baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-    #                     baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-    #                     basePosition=wpt[:3]
-    #                 )
-    #                 wpt_ids.append(wpt_id)
-
-    #         # capture a list of images and save as gif
-    #         delta = 10
-    #         delta_sum = 0
-    #         cameraYaw = 90
-    #         rgbs = []
-    #         while True:
-    #             keys = p.getKeyboardEvents()
-    #             p.resetDebugVisualizerCamera(
-    #                 cameraDistance=0.08,
-    #                 cameraYaw=cameraYaw,
-    #                 cameraPitch=-10,
-    #                 cameraTargetPosition=[0.0, 0.0, 0.0]
-    #             )
-
-    #             cam_info = p.getDebugVisualizerCamera()
-    #             width = cam_info[0]
-    #             height = cam_info[1]
-    #             view_mat = cam_info[2]
-    #             proj_mat = cam_info[3]
-    #             img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-    #             rgb = img_info[2]
-    #             rgbs.append(Image.fromarray(rgb))
-
-    #             cameraYaw += delta 
-    #             delta_sum += delta 
-    #             cameraYaw = cameraYaw % 360
-    #             if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-    #                 break
-    #             if delta_sum >= 360:
-    #                 break
-
-    #         for wpt_id in wpt_ids:
-    #             p.removeBody(wpt_id)
-
-    #         # rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-gt-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
-    #     p.removeBody(hook_id)
-
     batch_size = 1
     all_scores = []
     for sid, pcd in enumerate(hook_pcds):
@@ -775,14 +691,14 @@ def test(args):
         if sid > 20:
             break
         
-        # urdf file
+        # hook urdf file
         hook_urdf = hook_urdfs[sid]
         hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
-        p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
 
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
+
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
@@ -802,41 +718,41 @@ def test(args):
         # conting inference score using object and object contact information
         if evaluate:
             max_obj_success_cnt = 0
+            wpt_ids = []
             for traj_id, recovered_traj in enumerate(recovered_trajs):
 
                 obj_success_cnt = 0
-                for i in range(len(obj_contact_poses)):
-
-                    obj_id = p.loadURDF(obj_urdfs[i])
+                for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
                     reversed_recovered_traj = recovered_traj[::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
-                    score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
+
+                    obj_id = p.loadURDF(obj_urdf)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize)
+                    res = 'success' if success else 'failed'
+                    obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
-                    p.removeAllUserDebugItems()
 
-                    obj_success_cnt += 1 if np.max(score) > 0 else 0
-                    # print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
-
-                    if len(rgbs) > 0 and traj_id == 0:  
-                        res = 'success' if np.max(score) > 0 else 'failed'
+                    if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
                         rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
-                # print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
 
             all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
-                
+        
         if visualize:
             wpt_ids = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj):
+
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
+
+            p.removeAllUserDebugItems()
 
             # capture a list of images and save as gif
             delta = 10
@@ -873,7 +789,7 @@ def test(args):
                 p.removeBody(wpt_id)
 
             rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
-
+               
         p.removeBody(hook_id)
 
     if evaluate:
@@ -919,7 +835,7 @@ if __name__=="__main__":
     
     # testing
     parser.add_argument('--weight_subpath', '-wp', type=str, default='1000_points-network_epoch-20000.pth', help="subpath of saved weight")
-    parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints/traj_af_10-03.11.17.12-alltraj_10/kptraj_all_new-absolute-10-alltraj-1000', help="'training_mode=test' only")
+    parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
     parser.add_argument('--visualize', '-v', action='store_true')
     parser.add_argument('--evaluate', '-e', action='store_true')
     parser.add_argument('--inference_dir', '-id', type=str, default='')

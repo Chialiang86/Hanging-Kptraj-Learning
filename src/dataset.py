@@ -370,6 +370,7 @@ class KptrajReconAffordanceRot3dDataset(Dataset):
         elif self.enable_traj:
             return points, waypoints[:,:self.wpt_dim]
         return points
+    
 class KptrajReconAffordanceDataset(Dataset):
     def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, affordance_type=0):
         
@@ -458,7 +459,8 @@ class KptrajReconAffordanceDataset(Dataset):
 
             traj_list_tmp = []
             if enable_traj: 
-                traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
+                traj_files = glob.glob(f'{dataset_subdir}/*.json')[:1] # trajectory in 7d format
+                    
                 for traj_file in traj_files:
                     
                     f_traj = open(traj_file, 'r')
@@ -499,6 +501,7 @@ class KptrajReconAffordanceDataset(Dataset):
         self.size = len(self.shape_list)
 
     def print_data_shape(self):
+        print(f'dataset size : {self.size}')
         print(f'sample_num_points : {self.sample_num_points}')
         # print(f"shape : {len(self.shape_list)}")
         # if self.affordance_name == 'affordance' or self.affordance_name == 'both':
@@ -566,7 +569,7 @@ class KptrajReconAffordanceDataset(Dataset):
         elif self.affordance_name == 'fusion':
             return points, fusion
         elif self.enable_traj:
-            return points, waypoints[:,:self.wpt_dim], center, scale # TODO: delete center and sacle
+            return points, waypoints[:,:self.wpt_dim]
         return points
 
 if __name__=="__main__":

@@ -369,12 +369,12 @@ def main(args):
                 gripper_pos, gripper_rot = get_pos_rot_from_matrix(gripper_transform)
                 gripper_pose = list(gripper_pos) + list(gripper_rot)
 
-                wpt_id = p.createMultiBody(
-                    baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-                    baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-                    basePosition=world_transform[:3,3]
-                )
-                wpt_ids.append(wpt_id)
+                # wpt_id = p.createMultiBody(
+                #     baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
+                #     baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
+                #     basePosition=world_transform[:3,3]
+                # )
+                # wpt_ids.append(wpt_id)
                 # draw_coordinate(world_transform)
 
                 robot.apply_action(gripper_pose)
@@ -451,10 +451,9 @@ def main(args):
         # if imgs_array is not None and status=='failed':
         gif_path = os.path.join(output_gif_dir, f'{hook_name}-{obj_name}_{traj_i}_{status}.gif')
         imgs_array[0].save(gif_path, save_all=True, append_images=imgs_array[1:], duration=50, loop=0)
-        
 
-        for wpt_id in wpt_ids:
-            p.removeBody(wpt_id)
+        # for wpt_id in wpt_ids:
+        #     p.removeBody(wpt_id)
         
         # # save demonstration
         # if args.save_demo:

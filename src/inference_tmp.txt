@@ -1,2 +1,0 @@
-./train_kptraj_recon_affordance_cvae.sh test > inference_logs/traj_af_all_10_0313.txt
-./train_kptraj_recon_affordance_cvae_mutual.sh test > inference_logs/traj_af_mutual_all_10_0313.txt

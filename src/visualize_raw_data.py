@@ -276,7 +276,7 @@ def main(args):
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--kptraj_root', '-kr', type=str, default='../raw')
-    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_all_new_devil')
+    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_all_smooth_bad')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
     parser.add_argument('--shape_dir', '-sd', type=str, default='hook_all_new')
     parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)

@@ -1,12 +1,13 @@
 
 import time
 import numpy as np
+import quaternion
 import pybullet as p
 from PIL import Image
 from scipy.spatial.transform import Rotation as R
 
-from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
-                               pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
+from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
+from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, draw_coordinate
 
 PENETRATION_THRESHOLD = 0.0003 # 0.00003528
 
@@ -141,7 +142,7 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
         obj_pose = get_pose_from_matrix(obj_trans, pose_size=7)
         p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
 
-        # draw_coordinate(world_trans, size=0.002)
+        draw_coordinate(world_trans, size=0.002)
 
         penetration = penetration_score(hook_id=hook_id, obj_id=obj_id)
         penetration_cost += penetration
@@ -155,6 +156,7 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
             rgb = img_info[2]
             rgbs.append(Image.fromarray(rgb))
 
+
         # score -= waypoint_penetration
         # within_thresh_cnt += within_thresh
 
@@ -165,4 +167,207 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
     # score += PENETRATION_THRESHOLD # hyper param, < 0 : not good
     # ratio = score / PENETRATION_THRESHOLD
 
+    p.removeAllUserDebugItems()
+
     return score, rgbs
+
+def xyzw2wxyz(quat : np.ndarray) -> np.ndarray:
+    assert len(quat) == 4, f'quaternion size must be 4, got {len(quat)}'
+    return np.asarray([quat[3], quat[0], quat[1], quat[2]])
+
+def wxyz2xyzw(quat : np.ndarray) -> np.ndarray:
+    assert len(quat) == 4, f'quaternion size must be 4, got {len(quat)}'
+    return np.asarray([quat[1], quat[2], quat[3], quat[0]])
+
+def get_dense_waypoints(start_config : list or tuple or np.ndarray, end_config : list or tuple or np.ndarray, resolution : float=0.005):
+
+    assert len(start_config) == 7 and len(end_config) == 7
+
+    d12 = np.asarray(end_config[:3]) - np.asarray(start_config[:3])
+    steps = int(np.ceil(np.linalg.norm(np.divide(d12, resolution), ord=2)))
+    obj_init_quat = quaternion.as_quat_array(xyzw2wxyz(start_config[3:]))
+    obj_tgt_quat = quaternion.as_quat_array(xyzw2wxyz(end_config[3:]))
+
+    ret = []
+    # plan trajectory in the same way in collision detection module
+    for step in range(steps):
+        ratio = (step + 1) / steps
+        pos = ratio * d12 + np.asarray(start_config[:3])
+        quat = quaternion.slerp_evaluate(obj_init_quat, obj_tgt_quat, ratio)
+        quat = wxyz2xyzw(quaternion.as_float_array(quat))
+        position7d = tuple(pos) + tuple(quat)
+        ret.append(position7d)
+
+    return ret
+
+def robot_apply_action(robot : pandaEnv, obj_id : int, action : tuple or list, gripper_action : str = 'nop', 
+                        sim_timestep : float = 1.0 / 240.0, diff_thresh : float = 0.005, max_vel : float = 0.2, max_iter = 5000):
+
+    assert gripper_action in ['nop', 'pre_grasp', 'grasp']
+
+    if gripper_action == 'nop':
+        assert len(action) == 7, 'action length should be 7'
+
+        robot.apply_action(action, max_vel=max_vel)
+        diff = 10.0
+        iter = 0
+        while diff > diff_thresh and iter < max_iter:       
+            iter += 1
+
+            p.stepSimulation()
+            time.sleep(sim_timestep)
+
+            tmp_pos = p.getLinkState(robot.robot_id, robot.end_eff_idx, physicsClientId=robot._physics_client_id)[4] # position
+            tmp_rot = p.getLinkState(robot.robot_id, robot.end_eff_idx, physicsClientId=robot._physics_client_id)[5] # rotation
+            diff = np.sum((np.array(tmp_pos + tmp_rot) - np.array(action)) ** 2) ** 0.5
+
+    elif gripper_action == 'pre_grasp' :
+
+        robot.pre_grasp()
+        for _ in range(int(1.0 / sim_timestep) * 1): # 1 sec
+            p.stepSimulation()
+            time.sleep(sim_timestep)
+    else:
+
+        robot.grasp(obj_id)
+        for _ in range(int(1.0 / sim_timestep)): # 1 sec
+            p.stepSimulation()
+            time.sleep(sim_timestep)
+
+def refine_rotation(src_transform, tgt_transform):
+    src_rot = src_transform[:3, :3]
+    tgt_rot = tgt_transform[:3, :3]
+
+    src_rotvec = R.from_matrix(src_rot).as_rotvec()
+    tgt_rotvec = R.from_matrix(tgt_rot).as_rotvec()
+
+    rot_180 = np.identity(4)
+    rot_180[:3, :3] = R.from_rotvec([0, 0, np.pi]).as_matrix()
+    tgt_dual_transform = tgt_transform @ rot_180
+    tgt_dual_rotvec = R.from_matrix(tgt_dual_transform[:3, :3]).as_rotvec()
+
+    return tgt_transform if np.sum((src_rotvec - tgt_rotvec) ** 2) < np.sum((src_rotvec - tgt_dual_rotvec) ** 2) else tgt_dual_transform
+
+def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, contact_pose, grasping_info, sim_timestep=1.0/240, visualize=False):
+
+    height_thresh = 0.8
+    obj_contact_relative_transform = get_matrix_from_pose(contact_pose)
+
+    obj_pose = grasping_info['obj_pose']
+    obj_transform = get_matrix_from_pose(obj_pose)
+    
+    robot_pose = grasping_info['robot_pose']
+    robot_transform = get_matrix_from_pose(robot_pose)
+
+    robot.reset()
+
+    # grasp the objct
+    robot.apply_action(robot_pose, max_vel=-1)
+    for _ in range(int(1.0 / sim_timestep * 0.5)): 
+        p.stepSimulation()
+        time.sleep(sim_timestep)
+    robot.grasp(obj_id=obj_id)
+    for _ in range(int(1.0 / sim_timestep * 0.25)): 
+        p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
+        p.stepSimulation()
+        time.sleep(sim_timestep)
+
+    # first kpt pose
+    first_kpt_transform_world = get_matrix_from_pose(recovered_traj[0])
+
+    # first object pose
+    first_obj_kpt_transform_world = obj_transform @ obj_contact_relative_transform
+    first_obj_kpt_transform_world = refine_rotation(first_kpt_transform_world, first_obj_kpt_transform_world)
+
+    # first robot pose
+    kpt_to_gripper = np.linalg.inv(first_obj_kpt_transform_world) @ robot_transform
+    first_gripper_pose = get_pose_from_matrix(first_kpt_transform_world @ kpt_to_gripper)
+
+
+    # move to the first waypoint
+    trajectory_start = get_dense_waypoints(robot_pose, first_gripper_pose, resolution=0.005)
+    for waypoint in trajectory_start:
+        robot.apply_action(waypoint)
+        p.stepSimulation()
+        robot.grasp()
+        for _ in range(10): # 1 sec
+            p.stepSimulation()
+            time.sleep(sim_timestep)
+
+    rgbs = []
+    cam_info = p.getDebugVisualizerCamera()
+    width, height, view_mat, proj_mat = cam_info[0], cam_info[1], cam_info[2], cam_info[3]
+
+    colors = list(np.random.rand(3)) + [1]
+    wpt_ids = []
+    for i, waypoint in enumerate(recovered_traj):
+
+        gripper_transform = get_matrix_from_pose(waypoint) @ kpt_to_gripper
+        gripper_pose = get_pose_from_matrix(gripper_transform)
+
+        robot.apply_action(gripper_pose)
+        p.stepSimulation()
+        
+        robot.grasp()
+        for _ in range(5): # 1 sec
+            p.stepSimulation()
+            time.sleep(sim_timestep)
+
+        if visualize:
+            wpt_id = p.createMultiBody(
+                baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.002), 
+                baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.002, rgbaColor=colors), 
+                basePosition=waypoint[:3]
+            )
+            wpt_ids.append(wpt_id)
+            # img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            # rgb = img_info[2]
+            # rgbs.append(rgb)
+    
+    for wpt_id in wpt_ids:
+        p.removeBody(wpt_id)
+
+    # release gripper
+    robot.pre_grasp()
+    for i in range(100): # 1 sec
+        p.stepSimulation()
+        time.sleep(sim_timestep)
+
+    if visualize:
+        img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+        rgb = img_info[2]
+        rgbs.append(rgb)
+
+    # go to the ending pose
+    gripper_rot = p.getLinkState(robot.robot_id, robot.end_eff_idx, physicsClientId=robot._physics_client_id)[5]
+    gripper_rot_matrix = R.from_quat(gripper_rot).as_matrix()
+    ending_gripper_pos = np.asarray(gripper_pose[:3]) + (gripper_rot_matrix @ np.array([[0], [0], [-0.05]])).reshape(3)
+    action = tuple(ending_gripper_pos) + tuple(gripper_rot)
+
+    robot_apply_action(robot, obj_id, action, gripper_action='nop', 
+        sim_timestep=0.05, diff_thresh=0.005, max_vel=-1, max_iter=100)
+
+    if visualize:
+        img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+        rgb = img_info[2]
+        rgbs.append(rgb)
+    
+    # left force
+    p.setGravity(2, 0, -5)
+    for _ in range(1000):
+        pos, rot = p.getBasePositionAndOrientation(obj_id)
+        if pos[2] < height_thresh:
+            break
+        p.stepSimulation()
+
+    # right force
+    p.setGravity(-2, 0, -5)
+    for _ in range(1000):
+        pos, rot = p.getBasePositionAndOrientation(obj_id)
+        if pos[2] < height_thresh:
+            break
+        p.stepSimulation()
+
+    rgbs = [Image.fromarray(rgb) for rgb in rgbs]
+    success = True if p.getContactPoints(obj_id, hook_id) != () else False
+    return rgbs, success

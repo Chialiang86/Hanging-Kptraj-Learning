@@ -14,12 +14,10 @@ import torch
 from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
-import pybullet as p
-from PIL import Image
 from scipy.spatial.transform import Rotation as R
 from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
                                pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
-from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation
+from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation, robot_kptraj_hanging
 
 def train_val_dataset(dataset, val_split=0.25):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
@@ -333,8 +331,8 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     if dataset_mode == 1: # "residual"
 
         for traj_id in range(traj.shape[0]):
-            traj[traj_id, 0, :3] = traj[traj_id, 0, :3] * scales[traj_id] + centers[traj_id]
-            traj[traj_id, :, :3] = traj[traj_id, :, :3] * scales[traj_id]
+            traj[traj_id, 0, :3] = (traj[traj_id, 0, :3] * scales[traj_id]) + centers[traj_id]
+            traj[traj_id, 1:, :3] = (traj[traj_id, 1:, :3] * scales[traj_id])
 
         for traj_id in range(traj.shape[0]):
             waypoints.append([])
@@ -391,7 +389,160 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     
     return waypoints
 
+
+def val(args):
+
+    import pybullet as p
+    import pybullet_data
+    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
+    import matplotlib.pyplot as plt
+    from sklearn.decomposition import PCA
+    # ================== config ==================
+
+    checkpoint_dir = f'{args.checkpoint_dir}'
+    config_file = args.config
+    device = args.device
+    dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
+    weight_subpath = args.weight_subpath
+    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # sample_num_points = int(weight_subpath.split('_')[0])
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # params for network
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
+    batch_size = config['batch_size']
+
+    wpt_dim = config['dataset_inputs']['wpt_dim']
+
+    # params for training
+    dataset_name = config['dataset_module']
+    dataset_class_name = config['dataset_class']
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+
+    dataset_dir = args.dataset_dir
+    
+    network_class = get_model_module(module_name, model_name)
+    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    dataset_class = get_dataset_module(dataset_name, dataset_class_name)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+
+     # validation
+    val_dir_losses = []
+    val_kl_losses = []
+    val_recon_losses = []
+    val_total_losses = []
+    val_afford_losses = []
+    val_dist_losses = []
+    val_nn_losses = []
+
+    # # Create pybullet GUI
+    # p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # p.resetDebugVisualizerCamera(
+    #     cameraDistance=0.1,
+    #     cameraYaw=80,
+    #     cameraPitch=-10,
+    #     cameraTargetPosition=[0.0, 0.0, 0.0]
+    # )
+    # p.resetSimulation()
+    # p.setPhysicsEngineParameter(numSolverIterations=150)
+    # sim_timestep = 1.0 / 240
+    # p.setTimeStep(sim_timestep)
+    # p.setGravity(0, 0, 0)
+
+    whole_fs = None
+    val_batches = enumerate(val_loader, 0)
+    # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
+    for i_batch, (sample_pcds, sample_affords, sample_trajs)  in tqdm(val_batches, total=len(val_loader)):
+
+        # set models to evaluation mode
+        network.eval()
+
+        sample_pcds = sample_pcds.to(device).contiguous() 
+        sample_trajs = sample_trajs.to(device).contiguous()
+        sample_cp = sample_pcds[:, 0]
+
+        with torch.no_grad():
+
+            f_s, losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
+
+            whole_fs = f_s if whole_fs is None else torch.vstack((whole_fs, f_s))
+
+            if 'afford' in losses.keys():
+                val_afford_losses.append(losses['afford'].item())
+            if 'dist' in losses.keys():
+                val_dist_losses.append(losses['dist'].item())
+            if 'nn' in losses.keys():
+                val_nn_losses.append(losses['nn'].item())
+            if 'dir' in losses.keys():
+                val_dir_losses.append(losses['dir'].item())
+            val_kl_losses.append(losses['kl'].item())
+            val_recon_losses.append(losses['recon'].item())
+            val_total_losses.append(losses['total'].item())
+    
+    whole_fs = whole_fs.detach().cpu().numpy()
+    pca = PCA(n_components=3)
+    pca.fit(whole_fs)
+    X_pca = pca.transform(whole_fs)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], marker='o')
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+    plt.show()
+
+    if 'afford' in losses.keys():
+        val_afford_avg_loss = np.mean(np.asarray(val_afford_losses))
+    if 'dist' in losses.keys():
+        val_dist_avg_loss = np.mean(np.asarray(val_dist_losses))
+    if 'nn' in losses.keys():
+        val_nn_avg_loss = np.mean(np.asarray(val_nn_losses))
+    if 'dir' in losses.keys():
+        val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
+    val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
+    val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
+    val_total_avg_loss = np.mean(np.asarray(val_total_losses))
+    print(
+            f'''---------------------------------------------\n'''
+            f'''[ validation stage ]\n'''
+            f''' - val_afford_avg_loss : {val_afford_avg_loss if 'afford' in losses.keys() else 0.0:>10.5f}\n'''
+            f''' - val_dist_avg_loss : {val_dist_avg_loss if 'dist' in losses.keys() else 0.0:>10.5f}\n'''
+            f''' - val_nn_avg_loss : {val_nn_avg_loss if 'nn' in losses.keys() else 0.0:>10.5f}\n'''
+            f''' - val_dir_avg_loss : {val_dir_avg_loss if 'dir' in losses.keys() else 0.0:>10.5f}\n'''
+            f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
+            f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
+            f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
+            f'''---------------------------------------------\n'''
+        )
+
 def test(args):
+
+    from PIL import Image
+    import pybullet as p
+    import pybullet_data
+    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
 
     # ================== config ==================
 
@@ -435,68 +586,6 @@ def test(args):
     wpt_dim = config['dataset_inputs']['wpt_dim']
     print(f'wpt_dim: {wpt_dim}')
 
-    # # params for training
-    # dataset_name = config['dataset_module']
-    # dataset_class_name = config['dataset_class']
-    # module_name = config['module']
-    # model_name = config['model']
-    # model_inputs = config['model_inputs']
-
-    # dataset_dir = args.dataset_dir
-    # print(f'dataset_dir: {dataset_dir}')
-    # print(f'weight path: {weight_path}')
-    
-    # network_class = get_model_module(module_name, model_name)
-    # network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
-    # network.load_state_dict(torch.load(weight_path))
-
-    # dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    # val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', enable_traj=1, enable_affordance=0)
-    # val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
-
-    #  # validation
-    # val_dir_losses = []
-    # val_kl_losses = []
-    # val_recon_losses = []
-    # val_total_losses = []
-
-    # val_batches = enumerate(val_loader, 0)
-    # # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-    # for i_batch, (sample_pcds, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
-
-    #     # set models to evaluation mode
-    #     network.eval()
-
-    #     sample_pcds = sample_pcds.to(device).contiguous() 
-    #     sample_trajs = sample_trajs.to(device).contiguous()
-    #     sample_cp = sample_pcds[:, 0]
-
-    #     with torch.no_grad():
-    #         losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=1.0)  # B x 2, B x F x N
-    #         if losses['dir'] is not None:
-    #             val_dir_losses.append(losses['dir'].item())
-    #         else:
-    #             val_dir_losses.append(0)
-    #         val_kl_losses.append(losses['kl'].item())
-    #         val_recon_losses.append(losses['recon'].item())
-    #         val_total_losses.append(losses['total'].item())
-
-    # val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
-    # val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
-    # val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
-    # val_total_avg_loss = np.mean(np.asarray(val_total_losses))
-    # print(
-    #         f'''---------------------------------------------\n'''
-    #         f'''[ validation stage ]\n'''
-    #         f''' - val_dir_avg_loss : {val_dir_avg_loss:>10.5f}\n'''
-    #         f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
-    #         f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
-    #         f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
-    #         f'''---------------------------------------------\n'''
-    #     )
-
-    # # ================== Load Inference Shape ==================
-
     # inference
     inference_obj_dir = args.obj_shape_root
     assert os.path.exists(inference_obj_dir), f'{inference_obj_dir} not exists'
@@ -522,10 +611,12 @@ def test(args):
         inference_hook_paths.extend(paths) 
 
     obj_contact_poses = []
+    obj_grasping_infos = []
     obj_urdfs = []
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][8])
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -545,7 +636,7 @@ def test(args):
         hook_pcds.append(points)
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
-    output_dir = f'inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
     os.makedirs(output_dir, exist_ok=True)
     
     # ================== Model ==================
@@ -561,16 +652,17 @@ def test(args):
     # ================== Simulator ==================
 
     # Create pybullet GUI
+    physics_client_id = None
     if visualize:
-        p.connect(p.GUI)
+        physics_client_id = p.connect(p.GUI)
         p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
     else:
-        p.connect(p.DIRECT)
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
-        cameraDistance=0.1,
-        cameraYaw=80,
-        cameraPitch=-10,
-        cameraTargetPosition=[0.0, 0.0, 0.0]
+        cameraDistance=0.2,
+        cameraYaw=90,
+        cameraPitch=-30,
+        cameraTargetPosition=[0.5, 0.0, 1.3]
     )
     p.resetSimulation()
     p.setPhysicsEngineParameter(numSolverIterations=150)
@@ -578,10 +670,24 @@ def test(args):
     p.setTimeStep(sim_timestep)
     p.setGravity(0, 0, 0)
 
+    # ------------------- #
+    # --- Setup robot --- #
+    # ------------------- #
+
+    # Load plane contained in pybullet_data
+    p.loadURDF(os.path.join(pybullet_data.getDataPath(), "plane.urdf"))
+    robot = pandaEnv(physics_client_id, use_IK=1)
+
+    # -------------------------- #
+    # --- Load other objects --- #
+    # -------------------------- #
+
+    p.loadURDF(os.path.join(pybullet_data.getDataPath(), "table/table.urdf"), [1, 0.0, 0.0])
+
     hook_pose = [
-        0.0,
-        0.0,
-        0.0,
+        0.5,
+        -0.1,
+        1.3,
         4.329780281177466e-17,
         0.7071067811865475,
         0.7071067811865476,
@@ -625,8 +731,8 @@ def test(args):
         affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
         colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
 
-        contact_point_cond = np.where(affordance == np.max(affordance))[0]
-        contact_point = points[contact_point_cond][0]
+        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        # contact_point = points[contact_point_cond][0]
 
         contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
         contact_point_coor.translate(contact_point.reshape((3, 1)))
@@ -650,7 +756,6 @@ def test(args):
             
             save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
             imageio.mimsave(save_path, img_list, fps=10)
-            # print(f'{save_path} saved')
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
@@ -664,35 +769,33 @@ def test(args):
         # conting inference score using object and object contact information
         if evaluate:
             max_obj_success_cnt = 0
+            wpt_ids = []
             for traj_id, recovered_traj in enumerate(recovered_trajs):
-                reversed_recovered_traj = recovered_traj[::-1]
 
                 obj_success_cnt = 0
-                for i in range(len(obj_contact_poses)):
-
-                    obj_id = p.loadURDF(obj_urdfs[i])
+                for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
+                    reversed_recovered_traj = recovered_traj[::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
-                    score, rgbs = trajectory_scoring(reversed_recovered_traj, hook_id, obj_id, [0, 0, 0, 0, 0, 0, 1], obj_contact_pose=obj_contact_poses[i], visualize=visualize)
+
+                    obj_id = p.loadURDF(obj_urdf)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize)
+                    res = 'success' if success else 'failed'
+                    obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
-                    p.removeAllUserDebugItems()
 
-                    obj_success_cnt += 1 if np.max(score) > 0 else 0
-                    # print('traj-{} obj-{} success: {}'.format(traj_id, obj_urdfs[i].split('/')[-2], np.max(score) > 0))
-
-                    if len(rgbs) > 0 and traj_id == 0:  
-                        res = 'success' if np.max(score) > 0 else 'failed'
+                    if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
                         rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
-                # print('traj-{} success rate: {}'.format(traj_id, obj_success_cnt / len(obj_contact_poses)))
 
             all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
-                
+               
         if visualize:
             wpt_ids = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj):
+
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
@@ -710,8 +813,8 @@ def test(args):
                 p.resetDebugVisualizerCamera(
                     cameraDistance=0.08,
                     cameraYaw=cameraYaw,
-                    cameraPitch=-10,
-                    cameraTargetPosition=[0.0, 0.0, 0.0]
+                    cameraPitch=0,
+                    cameraTargetPosition=[0.5, -0.1, 1.3]
                 )
 
                 cam_info = p.getDebugVisualizerCamera()
@@ -757,6 +860,9 @@ def main(args):
 
     if args.training_mode == "train":
         train(args)
+
+    if args.training_mode == "val":
+        val(args)
 
     if args.training_mode == "test":
         test(args)
