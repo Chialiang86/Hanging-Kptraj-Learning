@@ -8,7 +8,7 @@ VAT-Mart/
 */*/*/*/*/__pycache__
 */*/*/*/*/*/__pycache__
 tmp/
-dataset/*
+dataset/traj_recon_affordance
 legacy/*
 raw/*
 shapes/*
