@@ -71,7 +71,7 @@ def main(args):
 
         traj_jsons = glob.glob(f'{traj_dir}/traj*.json')
         traj_jsons.sort()
-        success_cnt = 0
+        # success_cnt = 0
         for traj_json in traj_jsons:
             traj_dict = json.load(open(traj_json, 'r'))
             kptraj = traj_dict['trajectory']
@@ -81,34 +81,34 @@ def main(args):
             for i in range(0, len(kptraj), 4):
                 kptraj_down.append(kptraj[i])
             
-            num = len(kptraj_down)
-            t_step = 1.0 / (num - 1)
-            intersections = np.arange(0.0, 1 + 1e-10, t_step)
+            # num = len(kptraj_down)
+            # t_step = 1.0 / (num - 1)
+            # intersections = np.arange(0.0, 1 + 1e-10, t_step)
             
-            trajectory3d = np.asarray(kptraj_down)[:, :3]
-            trajectory_smooth3d = Bezier.Curve(intersections, trajectory3d)
-            trajectory_smooth = np.asarray(kptraj_down)
-            trajectory_smooth[:, :3] = trajectory_smooth3d
+            # trajectory3d = np.asarray(kptraj_down)[:, :3]
+            # trajectory_smooth3d = Bezier.Curve(intersections, trajectory3d)
+            # trajectory_smooth = np.asarray(kptraj_down)
+            # trajectory_smooth[:, :3] = trajectory_smooth3d
 
-            score, _ = trajectory_scoring(trajectory_smooth, hook_id, obj_id, hook_pose, obj_contact_pose, visualize=False)
-            if score > 0:
+            # score, _ = trajectory_scoring(trajectory_smooth, hook_id, obj_id, hook_pose, obj_contact_pose, visualize=False)
+            # if score > 0:
 
-                success_cnt += 1
+            # success_cnt += 1
 
-                out_traj_dict = {
-                    'trajectory': trajectory_smooth.tolist()
-                } 
-                
-                out_traj_json = f'{out_dir}/{sub_json}'
-                json.dump(out_traj_dict, open(out_traj_json, 'w'), indent=4)
+            out_traj_dict = {
+                'trajectory': kptraj_down
+            } 
+            
+            out_traj_json = f'{out_dir}/{sub_json}'
+            json.dump(out_traj_dict, open(out_traj_json, 'w'), indent=4)
         
-        if success_cnt == 0:
-            print(f'no traj in {hook_name} ...')
+        # if success_cnt == 0:
+        #     print(f'no traj in {hook_name} ...')
 
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train')
-    parser.add_argument('--output_dir', '-od', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.20.13.31-1000/train')
+    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val')
+    parser.add_argument('--output_dir', '-od', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.20.13.31-1000/val')
     args = parser.parse_args()
     main(args)
