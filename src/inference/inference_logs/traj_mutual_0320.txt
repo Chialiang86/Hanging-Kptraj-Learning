@@ -1,0 +1,128 @@
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000/train
+[summary] all success rate: 0.8285714285714285
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000/inference
+[summary] all success rate: 0.419047619047619
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/train
+[summary] all success rate: 0.7238095238095239
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/inference
+[summary] all success rate: 0.5142857142857143
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train
+[summary] all success rate: 0.5619047619047619
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference
+[summary] all success rate: 0.38
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train
+[summary] all success rate: 0.5714285714285716
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference
+[summary] all success rate: 0.39
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/train
+[summary] all success rate: 0.49523809523809537
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/inference
+[summary] all success rate: 0.28
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/train
+[summary] all success rate: 0.6476190476190479
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/inference
+[summary] all success rate: 0.54
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/train
+[summary] all success rate: 0.5523809523809524
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+num of points = 1000
+checkpoint: checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000/1000_points-network_epoch-30000.pth
+wpt_dim: 6
+===============================================================================================
+checkpoint: checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000/1000_points-network_epoch-30000.pth
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/inference
+[summary] all success rate: 0.35238095238095246
+===============================================================================================
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs
+current_dir=/home/hcis-s16/Desktop/keypoint_trajectory_learning/src/pybullet_robot_envs/envs/panda_envs

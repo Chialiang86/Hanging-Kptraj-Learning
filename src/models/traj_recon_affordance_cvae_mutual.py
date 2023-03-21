@@ -386,4 +386,4 @@ class TrajReconAffordanceMutual(nn.Module):
             losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.00001 * affordance_loss
 
 
-        return f_s, losses # TODO: delete f_s
+        return losses 

@@ -484,9 +484,10 @@ def val(args):
 
         with torch.no_grad():
 
-            f_s, losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
+            # f_s, losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
+            losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
 
-            whole_fs = f_s if whole_fs is None else torch.vstack((whole_fs, f_s))
+            # whole_fs = f_s if whole_fs is None else torch.vstack((whole_fs, f_s))
 
             if 'afford' in losses.keys():
                 val_afford_losses.append(losses['afford'].item())
@@ -500,18 +501,18 @@ def val(args):
             val_recon_losses.append(losses['recon'].item())
             val_total_losses.append(losses['total'].item())
     
-    whole_fs = whole_fs.detach().cpu().numpy()
-    pca = PCA(n_components=3)
-    pca.fit(whole_fs)
-    X_pca = pca.transform(whole_fs)
+    # whole_fs = whole_fs.detach().cpu().numpy()
+    # pca = PCA(n_components=3)
+    # pca.fit(whole_fs)
+    # X_pca = pca.transform(whole_fs)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], marker='o')
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
-    plt.show()
+    # fig = plt.figure()
+    # ax = fig.add_subplot(projection='3d')
+    # ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], marker='o')
+    # ax.set_xlabel('X Label')
+    # ax.set_ylabel('Y Label')
+    # ax.set_zlabel('Z Label')
+    # plt.show()
 
     if 'afford' in losses.keys():
         val_afford_avg_loss = np.mean(np.asarray(val_afford_losses))

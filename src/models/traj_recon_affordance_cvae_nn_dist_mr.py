@@ -355,8 +355,8 @@ class TrajReconAffordanceNNDistMR(nn.Module):
         losses['dist'] = dist_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.1 * nn_loss + 0.1 * dist_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.1 * nn_loss + 0.1 * dist_loss
 
         return losses

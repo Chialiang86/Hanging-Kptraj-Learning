@@ -602,7 +602,7 @@ def test(args):
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
-        obj_grasping_infos.append(obj_contact_info['initial_pose'][0])
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][8])
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -638,13 +638,11 @@ def test(args):
     # ================== Simulator ================== #
 
     # Create pybullet GUI
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,

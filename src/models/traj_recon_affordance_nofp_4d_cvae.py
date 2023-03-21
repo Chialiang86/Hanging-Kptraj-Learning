@@ -337,7 +337,7 @@ class TrajReconAffordanceNoFP4D(nn.Module):
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
-            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * 6), input_wps.view(batch_size, self.num_steps * 6))
+            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
             input_dir = traj[:, 0, :]
@@ -347,7 +347,7 @@ class TrajReconAffordanceNoFP4D(nn.Module):
 
             input_wps = traj[:, 1:, :]
             recon_wps = recon_traj[:, 1:, :]
-            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * 6), input_wps.view(batch_size, (self.num_steps - 1) * 6))
+            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
             
             recon_loss = self.lbd_dir * dir_loss + wpt_loss
             # recon_absolute = recon_traj[:, 0, :]

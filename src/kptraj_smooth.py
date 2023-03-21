@@ -12,8 +12,8 @@ def main(args):
     input_dir = args.input_dir
     assert os.path.exists(input_dir), f'{input_dir} not exists'
 
-    output_dir = args.output_dir
-    os.makedirs(output_dir, exist_ok=True)
+    # output_dir = args.output_dir
+    # os.makedirs(output_dir, exist_ok=True)
 
     # Create pybullet GUI
     p.connect(p.GUI)
@@ -31,7 +31,7 @@ def main(args):
     p.setTimeStep(sim_timestep)
     p.setGravity(0, 0, 0)
 
-    traj_dirs = glob.glob(f'{input_dir}/*')
+    traj_dirs = glob.glob(f'{input_dir}/*devil*')
     traj_dirs.sort()
 
     hook_pose = [
@@ -78,18 +78,18 @@ def main(args):
             for wpt in kptraj[::-1]:
                 kptraj_reverse.append(list(pose_6d_to_7d(wpt)))
             
-            num = len(kptraj_reverse)
-            t_step = 1.0 / (num - 1)
-            intersections = np.arange(0.0, 1 + 1e-10, t_step)
+            # num = len(kptraj_reverse)
+            # t_step = 1.0 / (num - 1)
+            # intersections = np.arange(0.0, 1 + 1e-10, t_step)
             
-            trajectory3d = np.asarray(kptraj_reverse)[:, :3]
-            trajectory_smooth3d = Bezier.Curve(intersections, trajectory3d)
-            trajectory_smooth = np.asarray(kptraj_reverse)
-            trajectory_smooth[:, :3] = trajectory_smooth3d
+            # trajectory3d = np.asarray(kptraj_reverse)[:, :3]
+            # trajectory_smooth3d = Bezier.Curve(intersections, trajectory3d)
+            # trajectory_smooth = np.asarray(kptraj_reverse)
+            # trajectory_smooth[:, :3] = trajectory_smooth3d
 
-            score, _ = trajectory_scoring(trajectory_smooth, hook_id, obj_id, hook_pose, obj_contact_pose, visualize=False)
-            if score > 0:
-                smooth_trajs.append(trajectory_smooth.tolist())
+            score, _ = trajectory_scoring(kptraj_reverse, hook_id, obj_id, hook_pose, obj_contact_pose, visualize=False)
+            # if score > 0:
+            #     smooth_trajs.append(trajectory_smooth.tolist())
 
         # out_traj_dict = {
         #     'trajectory': smooth_trajs
@@ -111,7 +111,7 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train')
+    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.20.13.31-1000/train')
     # parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_new-absolute-40/alltraj-1000/train/')
     parser.add_argument('--output_dir', '-od', type=str, default='')
     args = parser.parse_args()
