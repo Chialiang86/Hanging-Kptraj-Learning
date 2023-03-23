@@ -14,7 +14,7 @@ raw/*
 shapes/*
 src/checkpoints/*
 src/figures/*
-src/inference_gifs/*
+src/inference/*
 src/logs/*
 src/training_logs/*
 */legacy/*

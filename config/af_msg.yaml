@@ -5,22 +5,22 @@ module: 'affordance'
 model: 'Affordance'
 
 dataset_inputs:
-  num_steps: 40
-  wpt_dim: 3
+  num_steps: 40 # not used
+  wpt_dim: 3 # not used
   sample_num_points: 1000
-  enable_traj: 0
-  affordance_type: 4
+  enable_traj: 0 
+  affordance_type: 1
 
 model_inputs:
   model.use_xyz: 1
 
 lr: 0.0001
 lr_decay_rate: 0.95
-lr_decay_epoch: 2000
+lr_decay_epoch: 100
 weight_decay: 0.0001
-save_freq: 4000
+save_freq: 200
 
 batch_size: 16
 
 start_epoch: 0
-stop_epoch: 20000
+stop_epoch: 2000

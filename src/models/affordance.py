@@ -16,9 +16,6 @@ class AffordanceMSG(PointNet2SemSegSSG):
         super().__init__(hparams)
 
         self.hparams = hparams
-        # self.MSELoss = nn.MSELoss(reduction='mean')
-        # self.loss = nn.CrossEntropyLoss(reduction='mean')
-        # self.loss = nn.functional.binary_cross_entropy
         self.sigmoid = nn.Sigmoid()
 
         self._build_model()
@@ -85,20 +82,23 @@ class AffordanceMSG(PointNet2SemSegSSG):
             nn.ReLU(True),
             nn.Dropout(0.5),
             nn.Conv1d(128, 1, kernel_size=1),
-            # nn.Sigmoid()
         )
 
     def get_loss(self, pcs, affords):
         pcs = pcs.repeat(1, 1, 2)
         affords_pred = self.forward(pcs)
-        # BCE_loss = self.loss(affords.unsqueeze(1), affords_pred)
-        BCE_loss = F.binary_cross_entropy_with_logits(affords.unsqueeze(1), affords_pred)
+
+        # affordance_min = torch.unsqueeze(torch.min(affords_pred, dim=2).values, 1)
+        # affordance_max = torch.unsqueeze(torch.max(affords_pred, dim=2).values, 1)
+        # affords_pred = (affords_pred - affordance_min) / (affordance_max - affordance_min)
+
+        BCE_loss = F.binary_cross_entropy_with_logits(affords_pred, affords.unsqueeze(1))
         return BCE_loss
 
     def inference(self, pcs):
         pcs = pcs.repeat(1, 1, 2)
-        # affords_pred = self.sigmoid(self.forward(pcs))
         affords_pred = self.forward(pcs)
+
         return affords_pred
 
 class Affordance(PointNet2ClassificationSSG):
@@ -204,13 +204,22 @@ class Affordance(PointNet2ClassificationSSG):
     def get_loss(self, pcs, affords):
         pcs = pcs.repeat(1, 1, 2)
         affords_pred = self.forward(pcs)
-        # BCE_loss = self.loss(affords.unsqueeze(1), affords_pred)
-        BCE_loss = F.binary_cross_entropy_with_logits(affords.unsqueeze(1), affords_pred)
+        
+        # affordance_min = torch.unsqueeze(torch.min(affords_pred, dim=2).values, 1)
+        # affordance_max = torch.unsqueeze(torch.max(affords_pred, dim=2).values, 1)
+        # affords_pred = (affords_pred - affordance_min) / (affordance_max - affordance_min)
+
+        BCE_loss = F.binary_cross_entropy_with_logits(affords_pred, affords.unsqueeze(1))
         return BCE_loss
 
     def inference(self, pcs):
         pcs = pcs.repeat(1, 1, 2)
-        affords_pred = self.sigmoid(self.forward(pcs))
+        affords_pred = self.forward(pcs)
+
         return affords_pred
-        # pcd_feat, affords_pred = self.forward(pcs)
-        # return pcd_feat, affords_pred
+
+    def inference_sigmoid(self, pcs):
+        pcs = pcs.repeat(1, 1, 2)
+        affords_pred = self.forward(pcs)
+
+        return self.sigmoid(affords_pred)

@@ -356,10 +356,12 @@ class TrajReconAffordanceNoFP4D(nn.Module):
             mean_interval_recon = torch.mean(torch.norm(recon_wps[:, 1:, :3] - recon_wps[:, :-1, :3], dim=2))
             dist_loss = torch.abs(mean_interval_gt - mean_interval_recon) / mean_interval_gt
 
-            recon_loss_0to10 = self.MSELoss(recon_wps[:, :10].view(batch_size, 10 * self.wpt_dim), input_wps[:, :10].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_10to20 = self.MSELoss(recon_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim), input_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_20tolast = self.MSELoss(recon_wps[:, 20:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 20:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
-            recon_loss = recon_loss_0to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+            bound1 = int(0.25 * self.num_steps)
+            bound2 = int(0.5 * self.num_steps)
+            recon_loss_0 = self.MSELoss(recon_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim), input_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim))
+            recon_loss_1 = self.MSELoss(recon_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim), input_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim))
+            recon_loss_2 = self.MSELoss(recon_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) *  self.wpt_dim), input_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) * self.wpt_dim))
+            recon_loss = recon_loss_0 + 0.5 * recon_loss_1 + 0.25 * recon_loss_2
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
             input_dir = traj[:, 0, :]
@@ -394,58 +396,3 @@ class TrajReconAffordanceNoFP4D(nn.Module):
             losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.1 * nn_loss + 0.1 * dist_loss
 
         return losses
-
-    # def get_loss_test_rotation(self, pcs, traj, batch_size):
-    #     recon_traj, mu, logvar = self.forward(pcs, traj)
-    #     recon_dir = recon_traj[:, 0, :]
-    #     recon_wps = recon_traj[:, 1:, :]
-    #     input_dir = traj[:, 0, :]
-    #     input_wps = traj[:, 1:, :]
-    #     recon_xyz_loss = self.MSELoss(recon_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3))
-    #     recon_rotation_loss = self.MSELoss(recon_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3))
-    #     recon_loss = recon_xyz_loss.mean() + recon_rotation_loss.mean() * 100
-
-    #     dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-    #     dir_loss = dir_loss.mean()
-    #     kl_loss = KL(mu, logvar)
-    #     losses = {}
-    #     losses['kl'] = kl_loss
-    #     losses['recon'] = recon_loss
-    #     losses['recon_xyz'] = recon_xyz_loss.mean()
-    #     losses['recon_rotation'] = recon_rotation_loss.mean()
-    #     losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon
-
-    #     return losses
-
-    # def inference_whole_pc(self, feat, dirs1, dirs2):
-    #     num_pts = feat.shape[-1]
-    #     batch_size = feat.shape[0]
-
-    #     feat = feat.permute(0, 2, 1)  # B x N x F
-    #     feat = feat.reshape(batch_size*num_pts, -1)
-
-    #     input_queries = torch.cat([dirs1, dirs2], dim=-1)
-    #     input_queries = input_queries.unsqueeze(dim=1).repeat(1, num_pts, 1)
-    #     input_queries = input_queries.reshape(batch_size*num_pts, -1)
-
-    #     pred_result_logits = self.critic(feat, input_queries)
-
-    #     soft_pred_results = torch.sigmoid(pred_result_logits)
-    #     soft_pred_results = soft_pred_results.reshape(batch_size, num_pts)
-
-    #     return soft_pred_results
-
-    # def inference(self, pcs, dirs1, dirs2):
-    #     pcs = pcs.repeat(1, 1, 2)
-    #     pcs_feat = self.pointnet2(pcs)
-
-    #     net = pcs_feat[:, :, 0]
-
-    #     input_queries = torch.cat([dirs1, dirs2], dim=1)
-
-    #     pred_result_logits = self.critic(net, input_queries)
-
-    #     pred_results = (pred_result_logits > 0)
-
-    #     return pred_results
-    

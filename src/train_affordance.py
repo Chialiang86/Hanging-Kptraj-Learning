@@ -101,12 +101,12 @@ def train(args):
         train_batches = enumerate(train_loader, 0)
         val_batches = enumerate(val_loader, 0)
 
+        # set models to training mode
+        network.train()
         # training
         train_total_losses = []
         for i_batch, (sample_pcds, sample_affords) in tqdm(train_batches, total=len(train_loader)):
 
-            # set models to training mode
-            network.train()
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_affords = sample_affords.to(device).contiguous()
@@ -141,13 +141,14 @@ def train(args):
                 torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
                 torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
+        # set models to evaluation mode
+        network.eval()
+
         # validation
         val_total_losses = []
         # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
         for i_batch, (sample_pcds, sample_affords) in tqdm(val_batches, total=len(val_loader)):
 
-            # set models to evaluation mode
-            network.eval()
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_affords = sample_affords.to(device).contiguous()
@@ -166,6 +167,68 @@ def train(args):
                 f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
                 f'''---------------------------------------------\n'''
             )
+
+def val(args):
+
+    dataset_dir = args.dataset_dir
+    checkpoint_dir = args.checkpoint_dir
+    config_file = args.config
+    device = args.device
+    weight_subpath = args.weight_subpath
+    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # params for training
+    dataset_name = config['dataset_module']
+    dataset_class_name = config['dataset_class']
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+    dataset_inputs = config['dataset_inputs']
+    
+    # training batch and iters
+    batch_size = config['batch_size']
+
+    dataset_class = get_dataset_module(dataset_name, dataset_class_name)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+    val_batches = enumerate(val_loader, 0)
+
+    # ================== Model ==================
+
+    # load model
+    network_class = get_model_module(module_name, model_name)
+    network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    # ================ Validation ===============
+
+    val_total_losses = []
+    # set models to evaluation mode
+    network.eval()
+    # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
+    for i_batch, (sample_pcds, sample_affords) in tqdm(val_batches, total=len(val_loader)):
+
+
+        sample_pcds = sample_pcds.to(device).contiguous() 
+        sample_affords = sample_affords.to(device).contiguous()
+
+        with torch.no_grad():
+            losses = network.get_loss(sample_pcds, sample_affords)  # B x 2, B x F x N
+            val_total_losses.append(losses.item())
+
+    val_total_avg_loss = np.mean(np.asarray(val_total_losses))
+    print(
+            f'''---------------------------------------------\n'''
+            f'''[ validation stage ]\n'''
+            f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
+            f'''---------------------------------------------\n'''
+        )
 
 def capture_from_viewer(geometries):
     vis = o3d.visualization.Visualizer()
@@ -207,7 +270,7 @@ def test(args):
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
 
     inference_subdir = os.path.split(inference_dir)[-1]
-    output_dir = f'inference_affordances/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    output_dir = f'inference/inference_affordances/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
     os.makedirs(output_dir, exist_ok=True)
 
     config = None
@@ -257,9 +320,6 @@ def test(args):
     network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
     network.load_state_dict(torch.load(weight_path))
 
-    if verbose:
-        summary(network)
-
     # ================== Inference ==================
     frames = 36
     rotate_per_frame = (2 * np.pi) / frames
@@ -278,7 +338,7 @@ def test(args):
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
         # pcd_feat, affords = network.inference(points_batch)
-        affords = network.inference(points_batch)
+        affords = network.inference_sigmoid(points_batch)
         affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
         affords = affords.squeeze().cpu().detach().numpy()
 
@@ -393,12 +453,16 @@ def main(args):
     checkpoint_dir = args.checkpoint_dir
     config_file = args.config
 
-    assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+    if dataset_dir != '':
+        assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
     assert os.path.exists(checkpoint_dir), f'{checkpoint_dir} not exists'
     assert os.path.exists(config_file), f'{config_file} not exists'
 
     if args.training_mode == "train":
         train(args)
+
+    if args.training_mode == "val":
+        val(args)
 
     if args.training_mode == "test":
         test(args)
@@ -418,7 +482,7 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
     # about dataset
-    parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
+    parser.add_argument('--dataset_dir', '-dd', type=str, default='')
 
     # training mode
     parser.add_argument('--training_mode', '-tm', type=str, default='train', help="training mode : [train, test]")

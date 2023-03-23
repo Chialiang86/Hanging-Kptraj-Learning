@@ -9,7 +9,7 @@ dataset_inputs:
   wpt_dim: 3 # not used
   sample_num_points: 1000
   enable_traj: 0
-  affordance_type: 1
+  affordance_type: 4
 
 model_inputs:
   model.use_xyz: 1

@@ -1,6 +1,7 @@
-import argparse, json, yaml, cv2, imageio, os, time, glob
+import argparse, sys, json, yaml, cv2, imageio, os, time, glob
 import open3d as o3d
 import numpy as np
+
 from datetime import datetime
 
 from tqdm import tqdm
@@ -617,7 +618,7 @@ def test(args):
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
-        obj_grasping_infos.append(obj_contact_info['initial_pose'][8])
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][8]) # bottom position
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -647,18 +648,17 @@ def test(args):
     network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
     network.load_state_dict(torch.load(weight_path))
 
-    if verbose:
-        summary(network)
-
     # ================== Simulator ==================
 
     # Create pybullet GUI
     physics_client_id = None
-    if visualize:
-        physics_client_id = p.connect(p.GUI)
-        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    else:
-        physics_client_id = p.connect(p.DIRECT)
+    physics_client_id = p.connect(p.GUI)
+    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # if visualize:
+    #     physics_client_id = p.connect(p.GUI)
+    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # else:
+    #     physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -719,9 +719,11 @@ def test(args):
         points_batch = points_batch[0, input_pcid, :].squeeze()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
-        contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
 
-        affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
+        # generate trajectory using predicted contact points
+        affordance, recon_trajs = network.sample(points_batch)
 
         ###############################################
         # =========== for affordance head =========== #
@@ -767,6 +769,8 @@ def test(args):
         centroids = torch.from_numpy(centroid).repeat(batch_size, 1).to(device)
         recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
 
+        draw_coordinate(recovered_trajs[0][0], size=0.02)
+
         # conting inference score using object and object contact information
         if evaluate:
             max_obj_success_cnt = 0
@@ -779,7 +783,7 @@ def test(args):
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
                     res = 'success' if success else 'failed'
                     obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
@@ -790,6 +794,8 @@ def test(args):
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
             all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+        
+        p.removeAllUserDebugItems()
                
         if visualize:
             wpt_ids = []
@@ -814,7 +820,7 @@ def test(args):
                 p.resetDebugVisualizerCamera(
                     cameraDistance=0.08,
                     cameraYaw=cameraYaw,
-                    cameraPitch=0,
+                    cameraPitch=-30,
                     cameraTargetPosition=[0.5, -0.1, 1.3]
                 )
 

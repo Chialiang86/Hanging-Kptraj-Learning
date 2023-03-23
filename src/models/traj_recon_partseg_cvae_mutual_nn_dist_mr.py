@@ -217,6 +217,8 @@ class TrajReconPartSegMutual(nn.Module):
             nn.Conv1d(pcd_feat_dim, 1, kernel_size=1)
         )
 
+        self.sigmoid = torch.nn.Sigmoid()
+
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
@@ -279,14 +281,15 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats = self.pointnet2(pcs_repeat)
 
         affordance = self.affordance_head(whole_feats)
+        affordance_sigmoid = self.sigmoid(affordance)
         if iter < self.train_traj_start:
-            return affordance, None, None, None
+            return affordance, None, None, None, None
         
         # choose 10 features from segmented point cloud
-        affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
-        affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
-        affordance_norm = (affordance - affordance_min) / (affordance_max - affordance_min)
-        part_cond = torch.where(affordance_norm > 0.5) # only high response region selected
+        affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
+        affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
+        affordance_norm = (affordance_sigmoid - affordance_min) / (affordance_max - affordance_min)
+        part_cond = torch.where(affordance_norm > 0.3) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()
@@ -294,7 +297,10 @@ class TrajReconPartSegMutual(nn.Module):
         pcs_part_list = []
         for i in range(max_iter):
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            point_ind = part_cond2[cond][ind]
+            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
             pcs_part_list.append(pcs[i, part_cond2[cond]])
 
@@ -305,11 +311,10 @@ class TrajReconPartSegMutual(nn.Module):
         z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
 
-        return pcs_part_list, affordance, recon_traj, mu, logvar
+        return affordance, pcs_part_list, recon_traj, mu, logvar
 
-    def sample(self, pcs, contact_point):
+    def sample(self, pcs):
         batch_size = pcs.shape[0]
-        f_cp = self.mlp_cp(contact_point)
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
         pcs = pcs.repeat(1, 1, 2)
@@ -320,11 +325,22 @@ class TrajReconPartSegMutual(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
+        affordance = self.sigmoid(affordance)
+
+        affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
+        affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
+        affordance = (affordance - affordance_min) / (affordance_max - affordance_min)
+        contact_cond = torch.where(affordance == torch.max(affordance)) # only high response region selected
+        contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
+        contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
+
+        contact_point = pcs[contact_cond0, contact_cond2]
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
+        f_cp = self.mlp_cp(contact_point)
         f_s = whole_feats[:, :, 0]
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
@@ -351,9 +367,9 @@ class TrajReconPartSegMutual(nn.Module):
         batch_size = traj.shape[0]
         traj_unsqueeze = traj[:, :self.num_steps, :3].unsqueeze(2) # (B x T x 3) => (B x T x 1 x 3)
 
-        mean_min_dists = torch.zeros((self.num_steps, 1))
+        mean_min_dists = torch.zeros((self.num_steps, 1)).to('cuda')
         for i in range(batch_size):
-            pcs_unsqueeze = pcs_part_list[i].unsqueeze(1).repeat(1, self.num_steps, 1, 1) # (N x 3) => (T x N x 3)
+            pcs_unsqueeze = pcs_part_list[i].unsqueeze(0).repeat(self.num_steps, 1, 1) # (N x 3) => (T x N x 3)
             diff = pcs_unsqueeze - traj_unsqueeze[i] # (T x N x 3)
             dist = torch.norm(diff, dim=2) # (T x N)
             mean_min_dist = dist.topk(1, largest=False).values # smallest value  # (T x 1)
@@ -364,7 +380,7 @@ class TrajReconPartSegMutual(nn.Module):
     def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
         batch_size = traj.shape[0]
 
-        pcs_part_list, affordance_pred, recon_traj, mu, logvar = self.forward(iter, pcs, traj, contact_point)
+        affordance_pred, pcs_part_list, recon_traj, mu, logvar = self.forward(iter, pcs, traj, contact_point)
 
         nn_loss = torch.Tensor([0]).to('cuda')
         recon_loss = torch.Tensor([0]).to('cuda')
@@ -375,7 +391,7 @@ class TrajReconPartSegMutual(nn.Module):
         # =========== for affordance head =========== #
         ###############################################
 
-        affordance_loss = F.binary_cross_entropy_with_logits(affordance.unsqueeze(1), affordance_pred)
+        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
         if iter < self.train_traj_start:
             losses = {}
             losses['afford'] = affordance_loss
@@ -405,11 +421,13 @@ class TrajReconPartSegMutual(nn.Module):
             mean_interval_gt = torch.mean(torch.norm(traj[:, 1:, :3] - traj[:, :-1, :3], dim=2))
             mean_interval_recon = torch.mean(torch.norm(recon_wps[:, 1:, :3] - recon_wps[:, :-1, :3], dim=2))
             dist_loss = torch.abs(mean_interval_gt - mean_interval_recon) / mean_interval_gt
-
-            recon_loss_0to10 = self.MSELoss(recon_wps[:, :10].view(batch_size, 10 * self.wpt_dim), input_wps[:, :10].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_10to20 = self.MSELoss(recon_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim), input_wps[:, 10:20].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_20tolast = self.MSELoss(recon_wps[:, 20:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 20:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
-            recon_loss = recon_loss_0to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+        
+            bound1 = int(0.25 * self.num_steps)
+            bound2 = int(0.5 * self.num_steps)
+            recon_loss_0 = self.MSELoss(recon_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim), input_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim))
+            recon_loss_1 = self.MSELoss(recon_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim), input_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim))
+            recon_loss_2 = self.MSELoss(recon_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) *  self.wpt_dim), input_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) * self.wpt_dim))
+            recon_loss = recon_loss_0 + 0.5 * recon_loss_1 + 0.25 * recon_loss_2
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
             input_dir = traj[:, 0, :]
@@ -420,10 +438,12 @@ class TrajReconPartSegMutual(nn.Module):
             input_wps = traj[:, 1:, :]
             recon_wps = recon_traj[:, 1:, :]
             
-            recon_loss_1to10 = self.MSELoss(recon_wps[:, :9].view(batch_size, 9 * self.wpt_dim), input_wps[:, :9].view(batch_size, 9 * self.wpt_dim))
-            recon_loss_10to20 = self.MSELoss(recon_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim), input_wps[:, 9:19].view(batch_size, 10 * self.wpt_dim))
-            recon_loss_20tolast = self.MSELoss(recon_wps[:, 19:].view(batch_size, (self.num_steps - 20) *  self.wpt_dim), input_wps[:, 19:].view(batch_size, (self.num_steps - 20) * self.wpt_dim))
-            wpt_loss = recon_loss_1to10 + 0.5 * recon_loss_10to20 + 0.25 * recon_loss_20tolast
+            bound1 = int(0.25 * self.num_steps)
+            bound2 = int(0.5 * self.num_steps)
+            recon_loss_0 = self.MSELoss(recon_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim), input_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim))
+            recon_loss_1 = self.MSELoss(recon_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim), input_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim))
+            recon_loss_2 = self.MSELoss(recon_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) *  self.wpt_dim), input_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) * self.wpt_dim))
+            wpt_loss = recon_loss_0 + 0.5 * recon_loss_1 + 0.25 * recon_loss_2
             
             mean_interval_gt = torch.mean(torch.norm(traj[:, 1:, :3], dim=2))
             mean_interval_recon = torch.mean(torch.norm(recon_wps[:, 1:, :3], dim=2))
@@ -440,8 +460,8 @@ class TrajReconPartSegMutual(nn.Module):
         losses['dir'] = dir_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.001 * affordance_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.001 * affordance_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
 
         return losses

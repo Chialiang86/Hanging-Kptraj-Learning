@@ -217,6 +217,8 @@ class TrajReconAffordanceMutual(nn.Module):
             nn.Conv1d(pcd_feat_dim, 1, kernel_size=1)
         )
 
+        self.sigmoid = nn.Sigmoid()
+
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
@@ -287,26 +289,36 @@ class TrajReconAffordanceMutual(nn.Module):
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
 
         # return affordance, recon_traj, mu, logvar
-        return affordance, f_s, recon_traj, mu, logvar # TODO: delete whole_feats
+        return affordance, recon_traj, mu, logvar 
 
-    def sample(self, pcs, contact_point):
+    def sample(self, pcs):
         batch_size = pcs.shape[0]
-        f_cp = self.mlp_cp(contact_point)
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        pcs = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pcs)
+        pcs_input = pcs.repeat(1, 1, 2)
+        whole_feats = self.pointnet2(pcs_input)
 
         ###############################################
         # =========== for affordance head =========== #
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
+        affordance = self.sigmoid(affordance)
+
+        affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
+        affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
+        affordance = (affordance - affordance_min) / (affordance_max - affordance_min)
+        contact_cond = torch.where(affordance == torch.max(affordance)) # only high response region selected
+        contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
+        contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
+
+        contact_point = pcs[contact_cond0, contact_cond2]
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
+        f_cp = self.mlp_cp(contact_point)
         f_s = whole_feats[:, :, 0]
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
@@ -329,7 +341,7 @@ class TrajReconAffordanceMutual(nn.Module):
     def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
         batch_size = traj.shape[0]
 
-        affordance_pred, f_s, recon_traj, mu, logvar = self.forward(pcs, traj, contact_point) # TODO: delete f_s
+        affordance_pred, recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
         nn_loss = torch.Tensor([0]).to('cuda')
         recon_loss = torch.Tensor([0]).to('cuda')
@@ -340,7 +352,7 @@ class TrajReconAffordanceMutual(nn.Module):
         # =========== for affordance head =========== #
         ###############################################
 
-        affordance_loss = F.binary_cross_entropy_with_logits(affordance.unsqueeze(1), affordance_pred)
+        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
         if iter < self.train_traj_start:
             losses = {}
             losses['afford'] = affordance_loss
@@ -381,9 +393,9 @@ class TrajReconAffordanceMutual(nn.Module):
         losses['dir'] = dir_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.00001 * affordance_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + affordance_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.00001 * affordance_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + affordance_loss
 
 
         return losses 

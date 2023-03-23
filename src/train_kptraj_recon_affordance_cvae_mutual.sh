@@ -8,23 +8,23 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        "traj_af_mutual_10"
-        "traj_part_mutual_10"
-        "traj_fusion_mutual_10"
-        "traj_fusion_mutual_nn_dist_mr_10"
+        # "traj_af_mutual_10"
+        # "traj_part_mutual_10"
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_nn_dist_mr_10"
 
         # "traj_af_mutual"
         # "traj_part_mutual"
         # "traj_fusion_mutual"
-        # "traj_fusion_mutual_nn_dist_mr"
+        "traj_fusion_mutual_nn_dist_mr"
     )
 
     traj_recon_affordance_datasets=(
 
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.20.13.31-1000"
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
     )
 
@@ -146,91 +146,91 @@ elif [ $1 = 'test' ]; then
     model_configs=(
 
         "traj_af_mutual_10"
-        "traj_af_mutual_10"
-        "traj_af_mutual_10"
-        "traj_af_mutual_10"
+        # "traj_af_mutual_10"
+        # "traj_af_mutual_10"
+        # "traj_af_mutual_10"
 
-        "traj_af_mutual"
-        "traj_af_mutual"
-        "traj_af_mutual"
-        "traj_af_mutual"
+        # "traj_af_mutual"
+        # "traj_af_mutual"
+        # "traj_af_mutual"
+        # "traj_af_mutual"
  
-        "traj_part_mutual"
-        "traj_part_mutual"
-        "traj_part_mutual"
-        "traj_part_mutual"
+        # "traj_part_mutual"
+        # "traj_part_mutual"
+        # "traj_part_mutual"
+        # "traj_part_mutual"
 
-        "traj_fusion_mutual_nn_dist_mr"
-        "traj_fusion_mutual_nn_dist_mr"
-        "traj_fusion_mutual_nn_dist_mr"
-        "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
     )
 
     dataset_dirs=(
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000"
         "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000"
     )
 
     inference_dirs=(
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000/train"
         "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/onetraj-1000/inference"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/onetraj-1000/inference"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/02.27.10.29-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/02.27.10.32-1000/inference"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/inference"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-absolute-40/03.09.12.53-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new_0-residual-40/03.09.12.56-1000/inference"
 
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/inference"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-absolute-10/alltraj-1000/inference"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_new-residual-10/alltraj-1000/inference"
     )
 
     traj_recon_shape_checkpoints=(
 
+        # "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000"
         "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000"
-        "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-absolute-10-onetraj-1000"
-        "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000"
-        "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000"
+        # "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000"
+        # "checkpoints/traj_af_mutual_10-03.11.17.27-onetraj_10/kptraj_all_new-residual-10-onetraj-1000"
  
-        "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000"
-        "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000"
-        "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000"
-        "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000"
+        # "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000"
+        # "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-absolute-40-02.27.10.29-1000"
+        # "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000"
+        # "checkpoints/traj_af_mutual-03.07.21.37-kl_l/kptraj_all_new_0-residual-40-02.27.10.32-1000"
  
-        "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000"
-        "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000"
-        "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000"
-        "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000"
+        # "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000"
+        # "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-absolute-40-03.09.12.53-1000"
+        # "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000"
+        # "checkpoints/traj_part_mutual-03.09.14.28-kl_l/kptraj_all_new_0-residual-40-03.09.12.56-1000"
  
-        "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000"
-        "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000"
-        "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-residual-40-alltraj-1000"
-        "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-residual-40-alltraj-1000"
+        # "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000"
+        # "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-absolute-40-alltraj-1000"
+        # "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-residual-40-alltraj-1000"
+        # "checkpoints/traj_fusion_mutual_nn_dist_mr-03.17.10.26-kl_l/kptraj_all_new-residual-40-alltraj-1000"
     )
 
     iters=(

@@ -5,11 +5,11 @@ module: 'traj_recon_partseg_cvae_mutual_nn_dist_mr'
 model: 'TrajReconPartSegMutual'
 
 dataset_inputs:
-  num_steps: 40
+  num_steps: 10
   wpt_dim: 6
   sample_num_points: 1000
   enable_traj: 1
-  affordance_type: 4 # for contact point affordance
+  affordance_type: 2 # for contact point affordance
   
 model_inputs:
   pcd_feat_dim: 128
@@ -17,7 +17,7 @@ model_inputs:
   cp_feat_dim: 32
   hidden_dim: 128
   z_feat_dim: 128 
-  num_steps: 40
+  num_steps: 10
   wpt_dim: 6
   lbd_kl: 0.01
   lbd_recon: 1.0

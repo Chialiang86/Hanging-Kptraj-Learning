@@ -528,33 +528,37 @@ def test(args):
     import pybullet_data
     from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
 
-    # ================== config ================== #
-
-    checkpoint_dir = f'{args.checkpoint_dir}'
-    config_file = args.config
     verbose = args.verbose
     visualize = args.visualize
     evaluate = args.evaluate
     device = args.device
+    
+    # for trajectory generation checkpoint
+    checkpoint_dir = f'{args.checkpoint_dir}'
     dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
+    # for affordance checkpoint
+    affordance_weight_path = args.affordance_weight
+
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    assert os.path.exists(affordance_weight_path), f'affordance weight file : {affordance_weight_path} not exists'
 
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
 
-    config = None
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.Loader) # dictionary
-
-    # sample_num_points = int(weight_subpath.split('_')[0])
     sample_num_points = 1000
     print(f'num of points = {sample_num_points}')
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
-    print(f'checkpoint: {weight_path}')
+    print('=================================================')
+    print(f'affordance checkpoint: {affordance_weight_path}')
+    print(f'trajectory generation checkpoint: {weight_path}')
+    print('=================================================')
+
+    # ================== config ================== #
+    config_file = args.config
 
     config = None
     with open(config_file, 'r') as f:
@@ -568,7 +572,26 @@ def test(args):
     batch_size = config['batch_size']
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
-    print(f'wpt_dim: {wpt_dim}')
+
+    afford_config_file = args.afford_config
+    with open(afford_config_file, 'r') as f:
+        afford_config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    afford_module_name = afford_config['module']
+    afford_model_name = afford_config['model']
+    afford_model_inputs = afford_config['model_inputs']
+
+    # ================== Model ================== #
+
+    # load trajectory generation model
+    network_class = get_model_module(module_name, model_name)
+    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    # load affordance generation model
+    afford_network_class = get_model_module(afford_module_name, afford_model_name)
+    afford_network = afford_network_class({'model.use_xyz': afford_model_inputs['model.use_xyz']}).to(device)
+    afford_network.load_state_dict(torch.load(affordance_weight_path))
 
     # ================== Load Inference Shape ================== #
 
@@ -611,10 +634,31 @@ def test(args):
     hook_pcds = []
     hook_affords = []
     hook_urdfs = []
+
+    class_num = 15
+    easy_cnt = 0
+    normal_cnt = 0
+    hard_cnt = 0
+    devil_cnt = 0
     for inference_hook_path in inference_hook_paths:
+
         hook_name = inference_hook_path.split('/')[-2]
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
         affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+        
+        easy_cnt += 1 if 'easy' in hook_name else 0
+        normal_cnt += 1 if 'normal' in hook_name else 0
+        hard_cnt += 1 if 'hard' in hook_name else 0
+        devil_cnt += 1 if 'devil' in hook_name else 0
+
+        if 'easy' in hook_name and easy_cnt > class_num:
+            continue
+        if 'normal' in hook_name and normal_cnt > class_num:
+            continue
+        if 'hard' in hook_name and hard_cnt > class_num:
+            continue
+        if 'devil' in hook_name and devil_cnt > class_num:
+            continue
 
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
         assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
@@ -624,25 +668,17 @@ def test(args):
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
     os.makedirs(output_dir, exist_ok=True)
-    
-    # ================== Model ================== #
-
-    # load model
-    network_class = get_model_module(module_name, model_name)
-    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
-    network.load_state_dict(torch.load(weight_path))
-
-    if verbose:
-        summary(network)
 
     # ================== Simulator ================== #
 
     # Create pybullet GUI
-    if visualize:
-        physics_client_id = p.connect(p.GUI)
-        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    else:
-        physics_client_id = p.connect(p.DIRECT)
+    physics_client_id = p.connect(p.GUI)
+    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # if visualize:
+    #     physics_client_id = p.connect(p.GUI)
+    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # else:
+    #     physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -683,20 +719,28 @@ def test(args):
     # ================== Inference ==================
 
     batch_size = 1
-    all_scores = []
+    all_scores = {
+        'easy': [],
+        'normal': [],
+        'hard': [],
+        'devil': [],
+        'all': []
+    }
     for sid, pcd in enumerate(hook_pcds):
 
-        if sid > 20:
-            break
-        
         # hook urdf file
         hook_urdf = hook_urdfs[sid]
         hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
 
+        # hook name
+        hook_name = hook_urdf.split('/')[-2]
+        difficulty = 'easy' if 'easy' in hook_name else \
+                     'normal' if 'normal' in hook_name else \
+                     'hard' if 'hard' in hook_name else  \
+                     'devil'
+
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
-        contact_point = centroid_pcd[0]
-
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
@@ -704,14 +748,28 @@ def test(args):
         points_batch = points_batch[0, input_pcid, :].squeeze()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
-        contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # contact_point = centroid_pcd[0]
+        # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
 
+        # contact point inference
+        affordance = afford_network.inference(points_batch)
+        affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
+        affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
+        affordance = (affordance - affordance_min) / (affordance_max - affordance_min)
+        contact_cond = torch.where(affordance == torch.max(affordance)) # only high response region selected
+        contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
+        contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
+        contact_point_batch = points_batch[contact_cond0, contact_cond2]
+
+        # contact point inference
         recon_trajs = network.sample(points_batch, contact_point_batch)
 
         hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1)
         scales = torch.Tensor([scale]).repeat(batch_size)
         centroids = torch.from_numpy(centroid).repeat(batch_size, 1)
         recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
+
+        draw_coordinate(recovered_trajs[0][0], size=0.02)
 
         # conting inference score using object and object contact information
         if evaluate:
@@ -725,7 +783,7 @@ def test(args):
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
                     res = 'success' if success else 'failed'
                     obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
@@ -735,8 +793,11 @@ def test(args):
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
-            all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+            all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
+            all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
+        p.removeAllUserDebugItems()
+
         if visualize:
             wpt_ids = []
             for i, recovered_traj in enumerate(recovered_trajs):
@@ -762,8 +823,8 @@ def test(args):
                 p.resetDebugVisualizerCamera(
                     cameraDistance=0.08,
                     cameraYaw=cameraYaw,
-                    cameraPitch=-10,
-                    cameraTargetPosition=[0.0, 0.0, 0.0]
+                    cameraPitch=0,
+                    cameraTargetPosition=[0.5, -0.1, 1.3]
                 )
 
                 cam_info = p.getDebugVisualizerCamera()
@@ -791,11 +852,19 @@ def test(args):
         p.removeBody(hook_id)
 
     if evaluate:
-        all_scores = np.asarray(all_scores)
+        easy_mean = np.asarray(all_scores['easy'])
+        normal_mean = np.asarray(all_scores['normal'])
+        hard_mean = np.asarray(all_scores['hard'])
+        devil_mean = np.asarray(all_scores['devil'])
+        all_mean = np.asarray(all_scores['all'])
         print("===============================================================================================")
-        print(f'checkpoint: {weight_path}')
-        print(f'inference_dir: {args.inference_dir}')
-        print(f'[summary] all success rate: {np.mean(all_scores)}')
+        print('checkpoint: {}'.format(weight_path))
+        print('inference_dir: {}'.format(args.inference_dir))
+        print('[easy] success rate: {:00.03f}%'.format(np.mean(easy_mean) * 100))
+        print('[normal] success rate: {:00.03f}%'.format(np.mean(normal_mean) * 100))
+        print('[hard] success rate: {:00.03f}%'.format(np.mean(hard_mean) * 100))
+        print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
+        print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
         print("===============================================================================================")
         
 def main(args):
@@ -834,6 +903,10 @@ if __name__=="__main__":
     # testing
     parser.add_argument('--weight_subpath', '-wp', type=str, default='1000_points-network_epoch-20000.pth', help="subpath of saved weight")
     parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
+    parser.add_argument('--affordance_weight', '-aw', type=str,
+                            default='checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000/1000_points-network_epoch-20000.pth', 
+                            help="'training_mode=test' only"
+                        )
     parser.add_argument('--visualize', '-v', action='store_true')
     parser.add_argument('--evaluate', '-e', action='store_true')
     parser.add_argument('--inference_dir', '-id', type=str, default='')
@@ -843,6 +916,7 @@ if __name__=="__main__":
     # other info
     parser.add_argument('--device', '-dv', type=str, default="cuda")
     parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_10.yaml')
+    parser.add_argument('--afford_config', '-acfg', type=str, default='../config/af_msg.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()
