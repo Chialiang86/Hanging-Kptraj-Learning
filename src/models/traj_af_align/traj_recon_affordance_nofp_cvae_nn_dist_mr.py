@@ -1,3 +1,4 @@
+import copy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -8,15 +9,6 @@ from scipy.spatial.transform import Rotation as R
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from pointnet2_ops.pointnet2_modules import PointnetFPModule, PointnetSAModule
 from pointnet2.models.pointnet2_ssg_cls import PointNet2ClassificationSSG
-
-# def KL(mu, logvar):
-#     mu = mu.view(mu.shape[0], -1)
-#     logvar = logvar.view(logvar.shape[0], -1)
-#     loss = 0.5 * torch.sum(mu * mu + torch.exp(logvar) - 1 - logvar, 1)
-#     # high star implementation
-#     # torch.mean(0.5 * torch.sum(torch.exp(z_var) + z_mu ** 2 - 1. - z_var, 1))
-#     loss = torch.mean(loss)
-#     return loss
 
 def KL(mu, logvar):
     kl_loss = -0.5 * torch.sum(1 + logvar - mu**2 - logvar.exp())
@@ -143,10 +135,10 @@ class TrajEncoder(nn.Module):
 
 # CVAE encoder
 class AllEncoder(nn.Module):
-    def __init__(self, pcd_feat_dim=128, traj_feat_dim=256, cp_feat_dim=32, hidden_dim=128, z_feat_dim=64):
+    def __init__(self, pcd_feat_dim=128, traj_feat_dim=256, hidden_dim=128, z_feat_dim=64):
         super(AllEncoder, self).__init__()
 
-        self.mlp1 = nn.Linear(pcd_feat_dim + cp_feat_dim + traj_feat_dim, hidden_dim)
+        self.mlp1 = nn.Linear(pcd_feat_dim + traj_feat_dim, hidden_dim)
         self.mlp2 = nn.Linear(hidden_dim, z_feat_dim)
         self.get_mu = nn.Linear(z_feat_dim, z_feat_dim)
         self.get_logvar = nn.Linear(z_feat_dim, z_feat_dim)
@@ -155,8 +147,8 @@ class AllEncoder(nn.Module):
 
     # pcs_feat B x F, query_fats: B x 6
     # output: B
-    def forward(self, pn_feat, traj_feat, cp_feat):
-        net = torch.cat([pn_feat, traj_feat, cp_feat], dim=-1)
+    def forward(self, pn_feat, traj_feat):
+        net = torch.cat([pn_feat, traj_feat], dim=-1)
         net = F.leaky_relu(self.mlp1(net))
         net = self.mlp2(net)
         mu = self.get_mu(net)
@@ -167,7 +159,7 @@ class AllEncoder(nn.Module):
 
 # CVAE decoder
 class AllDecoder(nn.Module):
-    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
+    def __init__(self, pcd_feat_dim, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
         super(AllDecoder, self).__init__()
 
         # self.mlp = nn.Sequential(
@@ -177,7 +169,7 @@ class AllDecoder(nn.Module):
         # )
 
         self.mlp = nn.Sequential(
-            nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
+            nn.Linear(pcd_feat_dim + z_feat_dim, hidden_dim),
             nn.LeakyReLU(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.LeakyReLU(),
@@ -189,35 +181,34 @@ class AllDecoder(nn.Module):
 
     # pn_feat B x F, query_fats: B x 6
     # output: B
-    def forward(self, pn_feat, cp_feat, z_all):
+    def forward(self, pn_feat, z_all):
         batch_size = z_all.shape[0]
-        x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
+        x = torch.cat([pn_feat, z_all], dim=-1)
         x = self.mlp(x)
         x = x.view(batch_size, self.num_steps, 6)
         return x
 
-class TrajReconAffordanceNNDist(nn.Module):
-    def __init__(self, pcd_feat_dim=256, traj_feat_dim=128, cp_feat_dim=32,  
+class TrajReconAffordanceNoFP(nn.Module):
+    def __init__(self, pcd_feat_dim=256, traj_feat_dim=128,  
                         hidden_dim=128, z_feat_dim=64, 
                         num_steps=30, wpt_dim=6,
                         lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, dataset_type=0):
-        super(TrajReconAffordanceNNDist, self).__init__()
+        super(TrajReconAffordanceNoFP, self).__init__()
 
         self.z_dim = z_feat_dim
 
         self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
         self.mlp_traj = TrajEncoder(traj_feat_dim=traj_feat_dim, num_steps=num_steps, wpt_dim=wpt_dim)
-        self.mlp_cp = nn.Linear(3, cp_feat_dim) # contact point
 
         # Not in use
         # self.dir_encoder = nn.Linear(6, dir_feat_dim) # TODO: may be used in the future
 
         self.all_encoder = AllEncoder(
-                                pcd_feat_dim=pcd_feat_dim, traj_feat_dim=traj_feat_dim, cp_feat_dim=cp_feat_dim,
+                                pcd_feat_dim=pcd_feat_dim, traj_feat_dim=traj_feat_dim,
                                 hidden_dim=hidden_dim, z_feat_dim=z_feat_dim
                             ) # CVAE encoder
         self.all_decoder = AllDecoder(
-                                pcd_feat_dim=pcd_feat_dim, cp_feat_dim=cp_feat_dim,
+                                pcd_feat_dim=pcd_feat_dim,
                                 z_feat_dim=z_feat_dim, hidden_dim=hidden_dim, 
                                 num_steps=num_steps, wpt_dim=wpt_dim
                             ) # CVAE decoder
@@ -225,7 +216,6 @@ class TrajReconAffordanceNNDist(nn.Module):
 
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
-        self.traj_interval = 0.002
 
         self.lbd_kl = lbd_kl
         self.lbd_recon = lbd_recon
@@ -260,91 +250,146 @@ class TrajReconAffordanceNNDist(nn.Module):
         return theta
 
     # pcs: B x N x 3 (float), with the 0th point to be the query point
-    # pred_result_logits: B, pcs_feat: B x F x N
+    #       Note: contact point of the pcs should be at the origin 
+    # traj: B x T x 6 (float)
+    #       Note: the final waypoint should be at the origin 
     def forward(self, pcs, traj, contact_point):
-        pcs = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pcs)
+        # pcs[:, 0] = contact_point
+
+        # align the the contact point to the origin (for both point cloud and trajectory)
+        traj_copy = traj.clone()
+        pcs_copy = pcs.clone()
+        pcs_copy[:, :, :3] = pcs_copy[:, :, :3] - contact_point.unsqueeze(1)
+        if self.dataset_type == 0: # absolute 
+            traj_copy[:, :, :3] = traj_copy[:, :, :3] - contact_point.unsqueeze(1)
+
+        pcs_copy = pcs_copy.repeat(1, 1, 2)
+        whole_feats = self.pointnet2(pcs_copy)
 
         f_s = whole_feats[:, :, 0]
-        f_cp = self.mlp_cp(contact_point)
-        f_traj = self.mlp_traj(traj)
+        f_traj = self.mlp_traj(traj_copy)
 
-        z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
-        recon_traj = self.all_decoder(f_s, f_cp, z_all)
+        z_all, mu, logvar = self.all_encoder(f_s, f_traj)
+        recon_traj = self.all_decoder(f_s, z_all)
+
+        # align to original coordinate frame (for both point cloud and trajectory)
+        if self.dataset_type == 0: # absolute 
+            recon_traj[:, :, :3] = recon_traj[:, :, :3] + contact_point.unsqueeze(1)
 
         return recon_traj, mu, logvar
 
     def sample(self, pcs, contact_point):
         batch_size = pcs.shape[0]
-        f_cp = self.mlp_cp(contact_point)
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        pcs = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pcs)
+        pcs_copy = pcs.clone()
+        pcs_copy[:, :, :3] = pcs_copy[:, :, :3] - contact_point.unsqueeze(1)
+        pcs_copy = pcs_copy.repeat(1, 1, 2)
+        whole_feats = self.pointnet2(pcs_copy)
         f_s = whole_feats[:, :, 0]
 
-        recon_traj = self.all_decoder(f_s, f_cp, z_all)
+        recon_traj = self.all_decoder(f_s, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
         if self.dataset_type == 0: # absolute 
             ret_traj = recon_traj
-            ret_traj[:, 0, :3] = contact_point
+            ret_traj[:, :, :3] = ret_traj[:, :, :3] + contact_point.unsqueeze(1)
 
         if self.dataset_type == 1: # residual 
             ret_traj[:, 0, :3] = contact_point
 
             recon_dir = recon_traj[:, 0]
-            recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
+            recon_dir = recon_dir.reshape(-1, 2, 3).permute(0, 2, 1)
+            recon_dirmat = self.rot6d_to_rotmat(recon_dir)
             recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
             ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
 
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
         return ret_traj
-    
+
+    # def sample_n(self, pcs, batch_size, rvs=100):
+    #     z_all = torch.Tensor(torch.randn(batch_size * rvs, self.z_dim)).cuda()
+
+    #     pcs = pcs.repeat(1, 1, 2)
+    #     pcs_feat = self.pointnet2(pcs)
+
+    #     net = pcs_feat[:, :, 0]
+    #     net = net.unsqueeze(dim=1).repeat(1, rvs, 1).view(batch_size * rvs, -1)
+
+    #     recon_traj = self.all_decoder(z_all, net)
+
+    #     return recon_traj
+
     def get_nn_loss(self, pcs : torch.Tensor, traj : torch.Tensor):
         # similar to nearest 1 neighbor
         # reference: https://discuss.pytorch.org/t/k-nearest-neighbor-in-pytorch/59695
         
-        traj_unsqueeze = traj[:, :self.num_steps, :3].unsqueeze(2) # (B x T x 3) => (B x T x 1 x 3)
+        traj_abso = traj[:, :, :3].clone()
+        if self.dataset_type == 1: # residual 
+            # recover position from residual to absolute
+            for wpt_id in range(1, traj.shape[1]):
+                traj_abso[:, wpt_id] += traj_abso[:, wpt_id - 1]
+
         pcs_unsqueeze = pcs.unsqueeze(1).repeat(1, self.num_steps, 1, 1) # (B x N x 3) => (B x T x N x 3)
+        traj_unsqueeze = traj_abso[:, :self.num_steps].unsqueeze(2) # (B x T x 3) => (B x T x 1 x 3)
         diff = pcs_unsqueeze - traj_unsqueeze # (B x T x N x 3)
         dist = torch.norm(diff, dim=3) # (B x T x N)
         mean_min_dist = dist.topk(1, largest=False).values # smallest value
+
         return torch.mean(mean_min_dist).to('cuda')
 
     def get_loss(self, pcs, traj, contact_point, lbd_kl=1.0):
         batch_size = traj.shape[0]
+
         recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
-        recon_loss = torch.Tensor([0]).to('cuda')
-        dir_loss = torch.Tensor([0]).to('cuda')
-        nn_loss = torch.Tensor([0]).to('cuda')
-        dist_loss = torch.Tensor([0]).to('cuda')
+        recon_loss = torch.Tensor([0])
+        dir_loss = torch.Tensor([0])
+        nn_loss = torch.Tensor([0])
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
-            nn_loss = self.get_nn_loss(pcs, recon_wps)
-            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
+            nn_loss = self.get_nn_loss(pcs, recon_wps)
+           
             mean_interval_gt = torch.mean(torch.norm(traj[:, 1:, :3] - traj[:, :-1, :3], dim=2))
             mean_interval_recon = torch.mean(torch.norm(recon_wps[:, 1:, :3] - recon_wps[:, :-1, :3], dim=2))
             dist_loss = torch.abs(mean_interval_gt - mean_interval_recon) / mean_interval_gt
 
-        if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
+            bound1 = int(0.25 * self.num_steps)
+            bound2 = int(0.5 * self.num_steps)
+            recon_loss_0 = self.MSELoss(recon_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim), input_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim))
+            recon_loss_1 = self.MSELoss(recon_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim), input_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim))
+            recon_loss_2 = self.MSELoss(recon_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) *  self.wpt_dim), input_wps[:, bound2:].view(batch_size, (self.num_steps - bound2) * self.wpt_dim))
+            recon_loss = recon_loss_0 + 0.5 * recon_loss_1 + 0.25 * recon_loss_2
+
+        if self.dataset_type == 1: # residual
             input_dir = traj[:, 0, :]
             recon_dir = recon_traj[:, 0, :]
+            input_wps = traj[:, 1:, :]
+            recon_wps = recon_traj[:, 1:, :]
+
+            # recon loss
+            bound1 = int(0.25 * self.num_steps)
+            bound2 = int(0.5 * self.num_steps)
+            end = self.num_steps - 1
+            recon_loss_0 = self.MSELoss(recon_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim), input_wps[:, :bound1].view(batch_size, bound1 * self.wpt_dim))
+            recon_loss_1 = self.MSELoss(recon_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim), input_wps[:, bound1:bound2].view(batch_size, (bound2 - bound1) * self.wpt_dim))
+            recon_loss_2 = self.MSELoss(recon_wps[:, bound2:].view(batch_size, (end - bound2) *  self.wpt_dim), input_wps[:, bound2:].view(batch_size, (end - bound2) * self.wpt_dim))
+            wpt_loss = recon_loss_0 + 0.5 * recon_loss_1 + 0.25 * recon_loss_2
+
             dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
             dir_loss = dir_loss.mean()
 
-            input_wps = traj[:, 1:, :]
-            recon_wps = recon_traj[:, 1:, :]
-            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
-            
+            recon_loss = self.lbd_dir * dir_loss + wpt_loss
+
+            # dist loss
             mean_interval_gt = torch.mean(torch.norm(traj[:, 1:, :3], dim=2))
             mean_interval_recon = torch.mean(torch.norm(recon_wps[:, 1:, :3], dim=2))
             dist_loss = torch.abs(mean_interval_gt - mean_interval_recon) / mean_interval_gt
             
-            recon_loss = self.lbd_dir * dir_loss + wpt_loss
+            # nn loss
+            nn_loss = self.get_nn_loss(pcs, recon_traj)
 
         kl_loss = KL(mu, logvar)
         losses = {}
@@ -355,8 +400,63 @@ class TrajReconAffordanceNNDist(nn.Module):
         losses['dist'] = dist_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss
 
         return losses
+
+    # def get_loss_test_rotation(self, pcs, traj, batch_size):
+    #     recon_traj, mu, logvar = self.forward(pcs, traj)
+    #     recon_dir = recon_traj[:, 0, :]
+    #     recon_wps = recon_traj[:, 1:, :]
+    #     input_dir = traj[:, 0, :]
+    #     input_wps = traj[:, 1:, :]
+    #     recon_xyz_loss = self.MSELoss(recon_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 0:3].contiguous().view(batch_size, (self.num_steps - 1) * 3))
+    #     recon_rotation_loss = self.MSELoss(recon_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3), input_wps[:, :, 3:6].contiguous().view(batch_size, (self.num_steps - 1) * 3))
+    #     recon_loss = recon_xyz_loss.mean() + recon_rotation_loss.mean() * 100
+
+    #     dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
+    #     dir_loss = dir_loss.mean()
+    #     kl_loss = KL(mu, logvar)
+    #     losses = {}
+    #     losses['kl'] = kl_loss
+    #     losses['recon'] = recon_loss
+    #     losses['recon_xyz'] = recon_xyz_loss.mean()
+    #     losses['recon_rotation'] = recon_rotation_loss.mean()
+    #     losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon
+
+    #     return losses
+
+    # def inference_whole_pc(self, feat, dirs1, dirs2):
+    #     num_pts = feat.shape[-1]
+    #     batch_size = feat.shape[0]
+
+    #     feat = feat.permute(0, 2, 1)  # B x N x F
+    #     feat = feat.reshape(batch_size*num_pts, -1)
+
+    #     input_queries = torch.cat([dirs1, dirs2], dim=-1)
+    #     input_queries = input_queries.unsqueeze(dim=1).repeat(1, num_pts, 1)
+    #     input_queries = input_queries.reshape(batch_size*num_pts, -1)
+
+    #     pred_result_logits = self.critic(feat, input_queries)
+
+    #     soft_pred_results = torch.sigmoid(pred_result_logits)
+    #     soft_pred_results = soft_pred_results.reshape(batch_size, num_pts)
+
+    #     return soft_pred_results
+
+    # def inference(self, pcs, dirs1, dirs2):
+    #     pcs = pcs.repeat(1, 1, 2)
+    #     pcs_feat = self.pointnet2(pcs)
+
+    #     net = pcs_feat[:, :, 0]
+
+    #     input_queries = torch.cat([dirs1, dirs2], dim=1)
+
+    #     pred_result_logits = self.critic(net, input_queries)
+
+    #     pred_results = (pred_result_logits > 0)
+
+    #     return pred_results
+    

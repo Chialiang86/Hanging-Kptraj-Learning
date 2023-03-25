@@ -811,8 +811,6 @@ def test(args):
                     )
                     wpt_ids.append(wpt_id)
 
-            p.removeAllUserDebugItems()
-
             # capture a list of images and save as gif
             delta = 10
             delta_sum = 0
@@ -857,7 +855,7 @@ def test(args):
         hard_mean = np.asarray(all_scores['hard'])
         devil_mean = np.asarray(all_scores['devil'])
         all_mean = np.asarray(all_scores['all'])
-        print("===============================================================================================")
+        print("===============================================================================================") # don't modify this
         print('checkpoint: {}'.format(weight_path))
         print('inference_dir: {}'.format(args.inference_dir))
         print('[easy] success rate: {:00.03f}%'.format(np.mean(easy_mean) * 100))
@@ -865,16 +863,19 @@ def test(args):
         print('[hard] success rate: {:00.03f}%'.format(np.mean(hard_mean) * 100))
         print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
         print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
-        print("===============================================================================================")
+        print("===============================================================================================") # don't modify this
         
 def main(args):
     dataset_dir = args.dataset_dir
     checkpoint_dir = args.checkpoint_dir
     config_file = args.config
 
-    assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
-    assert os.path.exists(checkpoint_dir), f'{checkpoint_dir} not exists'
-    assert os.path.exists(config_file), f'{config_file} not exists'
+    if dataset_dir != '':
+        assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+    if checkpoint_dir != '':
+        assert os.path.exists(checkpoint_dir), f'{checkpoint_dir} not exists'
+    if config_file != '':
+        assert os.path.exists(config_file), f'{config_file} not exists'
 
     if args.training_mode == "train":
         train(args)

@@ -142,7 +142,7 @@ def trajectory_scoring(src_traj : list or np.ndarray, hook_id : int, obj_id : in
         obj_pose = get_pose_from_matrix(obj_trans, pose_size=7)
         p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
 
-        # draw_coordinate(world_trans, size=0.002)
+        draw_coordinate(world_trans, size=0.002)
 
         penetration = penetration_score(hook_id=hook_id, obj_id=obj_id)
         penetration_cost += penetration

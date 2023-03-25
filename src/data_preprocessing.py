@@ -60,13 +60,13 @@ def shorten_kpt_trajectory(kpt_trajectory : np.ndarray or list, length=20):
 def dist(wpt1 : list or np.ndarray, wpt2 : list or np.ndarray):
 
     pos_diff = np.asarray(wpt2[:3]) - np.asarray(wpt1[:3])
-    # tmp_trans = get_matrix_from_pose(wpt1)
-    # next_trans = get_matrix_from_pose(wpt2)
-    # diff_trans = np.linalg.inv(tmp_trans) @ next_trans
-    # diff_6pose = get_pose_from_matrix(diff_trans, 6)
-    # diff_pos_sum = np.sum(diff_6pose[:3] ** 2)
-    # diff_rot_sum = np.sum((diff_6pose[:3] * 180.0 / np.pi * 0.001) ** 2)
-    # diff_pose_dist = ((diff_pos_sum + diff_rot_sum)) ** 0.5
+    tmp_trans = get_matrix_from_pose(wpt1)
+    next_trans = get_matrix_from_pose(wpt2)
+    diff_trans = np.linalg.inv(tmp_trans) @ next_trans
+    diff_6pose = get_pose_from_matrix(diff_trans, 6)
+    diff_pos_sum = np.sum(pos_diff ** 2)
+    diff_rot_sum = np.sum((diff_6pose[:3] * 180.0 / np.pi * 0.001) ** 2)
+    diff_pose_dist = ((diff_pos_sum + diff_rot_sum)) ** 0.5
     diff_pose_dist = np.linalg.norm(pos_diff)
     return diff_pose_dist
 
@@ -211,7 +211,7 @@ def main(args):
 
     # the distance threshold of the adjacent waypoints
     sample_dist = args.kptraj_sample_distance
-    # sample_dist = (2 * sample_dist ** 2) ** 0.5 # 0.00282842712474619
+    sample_dist = (2 * sample_dist ** 2) ** 0.5 # 0.00282842712474619
 
     # extract hooks ids
     # because the trajectories from same hook family (contain the augmented hooks) 
@@ -492,7 +492,7 @@ if __name__=="__main__":
     parser.add_argument('--shape_num_pts', '-snp', type=int, default=1000, help='the number of points threshold, if the number of points larger than this threshold, then this script will save it')
     parser.add_argument('--data_root', '-dr', type=str, default='../dataset', help='the output dataset directory root')
     parser.add_argument('--data_tag', '-dt', type=str, default='', help='the output dataset tag')
-    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.035) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
+    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.008) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
     parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
     parser.add_argument('--visualize', '-v', action='store_true')
 

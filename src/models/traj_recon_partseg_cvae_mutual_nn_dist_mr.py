@@ -458,6 +458,7 @@ class TrajReconPartSegMutual(nn.Module):
         losses['kl'] = kl_loss
         losses['recon'] = recon_loss
         losses['dir'] = dir_loss
+        losses['dist'] = dist_loss
 
         if self.kl_annealing == 0:
             losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss

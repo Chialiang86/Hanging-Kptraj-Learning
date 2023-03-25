@@ -31,7 +31,7 @@ def main(args):
     p.setTimeStep(sim_timestep)
     p.setGravity(0, 0, 0)
 
-    traj_dirs = glob.glob(f'{input_dir}/*devil*')
+    traj_dirs = glob.glob(f'{input_dir}/*')
     traj_dirs.sort()
 
     hook_pose = [
@@ -111,7 +111,7 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.20.13.31-1000/train')
+    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/03.24.19.28-1000/train')
     # parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_new-absolute-40/alltraj-1000/train/')
     parser.add_argument('--output_dir', '-od', type=str, default='')
     args = parser.parse_args()

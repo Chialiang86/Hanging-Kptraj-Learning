@@ -95,12 +95,12 @@ def main(args):
 
             # success_cnt += 1
 
-            out_traj_dict = {
-                'trajectory': kptraj_down
-            } 
+            # out_traj_dict = {
+            #     'trajectory': kptraj_down
+            # } 
             
-            out_traj_json = f'{out_dir}/{sub_json}'
-            json.dump(out_traj_dict, open(out_traj_json, 'w'), indent=4)
+            # out_traj_json = f'{out_dir}/{sub_json}'
+            # json.dump(out_traj_dict, open(out_traj_json, 'w'), indent=4)
         
         # if success_cnt == 0:
         #     print(f'no traj in {hook_name} ...')
@@ -108,7 +108,7 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val')
-    parser.add_argument('--output_dir', '-od', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.20.13.31-1000/val')
+    parser.add_argument('--input_dir', '-id', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train')
+    parser.add_argument('--output_dir', '-od', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/03.20.13.31-1000/train')
     args = parser.parse_args()
     main(args)

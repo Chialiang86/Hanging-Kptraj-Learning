@@ -627,10 +627,30 @@ def test(args):
     hook_pcds = []
     hook_affords = []
     hook_urdfs = []
+
+    class_num = 15
+    easy_cnt = 0
+    normal_cnt = 0
+    hard_cnt = 0
+    devil_cnt = 0
     for inference_hook_path in inference_hook_paths:
         hook_name = inference_hook_path.split('/')[-2]
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
         affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+        
+        easy_cnt += 1 if 'easy' in hook_name else 0
+        normal_cnt += 1 if 'normal' in hook_name else 0
+        hard_cnt += 1 if 'hard' in hook_name else 0
+        devil_cnt += 1 if 'devil' in hook_name else 0
+
+        if 'easy' in hook_name and easy_cnt > class_num:
+            continue
+        if 'normal' in hook_name and normal_cnt > class_num:
+            continue
+        if 'hard' in hook_name and hard_cnt > class_num:
+            continue
+        if 'devil' in hook_name and devil_cnt > class_num:
+            continue
 
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
         assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
@@ -698,7 +718,13 @@ def test(args):
     # ================== Inference ==================
 
     batch_size = 1
-    all_scores = []
+    all_scores = {
+        'easy': [],
+        'normal': [],
+        'hard': [],
+        'devil': [],
+        'all': []
+    }
     for sid, pcd in enumerate(hook_pcds):
 
         if sid > 20:
@@ -709,6 +735,13 @@ def test(args):
         hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
         # p.resetBasePositionAndOrientation(hook_id, hook_pose[:3], hook_pose[3:])
 
+        # hook name
+        hook_name = hook_urdf.split('/')[-2]
+        difficulty = 'easy' if 'easy' in hook_name else \
+                     'normal' if 'normal' in hook_name else \
+                     'hard' if 'hard' in hook_name else  \
+                     'devil'
+        
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
@@ -793,7 +826,8 @@ def test(args):
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
-            all_scores.append(max_obj_success_cnt / len(obj_contact_poses))
+            all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
+            all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
         p.removeAllUserDebugItems()
                
@@ -849,21 +883,32 @@ def test(args):
         p.removeBody(hook_id)
 
     if evaluate:
-        all_scores = np.asarray(all_scores)
-        print("===============================================================================================")
-        print(f'checkpoint: {weight_path}')
-        print(f'inference_dir: {args.inference_dir}')
-        print(f'[summary] all success rate: {np.mean(all_scores)}')
-        print("===============================================================================================")
+        easy_mean = np.asarray(all_scores['easy'])
+        normal_mean = np.asarray(all_scores['normal'])
+        hard_mean = np.asarray(all_scores['hard'])
+        devil_mean = np.asarray(all_scores['devil'])
+        all_mean = np.asarray(all_scores['all'])
+        print("===============================================================================================")  # don't modify this
+        print('checkpoint: {}'.format(weight_path))
+        print('inference_dir: {}'.format(args.inference_dir))
+        print('[easy] success rate: {:00.03f}%'.format(np.mean(easy_mean) * 100))
+        print('[normal] success rate: {:00.03f}%'.format(np.mean(normal_mean) * 100))
+        print('[hard] success rate: {:00.03f}%'.format(np.mean(hard_mean) * 100))
+        print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
+        print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
+        print("===============================================================================================")  # don't modify this
         
 def main(args):
     dataset_dir = args.dataset_dir
     checkpoint_dir = args.checkpoint_dir
     config_file = args.config
 
-    assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
-    assert os.path.exists(checkpoint_dir), f'{checkpoint_dir} not exists'
-    assert os.path.exists(config_file), f'{config_file} not exists'
+    if dataset_dir != '':
+        assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+    if checkpoint_dir != '':
+        assert os.path.exists(checkpoint_dir), f'{checkpoint_dir} not exists'
+    if config_file != '':
+        assert os.path.exists(config_file), f'{config_file} not exists'
 
     if args.training_mode == "train":
         train(args)
@@ -888,7 +933,7 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
     # about dataset
-    parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
+    parser.add_argument('--dataset_dir', '-dd', type=str, default='')
 
     # training mode
     parser.add_argument('--training_mode', '-tm', type=str, default='train', help="training mode : [train, test]")

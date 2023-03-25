@@ -488,7 +488,7 @@ class KptrajReconAffordanceDataset(Dataset):
         elif enable_traj and self.affordance_name == "fusion":
             assert len(self.shape_list) == len(self.traj_list) == len(self.fusion_list), 'inconsistent length of shapes and affordance and trajectories'
         elif self.affordance_name == 'both':
-            assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list), 'inconsistent length of shapes and affordance and trajectories'
+            assert len(self.shape_list) == len(self.traj_list) == len(self.affordance_list) == len(self.partseg_list), 'inconsistent length of shapes and affordance and partseg and trajectories'
         elif self.affordance_name == 'partseg':
             assert len(self.shape_list) == len(self.partseg_list), 'inconsistent length of shapes and partseg'
         elif self.affordance_name == "affordance":
@@ -561,13 +561,13 @@ class KptrajReconAffordanceDataset(Dataset):
         elif self.enable_traj and self.affordance_name == 'fusion':
             return points, fusion, waypoints[:,:self.wpt_dim]
         elif self.enable_traj:
-            return points, affordance, partseg
+            return points, waypoints[:,:self.wpt_dim]
         elif self.affordance_name == 'affordance':
             return points, affordance
         elif self.affordance_name == 'parseg':
-            return points, waypoints[:,:self.wpt_dim]
-        elif self.affordance_name == 'both':
             return points, partseg
+        elif self.affordance_name == 'both':
+            return points, affordance, partseg
         elif self.affordance_name == 'fusion':
             return points, fusion
         return points

@@ -8,15 +8,11 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        # "traj_af_mutual_10"
         # "traj_part_mutual_10"
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_nn_dist_mr_10"
 
-        # "traj_af_mutual"
+        # "traj_part_mutual_20"
+
         # "traj_part_mutual"
-        # "traj_fusion_mutual"
-        "traj_fusion_mutual_nn_dist_mr"
     )
 
     traj_recon_affordance_datasets=(
@@ -69,12 +65,12 @@ if [ $1 = 'train' ]; then
 
                 # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
                 output_log="training_logs/${model_config}-${training_tag}/${dataset_name[-2]}-${dataset_name[-1]}.txt"
-                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/${model_config}.yaml" > $output_log
+                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml" > $output_log
                 # python3 plot_history.py $output_log
 
             else 
 
-                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/${model_config}.yaml"
+                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml"
 
             fi 
 
