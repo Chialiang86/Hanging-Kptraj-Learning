@@ -29,7 +29,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
-                npoint=1024,
+                npoint=512,
                 radius=0.1,
                 nsample=32,
                 mlp=[3, 32, 32, 64],
@@ -177,12 +177,18 @@ class AllDecoder(nn.Module):
         #     nn.Linear(256, num_steps * wpt_dim)
         # )
 
-        self.mlp = nn.Sequential(
+        self.mlp1 = nn.Sequential(
             nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
             nn.LeakyReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
+        )
+
+        self.mlp2 = nn.Sequential(
+            nn.Linear(pcd_feat_dim + cp_feat_dim  + hidden_dim, hidden_dim),
             nn.LeakyReLU(),
-            nn.Linear(hidden_dim, num_steps * wpt_dim)
+        )
+
+        self.mlp3 = nn.Sequential(
+            nn.Linear(pcd_feat_dim + cp_feat_dim  + hidden_dim, num_steps * wpt_dim)
         )
         
         self.num_steps = num_steps
@@ -193,7 +199,11 @@ class AllDecoder(nn.Module):
     def forward(self, pn_feat, cp_feat, z_all):
         batch_size = z_all.shape[0]
         x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
-        x = self.mlp(x)
+        x = self.mlp1(x)
+        x = torch.cat([pn_feat, cp_feat, x], dim=-1)
+        x = self.mlp2(x)
+        x = torch.cat([pn_feat, cp_feat, x], dim=-1)
+        x = self.mlp3(x)
         x = x.view(batch_size, self.num_steps, 6)
         return x
 
@@ -296,7 +306,6 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
-            
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
@@ -326,7 +335,7 @@ class TrajReconPartSegMutual(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        affordance = self.sigmoid(affordance) # Todo: remove comment
+        # affordance = self.sigmoid(affordance) # Todo: remove comment
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -348,7 +357,6 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
-            
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold

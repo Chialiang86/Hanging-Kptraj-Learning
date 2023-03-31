@@ -296,13 +296,11 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
-            
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            point_ind = part_cond2[cond][ind]
+            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
         # f_s = whole_feats[:, :, 0]
@@ -350,11 +348,10 @@ class TrajReconPartSegMutual(nn.Module):
         for i in range(max_iter):
             
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            point_ind = part_cond2[cond][ind]
+            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
         f_s = whole_feats_part

@@ -303,7 +303,7 @@ class TrajReconAffordanceMutual(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        affordance = self.sigmoid(affordance)
+        # affordance_sigmoid = self.sigmoid(affordance) # Todo: remove comment
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -317,9 +317,9 @@ class TrajReconAffordanceMutual(nn.Module):
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
-
+        f_s = whole_feats[contact_cond0, :, contact_cond2]
         f_cp = self.mlp_cp(contact_point)
-        f_s = whole_feats[:, :, 0]
+
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
         if self.dataset_type == 0: # absolute 

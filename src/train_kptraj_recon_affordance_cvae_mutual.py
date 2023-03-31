@@ -652,6 +652,8 @@ def test(args):
         if 'devil' in hook_name and devil_cnt > class_num:
             continue
 
+        print(hook_name)
+        
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
         assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
         hook_urdfs.append(hook_urdf) 
@@ -727,9 +729,6 @@ def test(args):
     }
     for sid, pcd in enumerate(hook_pcds):
 
-        if sid > 20:
-            break
-        
         # urdf file
         hook_urdf = hook_urdfs[sid]
         hook_id = p.loadURDF(hook_urdf, hook_pose[:3], hook_pose[3:])
@@ -779,7 +778,7 @@ def test(args):
 
         if visualize:
             img_list = []
-            frames = 36
+            frames = 9
             rotate_per_frame = np.pi * 2 / frames
             for _ in range(frames):
                 r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
@@ -843,42 +842,61 @@ def test(args):
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
-
-            # capture a list of images and save as gif
-            delta = 10
-            delta_sum = 0
+            
             cameraYaw = 90
-            rgbs = []
-            while True:
-                keys = p.getKeyboardEvents()
-                p.resetDebugVisualizerCamera(
-                    cameraDistance=0.08,
-                    cameraYaw=cameraYaw,
-                    cameraPitch=-30,
-                    cameraTargetPosition=[0.5, -0.1, 1.3]
-                )
-
-                cam_info = p.getDebugVisualizerCamera()
-                width = cam_info[0]
-                height = cam_info[1]
-                view_mat = cam_info[2]
-                proj_mat = cam_info[3]
-                img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-                rgb = img_info[2]
-                rgbs.append(Image.fromarray(rgb))
-
-                cameraYaw += delta 
-                delta_sum += delta 
-                cameraYaw = cameraYaw % 360
-                if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-                    break
-                if delta_sum >= 360:
-                    break
+            p.resetDebugVisualizerCamera(
+                cameraDistance=0.08,
+                cameraYaw=cameraYaw,
+                cameraPitch=0,
+                cameraTargetPosition=[0.5, -0.1, 1.3]
+            )
+            cam_info = p.getDebugVisualizerCamera()
+            width = cam_info[0]
+            height = cam_info[1]
+            view_mat = cam_info[2]
+            proj_mat = cam_info[3]
+            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            rgb = np.asarray(img_info[2])[:,:,:3]
+            Image.fromarray(rgb).save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.jpg")
 
             for wpt_id in wpt_ids:
                 p.removeBody(wpt_id)
 
-            rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-traj-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+            # # capture a list of images and save as gif
+            # delta = 10
+            # delta_sum = 0
+            # cameraYaw = 90
+            # rgbs = []
+            # while True:
+            #     keys = p.getKeyboardEvents()
+            #     p.resetDebugVisualizerCamera(
+            #         cameraDistance=0.08,
+            #         cameraYaw=cameraYaw,
+            #         cameraPitch=0,
+            #         cameraTargetPosition=[0.5, -0.1, 1.3]
+            #     )
+
+            #     cam_info = p.getDebugVisualizerCamera()
+            #     width = cam_info[0]
+            #     height = cam_info[1]
+            #     view_mat = cam_info[2]
+            #     proj_mat = cam_info[3]
+            #     img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            #     rgb = img_info[2]
+            #     rgbs.append(Image.fromarray(rgb))
+
+            #     cameraYaw += delta 
+            #     delta_sum += delta 
+            #     cameraYaw = cameraYaw % 360
+            #     if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+            #         break
+            #     if delta_sum >= 360:
+            #         break
+
+            # for wpt_id in wpt_ids:
+            #     p.removeBody(wpt_id)
+
+            # rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
         p.removeBody(hook_id)
 

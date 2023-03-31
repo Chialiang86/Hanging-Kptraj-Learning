@@ -810,42 +810,61 @@ def test(args):
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
-
-            # capture a list of images and save as gif
-            delta = 10
-            delta_sum = 0
+            
             cameraYaw = 90
-            rgbs = []
-            while True:
-                keys = p.getKeyboardEvents()
-                p.resetDebugVisualizerCamera(
-                    cameraDistance=0.08,
-                    cameraYaw=cameraYaw,
-                    cameraPitch=0,
-                    cameraTargetPosition=[0.5, -0.1, 1.3]
-                )
-
-                cam_info = p.getDebugVisualizerCamera()
-                width = cam_info[0]
-                height = cam_info[1]
-                view_mat = cam_info[2]
-                proj_mat = cam_info[3]
-                img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-                rgb = img_info[2]
-                rgbs.append(Image.fromarray(rgb))
-
-                cameraYaw += delta 
-                delta_sum += delta 
-                cameraYaw = cameraYaw % 360
-                if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-                    break
-                if delta_sum >= 360:
-                    break
+            p.resetDebugVisualizerCamera(
+                cameraDistance=0.08,
+                cameraYaw=cameraYaw,
+                cameraPitch=0,
+                cameraTargetPosition=[0.5, -0.1, 1.3]
+            )
+            cam_info = p.getDebugVisualizerCamera()
+            width = cam_info[0]
+            height = cam_info[1]
+            view_mat = cam_info[2]
+            proj_mat = cam_info[3]
+            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            rgb = np.asarray(img_info[2])[:,:,:3]
+            Image.fromarray(rgb).save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.jpg")
 
             for wpt_id in wpt_ids:
                 p.removeBody(wpt_id)
 
-            rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+            # # capture a list of images and save as gif
+            # delta = 10
+            # delta_sum = 0
+            # cameraYaw = 90
+            # rgbs = []
+            # while True:
+            #     keys = p.getKeyboardEvents()
+            #     p.resetDebugVisualizerCamera(
+            #         cameraDistance=0.08,
+            #         cameraYaw=cameraYaw,
+            #         cameraPitch=0,
+            #         cameraTargetPosition=[0.5, -0.1, 1.3]
+            #     )
+
+            #     cam_info = p.getDebugVisualizerCamera()
+            #     width = cam_info[0]
+            #     height = cam_info[1]
+            #     view_mat = cam_info[2]
+            #     proj_mat = cam_info[3]
+            #     img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            #     rgb = img_info[2]
+            #     rgbs.append(Image.fromarray(rgb))
+
+            #     cameraYaw += delta 
+            #     delta_sum += delta 
+            #     cameraYaw = cameraYaw % 360
+            #     if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
+            #         break
+            #     if delta_sum >= 360:
+            #         break
+
+            # for wpt_id in wpt_ids:
+            #     p.removeBody(wpt_id)
+
+            # rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
                
         p.removeBody(hook_id)
 
@@ -905,7 +924,7 @@ if __name__=="__main__":
     parser.add_argument('--weight_subpath', '-wp', type=str, default='1000_points-network_epoch-20000.pth', help="subpath of saved weight")
     parser.add_argument('--checkpoint_dir', '-cd', type=str, default='checkpoints', help="'training_mode=test' only")
     parser.add_argument('--affordance_weight', '-aw', type=str,
-                            default='checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000/1000_points-network_epoch-20000.pth', 
+                            default='checkpoints/af_msg_03.23.16.56/kptraj_all_smooth-absolute-10-k0_03.20.13.31-1000/1000_points-network_epoch-2000.pth', 
                             help="'training_mode=test' only"
                         )
     parser.add_argument('--visualize', '-v', action='store_true')
@@ -916,8 +935,8 @@ if __name__=="__main__":
     
     # other info
     parser.add_argument('--device', '-dv', type=str, default="cuda")
-    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_10.yaml')
-    parser.add_argument('--afford_config', '-acfg', type=str, default='../config/af_msg.yaml')
+    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af/traj_af_10.yaml')
+    parser.add_argument('--afford_config', '-acfg', type=str, default='../config/af/af_msg.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()

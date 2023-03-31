@@ -29,7 +29,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
-                npoint=1024,
+                npoint=512,
                 radius=0.1,
                 nsample=32,
                 mlp=[3, 32, 32, 64],
@@ -166,36 +166,58 @@ class AllEncoder(nn.Module):
         z = mu + torch.exp(logvar / 2) * noise
         return z, mu, logvar
 
-# CVAE decoder
-class AllDecoder(nn.Module):
-    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
-        super(AllDecoder, self).__init__()
+# # CVAE decoder
+# class AllDecoder(nn.Module):
+#     def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
+#         super(AllDecoder, self).__init__()
 
-        # self.mlp = nn.Sequential(
-        #     nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, 512),
-        #     nn.Linear(512, 256),
-        #     nn.Linear(256, num_steps * wpt_dim)
-        # )
+#         # self.mlp = nn.Sequential(
+#         #     nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, 512),
+#         #     nn.Linear(512, 256),
+#         #     nn.Linear(256, num_steps * wpt_dim)
+#         # )
 
-        self.mlp = nn.Sequential(
-            nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
-            nn.LeakyReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.LeakyReLU(),
-            nn.Linear(hidden_dim, num_steps * wpt_dim)
-        )
+#         self.mlp = nn.Sequential(
+#             nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
+#             nn.LeakyReLU(),
+#             nn.Linear(hidden_dim, hidden_dim),
+#             nn.LeakyReLU(),
+#             nn.Linear(hidden_dim, num_steps * wpt_dim)
+#         )
         
-        self.num_steps = num_steps
-        self.wpt_dim = wpt_dim
+#         self.num_steps = num_steps
+#         self.wpt_dim = wpt_dim
 
-    # pn_feat B x F, query_fats: B x 6
-    # output: B
-    def forward(self, pn_feat, cp_feat, z_all):
-        batch_size = z_all.shape[0]
-        x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
-        x = self.mlp(x)
-        x = x.view(batch_size, self.num_steps, 6)
-        return x
+#     # pn_feat B x F, query_fats: B x 6
+#     # output: B
+#     def forward(self, pn_feat, cp_feat, z_all):
+#         batch_size = z_all.shape[0]
+#         x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
+#         x = self.mlp(x)
+#         x = x.view(batch_size, self.num_steps, 6)
+#         return x
+
+# CVAE decoder
+class LSTMDecoder(nn.Module):
+    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
+        super(LSTMDecoder, self).__init__()
+        self.input_size = pcd_feat_dim
+        self.hidden_size = hidden_dim
+        self.num_layers = num_layers
+        self.output_size = output_size
+
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+
+        out, _ = self.lstm(x, (h0, c0))
+
+        out = self.fc(out[:, -1, :])
+
+        return out
 
 class TrajReconPartSegMutual(nn.Module):
     def __init__(self, pcd_feat_dim=256, traj_feat_dim=128, cp_feat_dim=32,  
@@ -296,7 +318,7 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
-            
+
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
@@ -326,7 +348,7 @@ class TrajReconPartSegMutual(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        affordance = self.sigmoid(affordance) # Todo: remove comment
+        # affordance = self.sigmoid(affordance) # Todo: remove comment
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -348,13 +370,11 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
-            
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            point_ind = part_cond2[cond][ind]
+            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
         f_s = whole_feats_part

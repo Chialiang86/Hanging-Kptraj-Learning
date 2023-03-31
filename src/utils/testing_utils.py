@@ -299,18 +299,23 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
 
     colors = list(np.random.rand(3)) + [1]
     wpt_ids = []
+    old_gripper_pose = first_gripper_pose
     for i, waypoint in enumerate(recovered_traj):
 
         gripper_transform = get_matrix_from_pose(waypoint) @ kpt_to_gripper
         gripper_pose = get_pose_from_matrix(gripper_transform)
 
-        robot.apply_action(gripper_pose)
-        p.stepSimulation()
-        
-        robot.grasp()
-        for _ in range(5): # 1 sec
+        fine_gripper_poses = get_dense_waypoints(old_gripper_pose, gripper_pose, resolution=0.002)
+        for fine_gripper_pose in fine_gripper_poses:
+            robot.apply_action(fine_gripper_pose)
             p.stepSimulation()
-            time.sleep(sim_timestep)
+            
+            
+            robot.grasp()
+            for _ in range(5): # 1 sec
+                p.stepSimulation()
+                time.sleep(sim_timestep)
+        old_gripper_pose = gripper_pose
 
         if visualize:
             wpt_id = p.createMultiBody(

@@ -297,10 +297,11 @@ class TrajReconPartSegMutual(nn.Module):
         pcs_part_list = []
         for i in range(max_iter):
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            point_ind = part_cond2[cond][ind]
-            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            # point_ind = part_cond2[cond][ind]
+            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
             pcs_part_list.append(pcs[i, part_cond2[cond]])
 
@@ -317,15 +318,15 @@ class TrajReconPartSegMutual(nn.Module):
         batch_size = pcs.shape[0]
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        pcs = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pcs)
+        pcs_input = pcs.repeat(1, 1, 2)
+        whole_feats = self.pointnet2(pcs_input)
 
         ###############################################
         # =========== for affordance head =========== #
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        affordance = self.sigmoid(affordance)
+        # affordance = self.sigmoid(affordance) # Todo: remove comment
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -340,8 +341,23 @@ class TrajReconPartSegMutual(nn.Module):
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
+        # choose 10 features from segmented point cloud
+        part_cond = torch.where(affordance > 0.3) # only high response region selected
+        part_cond0 = part_cond[0].to(torch.long)
+        part_cond2 = part_cond[2].to(torch.long)
+        whole_feats_part = whole_feats[:, :, 0].clone()
+        max_iter = torch.max(part_cond0) + 1
+        for i in range(max_iter):
+            cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
+            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
+            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
+            # point_ind = part_cond2[cond][ind]
+            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            whole_feats_part[i] = tmp_max
+
+        f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
-        f_s = whole_feats[:, :, 0]
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
         if self.dataset_type == 0: # absolute 
@@ -472,8 +488,8 @@ class TrajReconPartSegMutual(nn.Module):
         losses['dist'] = dist_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.05 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.001 * nn_loss + 0.1 * dist_loss + 0.1 * affordance_loss
 
         return losses
