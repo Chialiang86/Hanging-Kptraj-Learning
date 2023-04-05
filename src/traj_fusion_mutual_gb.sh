@@ -10,12 +10,14 @@ if [ $1 = 'train' ]; then
     model_configs=(
         # "traj_fusion_mutual_10_ext"
         # "traj_fusion_mutual_ext_nn_dist_mr_10"
- 
         # "traj_fusion_mutual_20_ext"
         # "traj_fusion_mutual_ext_nn_dist_mr_20"
- 
-        "traj_fusion_mutual_ext"
+        # "traj_fusion_mutual_ext"
         # "traj_fusion_mutual_ext_nn_dist_mr"
+
+        # "traj_fusion_mutual_lstm_10"
+        # "traj_fusion_mutual_lstm_20"
+        "traj_fusion_mutual_lstm"
     )
 
     traj_recon_affordance_datasets=(
@@ -27,7 +29,7 @@ if [ $1 = 'train' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/03.24.19.28-1000"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
     )
 
     training_tag='' # $1
@@ -139,30 +141,30 @@ elif [ $1 = 'test' ]; then
         # "traj_fusion_mutual_ext_10"
         # "traj_fusion_mutual_ext_10"
 
-        # "traj_fusion_mutual_nn_dist_mr_ext_10"
-        # "traj_fusion_mutual_nn_dist_mr_ext_10"
-        # "traj_fusion_mutual_nn_dist_mr_ext_10"
-        # "traj_fusion_mutual_nn_dist_mr_ext_10"
+        # "traj_fusion_mutual_ext_nn_dist_mr_10"
+        # "traj_fusion_mutual_ext_nn_dist_mr_10"
+        # "traj_fusion_mutual_ext_nn_dist_mr_10"
+        # "traj_fusion_mutual_ext_nn_dist_mr_10"
 
         # "traj_fusion_mutual_ext_20"
         # "traj_fusion_mutual_ext_20"
         # "traj_fusion_mutual_ext_20"
         # "traj_fusion_mutual_ext_20"
 
-        # "traj_fusion_mutual_nn_dist_mr_ext_20"
-        # "traj_fusion_mutual_nn_dist_mr_ext_20"
-        # "traj_fusion_mutual_nn_dist_mr_ext_20"
-        # "traj_fusion_mutual_nn_dist_mr_ext_20"
+        # "traj_fusion_mutual_ext_nn_dist_mr_20"
+        # "traj_fusion_mutual_ext_nn_dist_mr_20"
+        # "traj_fusion_mutual_ext_nn_dist_mr_20"
+        # "traj_fusion_mutual_ext_nn_dist_mr_20"
 
-        "traj_fusion_mutual_ext"
-        "traj_fusion_mutual_ext"
-        "traj_fusion_mutual_ext"
-        "traj_fusion_mutual_ext"
+        # "traj_fusion_mutual_ext"
+        # "traj_fusion_mutual_ext"
+        # "traj_fusion_mutual_ext"
+        # "traj_fusion_mutual_ext"
 
-        "traj_fusion_mutual_nn_dist_mr_ext"
-        "traj_fusion_mutual_nn_dist_mr_ext"
-        "traj_fusion_mutual_nn_dist_mr_ext"
-        "traj_fusion_mutual_nn_dist_mr_ext"
+        "traj_fusion_mutual_ext_nn_dist_mr"
+        "traj_fusion_mutual_ext_nn_dist_mr"
+        "traj_fusion_mutual_ext_nn_dist_mr"
+        "traj_fusion_mutual_ext_nn_dist_mr"
 
     )
 
@@ -191,10 +193,10 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/03.24.19.28-1000"
 
         # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
@@ -227,10 +229,10 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/03.24.19.28-1000/val"
 
         # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
@@ -242,10 +244,10 @@ elif [ $1 = 'test' ]; then
     traj_recon_shape_checkpoints=(
 
         # 40
-        "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual_ext-03.30.15.53/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
         "checkpoints/traj_fusion_mutual_ext_nn_dist_mr-03.30.09.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
         "checkpoints/traj_fusion_mutual_ext_nn_dist_mr-03.30.09.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"

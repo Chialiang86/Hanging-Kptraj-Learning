@@ -72,8 +72,8 @@ def train(args):
     # TODO: config file should add a new key : point number
     
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs, device=args.device)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs, device=args.device)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -428,8 +428,6 @@ def val(args):
     dataset_inputs = config['dataset_inputs']
     batch_size = config['batch_size']
 
-    wpt_dim = config['dataset_inputs']['wpt_dim']
-
     # params for training
     dataset_name = config['dataset_module']
     dataset_class_name = config['dataset_class']
@@ -586,7 +584,6 @@ def test(args):
     batch_size = config['batch_size']
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
-    print(f'wpt_dim: {wpt_dim}')
 
     # inference
     inference_obj_dir = args.obj_shape_root
@@ -651,8 +648,6 @@ def test(args):
             continue
         if 'devil' in hook_name and devil_cnt > class_num:
             continue
-
-        print(hook_name)
         
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
         assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'

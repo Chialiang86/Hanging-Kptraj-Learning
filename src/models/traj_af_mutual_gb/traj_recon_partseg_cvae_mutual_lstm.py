@@ -109,45 +109,12 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
 
         return self.fc_layer(l_features[0])
 
-
-class TrajEncoder(nn.Module):
-    def __init__(self, traj_feat_dim, num_steps=30, wpt_dim=6):
-
-        # traj_feat_dim = 128 for VAT-Mart
-
-        super(TrajEncoder, self).__init__()
-
-        # self.mlp = nn.Sequential(
-        #     nn.Linear(num_steps * wpt_dim, 128),
-        #     nn.Linear(128, 128),
-        #     nn.Linear(128, traj_feat_dim)
-        # )
-
-        self.mlp = nn.Sequential(
-            nn.Linear(num_steps * wpt_dim, 256),
-            nn.LeakyReLU(),
-            nn.Linear(256, 256),
-            nn.LeakyReLU(),
-            nn.Linear(256, traj_feat_dim)
-        )
-
-        self.num_steps = num_steps
-        self.wpt_dim = wpt_dim
-
-    # pcs_feat B x F, query_fats: B x 6
-    # output: B
-    def forward(self, x):
-        batch_size = x.shape[0]
-        # print(x.view(batch_size, self.num_steps * 6).dtype, type(x.view(batch_size, self.num_steps * 6)))
-        x = self.mlp(x.view(batch_size, self.num_steps * self.wpt_dim))
-        return x
-
 # CVAE encoder
 class AllEncoder(nn.Module):
-    def __init__(self, pcd_feat_dim=128, traj_feat_dim=256, cp_feat_dim=32, hidden_dim=128, z_feat_dim=64):
+    def __init__(self, pcd_feat_dim=128, traj_feat_dim=128, cp_feat_dim=64, hidden_dim=128, z_feat_dim=64):
         super(AllEncoder, self).__init__()
 
-        self.mlp1 = nn.Linear(pcd_feat_dim + cp_feat_dim + traj_feat_dim, hidden_dim)
+        self.mlp1 = nn.Linear(pcd_feat_dim + traj_feat_dim + cp_feat_dim, hidden_dim)
         self.mlp2 = nn.Linear(hidden_dim, z_feat_dim)
         self.get_mu = nn.Linear(z_feat_dim, z_feat_dim)
         self.get_logvar = nn.Linear(z_feat_dim, z_feat_dim)
@@ -156,77 +123,79 @@ class AllEncoder(nn.Module):
 
     # pcs_feat B x F, query_fats: B x 6
     # output: B
-    def forward(self, pn_feat, traj_feat, cp_feat):
-        net = torch.cat([pn_feat, traj_feat, cp_feat], dim=-1)
-        net = F.leaky_relu(self.mlp1(net))
-        net = self.mlp2(net)
-        mu = self.get_mu(net)
-        logvar = self.get_logvar(net)
-        noise = torch.Tensor(torch.randn(*mu.shape)).cuda()
+    def forward(self, pn_feat, wpt_feats, cp_feat):
+        batch_size = pn_feat.shape[0]
+
+        traj_feat = wpt_feats.reshape(batch_size, -1) # flatten
+        x = torch.cat([pn_feat, traj_feat, cp_feat], dim=-1)
+        x = F.leaky_relu(self.mlp1(x))
+        x = self.mlp2(x)
+        mu = self.get_mu(x)
+        logvar = self.get_logvar(x)
+        noise = torch.Tensor(torch.randn(*mu.shape)).to(pn_feat.device)
         z = mu + torch.exp(logvar / 2) * noise
         return z, mu, logvar
-
-# # CVAE decoder
-# class AllDecoder(nn.Module):
-#     def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
-#         super(AllDecoder, self).__init__()
-
-#         # self.mlp = nn.Sequential(
-#         #     nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, 512),
-#         #     nn.Linear(512, 256),
-#         #     nn.Linear(256, num_steps * wpt_dim)
-#         # )
-
-#         self.mlp = nn.Sequential(
-#             nn.Linear(pcd_feat_dim + cp_feat_dim + z_feat_dim, hidden_dim),
-#             nn.LeakyReLU(),
-#             nn.Linear(hidden_dim, hidden_dim),
-#             nn.LeakyReLU(),
-#             nn.Linear(hidden_dim, num_steps * wpt_dim)
-#         )
-        
-#         self.num_steps = num_steps
-#         self.wpt_dim = wpt_dim
-
-#     # pn_feat B x F, query_fats: B x 6
-#     # output: B
-#     def forward(self, pn_feat, cp_feat, z_all):
-#         batch_size = z_all.shape[0]
-#         x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
-#         x = self.mlp(x)
-#         x = x.view(batch_size, self.num_steps, 6)
-#         return x
-
+    
 # CVAE decoder
 class LSTMDecoder(nn.Module):
-    def __init__(self, pcd_feat_dim, cp_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=30, wpt_dim=6):
+    def __init__(self, num_layers=1, pcd_feat_dim=128, wpt_feat_dim=32, z_feat_dim=64, hidden_dim=128, num_steps=40, wpt_dim=9):
         super(LSTMDecoder, self).__init__()
-        self.input_size = pcd_feat_dim
+        self.input_size = wpt_feat_dim + pcd_feat_dim + z_feat_dim
         self.hidden_size = hidden_dim
         self.num_layers = num_layers
-        self.output_size = output_size
+        self.wpt_dim = wpt_dim
+        self.num_steps = num_steps
 
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size)
+        self.lstm = nn.LSTM(self.input_size, self.hidden_size, self.num_layers, batch_first=True)
+        self.pos_decoder = nn.Linear(self.hidden_size, self.wpt_dim)
 
-    def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
-        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+    def forward(self, pn_feat, wpt_feats, z_all):
 
-        out, _ = self.lstm(x, (h0, c0))
+        batch_size = wpt_feats.shape[0]
 
-        out = self.fc(out[:, -1, :])
+        h = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(wpt_feats.device)
+        c = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(wpt_feats.device)
+
+        out = torch.zeros((batch_size, self.num_steps - 1, self.hidden_size)).to(wpt_feats.device)
+
+        for i in range(0, self.num_steps - 1):
+            wpt_feat = wpt_feats[:, i]
+            x = torch.cat([wpt_feat, pn_feat, z_all], dim=-1).unsqueeze(1).to(wpt_feats.device)
+            out_tmp, (h, c) = self.lstm(x, (h, c))
+            out[:, i] = out_tmp.squeeze()
+
+        out = self.pos_decoder(out)
+        return out
+    
+    def inference(self, first_wpt, wpt_encoder, pn_feat, z_all):
+        
+        batch_size = first_wpt.shape[0]
+
+        h = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(first_wpt.device)
+        c = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(first_wpt.device)
+
+        out = torch.zeros((batch_size, self.num_steps, self.wpt_dim)).to(first_wpt.device)
+        out[:, i] = first_wpt
+
+        for i in range(1, self.num_steps):
+            wpt_feat = wpt_encoder(out[:, i - 1])
+            x = torch.cat([wpt_feat, pn_feat, z_all], dim=-1).unsqueeze(1).to(first_wpt.device)
+            out_h, (h, c) = self.lstm(x, (h, c))
+            out[:, i] = self.pos_decoder(out_h)
 
         return out
 
-class TrajReconPartSegMutual(nn.Module):
-    def __init__(self, pcd_feat_dim=256, traj_feat_dim=128, cp_feat_dim=32,  
+class TrajReconPartSegMutualLSTM(nn.Module):
+    def __init__(self, pcd_feat_dim=128, wpt_feat_dim=32, cp_feat_dim=32,  
                         hidden_dim=128, z_feat_dim=64, 
-                        num_steps=30, wpt_dim=6,
+                        num_steps=30, wpt_dim=9, decoder_layers=1,
                         lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, train_traj_start=10000, dataset_type=0):
-        super(TrajReconPartSegMutual, self).__init__()
+        super(TrajReconPartSegMutualLSTM, self).__init__()
 
+        self.rot_dim = 6 if wpt_dim == 9 else 3
         self.z_dim = z_feat_dim
+        self.num_steps = num_steps
+        self.wpt_dim = wpt_dim
 
         self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
 
@@ -241,27 +210,37 @@ class TrajReconPartSegMutual(nn.Module):
 
         self.sigmoid = torch.nn.Sigmoid()
 
+        #############################################
+        # =========== for rotation head =========== #
+        #############################################
+
+        self.rotation_head = nn.Sequential(
+            nn.Linear(pcd_feat_dim + cp_feat_dim, 128),
+            nn.LeakyReLU(),
+            nn.Linear(128, 32),
+            nn.LeakyReLU(),
+            nn.Linear(32, self.rot_dim)
+        )
+
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
-        self.mlp_traj = TrajEncoder(traj_feat_dim=traj_feat_dim, num_steps=num_steps, wpt_dim=wpt_dim)
-        self.mlp_cp = nn.Linear(3, cp_feat_dim) # contact point
+        self.mlp_cp = nn.Linear(3, cp_feat_dim)
+        self.mlp_wpt = nn.Linear(wpt_dim, wpt_feat_dim)
         self.all_encoder = AllEncoder(
-                                pcd_feat_dim=pcd_feat_dim, traj_feat_dim=traj_feat_dim, cp_feat_dim=cp_feat_dim,
+                                pcd_feat_dim=pcd_feat_dim, traj_feat_dim=(wpt_feat_dim * num_steps), cp_feat_dim=cp_feat_dim,
                                 hidden_dim=hidden_dim, z_feat_dim=z_feat_dim
                             ) # CVAE encoder
-        self.all_decoder = AllDecoder(
-                                pcd_feat_dim=pcd_feat_dim, cp_feat_dim=cp_feat_dim,
-                                z_feat_dim=z_feat_dim, hidden_dim=hidden_dim, 
+        self.lstm_decoder = LSTMDecoder(
+                                num_layers=decoder_layers, 
+                                pcd_feat_dim=pcd_feat_dim, wpt_feat_dim=wpt_feat_dim, z_feat_dim=z_feat_dim, 
+                                hidden_dim=hidden_dim, 
                                 num_steps=num_steps, wpt_dim=wpt_dim
                             ) # CVAE decoder
         self.MSELoss = nn.MSELoss(reduction='mean')
 
         self.train_traj_start = train_traj_start
-
-        self.num_steps = num_steps
-        self.wpt_dim = wpt_dim
 
         self.lbd_kl = lbd_kl
         self.lbd_recon = lbd_recon
@@ -302,12 +281,19 @@ class TrajReconPartSegMutual(nn.Module):
         pcs_repeat = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs_repeat)
 
-        # affordance
+        ###############################################
+        # =========== for affordance head =========== #
+        ###############################################
+
         affordance = self.affordance_head(whole_feats)
-        affordance_sigmoid = self.sigmoid(affordance)
         if iter < self.train_traj_start:
-            return affordance, None, None, None
+            return affordance, None, None, None, None
         
+        #######################################################################
+        # =========== extract shape feature using affordance head =========== #
+        #######################################################################
+        
+        affordance_sigmoid = self.sigmoid(affordance)
         # choose 10 features from segmented point cloud
         affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
@@ -321,24 +307,98 @@ class TrajReconPartSegMutual(nn.Module):
 
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
-        # f_s = whole_feats[:, :, 0]
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
-        f_traj = self.mlp_traj(traj)
+        f_wpts = self.mlp_wpt(traj)
 
-        z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
-        recon_traj = self.all_decoder(f_s, f_cp, z_all)
-        return affordance, recon_traj, mu, logvar
+        #############################################
+        # =========== for rotation head =========== #
+        #############################################
 
+        rot_input = torch.cat([f_s, f_cp], dim=-1)
+        rotation = self.rotation_head(rot_input)
+
+        ##############################################################
+        # =========== for trajectory reconstruction head =========== #
+        ##############################################################
+
+        # def forward(self, first_wpt, pcd_feat, z):
+        z_all, mu, logvar = self.all_encoder(f_s, f_wpts, f_cp)
+        recon_traj = self.lstm_decoder(f_s, f_wpts, z_all)
+
+        return affordance, rotation, recon_traj, mu, logvar
+
+    def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
+        batch_size = traj.shape[0]
+
+        affordance_pred, rotation, recon_traj, mu, logvar = self.forward(iter, pcs, traj, contact_point) # recon_traj contain all trajectories from 2 ~ T waypoints
+
+        recon_loss = torch.Tensor([0]).to(pcs.device)
+        dir_loss = torch.Tensor([0]).to(pcs.device)
+        kl_loss = torch.Tensor([0]).to(pcs.device)
+
+        ###############################################
+        # =========== for affordance head =========== #
+        ###############################################
+
+        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
+        if iter < self.train_traj_start:
+            losses = {}
+            losses['afford'] = affordance_loss
+            losses['kl'] = kl_loss
+            losses['recon'] = recon_loss
+            losses['dir'] = dir_loss
+
+            losses['total'] = affordance_loss
+            return losses
+
+        recon_loss = torch.Tensor([0]).to(pcs.device) 
+        dir_loss = torch.Tensor([0]).to(pcs.device)
+        kl_loss = torch.Tensor([0]).to(pcs.device)
+
+        #############################################
+        # =========== for rotation head =========== #
+        #############################################
+
+        input_dir = traj[:, 0, 3:] # 9d
+        dir_loss = self.get_6d_rot_loss(rotation, input_dir)
+        dir_loss = dir_loss.mean()
+
+        ##############################################################
+        # =========== for trajectory reconstruction head =========== #
+        ##############################################################
+
+        # trajectory reconstruction loss
+        loss_wpt_num = self.num_steps - 1
+        input_wps_pos = traj[:, 1:, :3]
+        recon_wps_pos = recon_traj[:, :, :3]
+        recon_pos_loss = self.MSELoss(recon_wps_pos.reshape(batch_size, loss_wpt_num * 3), input_wps_pos.reshape(batch_size, loss_wpt_num * 3))
+        input_wps_rot = traj[:, 1:, 3:] 
+        recon_wps_rot = recon_traj[:, :, 3:]
+        recon_rot_loss = self.get_6d_rot_loss(recon_wps_rot, input_wps_rot)
+        recon_rot_loss = recon_rot_loss.mean()
+        recon_loss = recon_pos_loss + recon_rot_loss
+
+        # kl regularization loss
+        kl_loss = KL(mu, logvar)
+
+        losses = {}
+        losses['afford'] = affordance_loss
+        losses['recon'] = recon_loss
+        losses['dir'] = dir_loss
+        losses['kl'] = kl_loss
+
+        if self.kl_annealing == 0:
+            losses['total'] = self.lbd_kl * kl_loss + self.lbd_recon * recon_loss + self.lbd_dir * dir_loss + 0.1 * affordance_loss
+        elif self.kl_annealing == 1:
+            losses['total'] = lbd_kl * kl_loss + self.lbd_recon * recon_loss + self.lbd_dir * dir_loss + 0.1 * affordance_loss
+
+        return losses
+    
     def sample(self, pcs):
         batch_size = pcs.shape[0]
-        z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
         pcs_input = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs_input)
@@ -348,7 +408,7 @@ class TrajReconPartSegMutual(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        # affordance = self.sigmoid(affordance) # Todo: remove comment
+        affordance = self.sigmoid(affordance)
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -359,9 +419,9 @@ class TrajReconPartSegMutual(nn.Module):
 
         contact_point = pcs[contact_cond0, contact_cond2]
 
-        ##############################################################
-        # =========== for trajectory reconstruction head =========== #
-        ##############################################################
+        #######################################################################
+        # =========== extract shape feature using affordance head =========== #
+        #######################################################################
 
         # choose 10 features from segmented point cloud
         part_cond = torch.where(affordance > 0.3) # only high response region selected
@@ -370,95 +430,34 @@ class TrajReconPartSegMutual(nn.Module):
         whole_feats_part = whole_feats[:, :, 0].clone()
         max_iter = torch.max(part_cond0) + 1
         for i in range(max_iter):
+            
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            point_ind = part_cond2[cond][ind]
-            tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
-        recon_traj = self.all_decoder(f_s, f_cp, z_all)
-        ret_traj = torch.zeros(recon_traj.shape)
-        if self.dataset_type == 0: # absolute 
-            ret_traj = recon_traj
-            ret_traj[:, 0, :3] = contact_point
 
-        if self.dataset_type == 1: # residual 
-            ret_traj[:, 0, :3] = contact_point
+        #############################################
+        # =========== for rotation head =========== #
+        #############################################
 
-            recon_dir = recon_traj[:, 0]
-            recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
-            recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
-            ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
-
-            ret_traj[:, 1:] = recon_traj[:, 1:]
-
-        return affordance, ret_traj
-
-    def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
-        batch_size = traj.shape[0]
-
-        affordance_pred, recon_traj, mu, logvar = self.forward(iter, pcs, traj, contact_point)
-
-        nn_loss = torch.Tensor([0]).to('cuda')
-        recon_loss = torch.Tensor([0]).to('cuda')
-        dir_loss = torch.Tensor([0]).to('cuda')
-        kl_loss = torch.Tensor([0]).to('cuda')
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
-        if iter < self.train_traj_start:
-            losses = {}
-            losses['afford'] = affordance_loss
-            losses['nn'] = nn_loss
-            losses['kl'] = kl_loss
-            losses['recon'] = recon_loss
-            losses['dir'] = dir_loss
-            losses['total'] = affordance_loss
-            return losses
+        rot_input = torch.cat([f_s, f_cp], dim=-1)
+        contact_rotation = self.rotation_head(rot_input)
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
-        nn_loss = torch.Tensor([0]).to('cuda')
-        recon_loss = torch.Tensor([0]).to('cuda')
-        dir_loss = torch.Tensor([0]).to('cuda')
-        kl_loss = torch.Tensor([0]).to('cuda')
+        z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).to(pcs.device)
 
-        if self.dataset_type == 0: # absolute 
-            recon_wps = recon_traj
-            input_wps = traj
-            recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
+        first_wpt = torch.cat([contact_point, contact_rotation], dim=-1)
+        recon_traj = self.lstm_decoder.inference(first_wpt, self.mlp_wpt, f_s, z_all)
+        
+        ret_traj = torch.zeros((batch_size, self.num_steps, 6))
+        recon_dirmat = self.rot6d_to_rotmat(recon_traj[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+        recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
+        recon_rotvec = torch.from_numpy(recon_rotvec).to(pcs.device)
+        ret_traj[:, :, 3:] = recon_rotvec.reshape(batch_size, self.num_steps, 3)
 
-        if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
-            input_dir = traj[:, 0, :]
-            recon_dir = recon_traj[:, 0, :]
-            dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-            dir_loss = dir_loss.mean()
-
-            input_wps = traj[:, 1:, :]
-            recon_wps = recon_traj[:, 1:, :]
-            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
-            
-            recon_loss = self.lbd_dir * dir_loss + wpt_loss
-
-        kl_loss = KL(mu, logvar)
-        losses = {}
-        losses['afford'] = affordance_loss
-        losses['nn'] = nn_loss
-        losses['kl'] = kl_loss
-        losses['recon'] = recon_loss
-        losses['dir'] = dir_loss
-
-        if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.1 * affordance_loss
-        elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.1 * affordance_loss
-
-        return losses
+        return affordance, ret_traj
