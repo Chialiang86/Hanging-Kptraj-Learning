@@ -9,18 +9,24 @@ if [ $1 = 'train' ]; then
 
     model_configs=(
         # "traj_fusion_mutual_10"
-        "traj_fusion_mutual_nn_dist_mr_10"
+        # "traj_fusion_mutual_nn_dist_mr_10"
  
         # "traj_fusion_mutual_20"
         # "traj_fusion_mutual_nn_dist_mr_20"
  
         # "traj_fusion_mutual"
         # "traj_fusion_mutual_nn_dist_mr"
+
+        # "traj_fusion_mutual_noise_10"
+ 
+        # "traj_fusion_mutual_noise_20"
+ 
+        "traj_fusion_mutual_noise"
     )
 
     traj_recon_affordance_datasets=(
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
     )
 

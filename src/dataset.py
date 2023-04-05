@@ -372,11 +372,16 @@ from utils.training_utils import get_model_module, optimizer_to_device, normaliz
 #         return points
     
 class KptrajReconAffordanceDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, affordance_type=0, device='cuda'):
+    def __init__(self, dataset_dir, num_steps=30, wpt_dim=6, sample_num_points=1000, enable_traj=True, affordance_type=0, device='cuda', with_noise=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
         assert wpt_dim == 9  or wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6'
+        
+        self.with_noise = with_noise
+        self.noise_pos_scale = 0.0005 # unit: meter
+        self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
 
+        self.device = device
         self.affordance_type = affordance_type
         self.affordance_name = {
             0:'none',
@@ -526,6 +531,11 @@ class KptrajReconAffordanceDataset(Dataset):
         center = self.center_list[index][shape_id]
         scale = self.scale_list[index][shape_id]
 
+        # noise to point cloud
+        if self.with_noise:
+            point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
+            points += point_noises
+
         # for affordance processing if enabled
         affordance = None
         if self.affordance_name == 'affordance' or self.affordance_name == 'both':
@@ -548,6 +558,14 @@ class KptrajReconAffordanceDataset(Dataset):
             traj_id = np.random.randint(0, num_traj)
             wpts = self.traj_list[index][traj_id]
             waypoints = wpts.clone()
+            
+            # noise to waypoints
+            if self.with_noise:
+                pos_noises = torch.randn(waypoints[:, :3].shape).to(self.device) * self.noise_pos_scale 
+                waypoints[:, :3] += pos_noises
+                rot_noises = torch.randn(waypoints[:, 3:].shape).to(self.device) * self.noise_rot_scale 
+                waypoints[:, 3:] += rot_noises
+
             if self.type == "absolute":
                 waypoints[:, :3] = (waypoints[:, :3] - center) / scale
             elif self.type == "residual":

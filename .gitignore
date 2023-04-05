@@ -17,4 +17,6 @@ src/figures/*
 src/inference/*
 src/logs/*
 src/training_logs/*
+src/training_logs_old/*
 */legacy/*
+*.zip
