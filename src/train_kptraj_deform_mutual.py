@@ -73,7 +73,7 @@ def train(args):
     
     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
     train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs, device=args.device)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs, device=args.device)
+    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val_deform', **dataset_inputs, device=args.device)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
@@ -101,11 +101,6 @@ def train(args):
     # start training
     start_time = time.time()
 
-    # will only work if 'kl_annealing' = 1 in "model_inputs"
-    kl_weight = kl_annealing(kl_anneal_cyclical=True, 
-                niter=stop_epoch, 
-                start=0.0, stop=0.1, kl_anneal_cycle=5, kl_anneal_ratio=0.5)
-
     # train for every epoch
     for epoch in range(start_epoch, stop_epoch + 1):
 
@@ -114,35 +109,33 @@ def train(args):
 
         # training
         train_dist_losses = []
+        train_cls_losses = []
         train_afford_losses = []
-        train_nn_losses = []
+        train_deform_losses = []
         train_dir_losses = []
-        train_kl_losses = []
-        train_recon_losses = []
         train_total_losses = []
-        for i_batch, (sample_pcds, sample_affords, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+        for i_batch, (sample_pcds, sample_affords, sample_difficulty, sample_temp_trajs, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
 
             # set models to training mode
             network.train()
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()
-            sample_cp = sample_pcds[:, 0]
 
             # forward pass
-            losses = network.get_loss(epoch, sample_pcds, sample_trajs, sample_cp, sample_affords, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
+            losses = network.get_loss(epoch, sample_pcds, sample_affords, sample_difficulty, sample_temp_trajs, sample_trajs)  # B x 2, B x F x N
             total_loss = losses['total']
 
+            if 'cls' in losses.keys():
+                train_cls_losses.append(losses['cls'].item())
             if 'afford' in losses.keys():
                 train_afford_losses.append(losses['afford'].item())
             if 'dist' in losses.keys():
                 train_dist_losses.append(losses['dist'].item())
-            if 'nn' in losses.keys():
-                train_nn_losses.append(losses['nn'].item())
             if 'dir' in losses.keys():
                 train_dir_losses.append(losses['dir'].item())
-            train_kl_losses.append(losses['kl'].item())
-            train_recon_losses.append(losses['recon'].item())
+
+            train_deform_losses.append(losses['deform'].item())
             train_total_losses.append(losses['total'].item())
 
             # optimize one step
@@ -152,16 +145,16 @@ def train(args):
 
         network_lr_scheduler.step()
         
+        if 'cls' in losses.keys():
+            train_cls_avg_loss = np.mean(np.asarray(train_cls_losses))
         if 'afford' in losses.keys():
             train_afford_avg_loss = np.mean(np.asarray(train_afford_losses))
         if 'dist' in losses.keys():
             train_dist_avg_loss = np.mean(np.asarray(train_dist_losses))
-        if 'nn' in losses.keys():
-            train_nn_avg_loss = np.mean(np.asarray(train_nn_losses))
         if 'dir' in losses.keys():
             train_dir_avg_loss = np.mean(np.asarray(train_dir_losses))
-        train_kl_avg_loss = np.mean(np.asarray(train_kl_losses))
-        train_recon_avg_loss = np.mean(np.asarray(train_recon_losses))
+
+        train_deform_avg_loss = np.mean(np.asarray(train_deform_losses))
         train_total_avg_loss = np.mean(np.asarray(train_total_losses))
         print(
                 f'''---------------------------------------------\n'''
@@ -169,12 +162,11 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - train_cls_avg_loss : {train_cls_avg_loss if 'cls' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - train_afford_avg_loss : {train_afford_avg_loss if 'afford' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - train_dist_avg_loss : {train_dist_avg_loss if 'dist' in losses.keys() else 0.0:>10.5f}\n'''
-                f''' - train_nn_avg_loss : {train_nn_avg_loss if 'nn' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - train_dir_avg_loss : {train_dir_avg_loss if 'dir' in losses.keys() else 0.0:>10.5f}\n'''
-                f''' - train_kl_avg_loss : {train_kl_avg_loss:>10.5f}\n'''
-                f''' - train_recon_avg_loss : {train_recon_avg_loss:>10.5f}\n'''
+                f''' - train_deform_avg_loss : {train_deform_avg_loss:>10.5f}\n'''
                 f''' - train_total_avg_loss : {train_total_avg_loss:>10.5f}\n'''
                 f'''---------------------------------------------\n'''
             )
@@ -185,19 +177,18 @@ def train(args):
                 print('Saving checkpoint ...... ')
                 # torch.save(network, os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
                 torch.save(network.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
-                # torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
-                # torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
+                torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
+                torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
         val_dist_losses = []
+        val_cls_losses = []
         val_afford_losses = []
-        val_nn_losses = []
+        val_deform_losses = []
         val_dir_losses = []
-        val_kl_losses = []
-        val_recon_losses = []
         val_total_losses = []
         # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-        for i_batch, (sample_pcds, sample_affords, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
+        for i_batch, (sample_pcds, sample_affords, sample_difficulty, sample_temp_trajs, sample_trajs) in tqdm(val_batches, total=len(val_loader)):
 
             # set models to evaluation mode
             network.eval()
@@ -207,30 +198,31 @@ def train(args):
             sample_cp = sample_pcds[:, 0]
 
             with torch.no_grad():
-                losses = network.get_loss(epoch, sample_pcds, sample_trajs, sample_cp, sample_affords, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
-                
+                # forward pass
+                losses = network.get_loss(epoch, sample_pcds, sample_affords, sample_difficulty, sample_temp_trajs, sample_trajs)  # B x 2, B x F x N
+
+                if 'cls' in losses.keys():
+                    val_cls_losses.append(losses['cls'].item())
                 if 'afford' in losses.keys():
                     val_afford_losses.append(losses['afford'].item())
                 if 'dist' in losses.keys():
                     val_dist_losses.append(losses['dist'].item())
-                if 'nn' in losses.keys():
-                    val_nn_losses.append(losses['nn'].item())
                 if 'dir' in losses.keys():
                     val_dir_losses.append(losses['dir'].item())
-                val_kl_losses.append(losses['kl'].item())
-                val_recon_losses.append(losses['recon'].item())
+
+                val_deform_losses.append(losses['deform'].item())
                 val_total_losses.append(losses['total'].item())
 
+        if 'cls' in losses.keys():
+            val_cls_avg_loss = np.mean(np.asarray(val_cls_losses))
         if 'afford' in losses.keys():
             val_afford_avg_loss = np.mean(np.asarray(val_afford_losses))
         if 'dist' in losses.keys():
             val_dist_avg_loss = np.mean(np.asarray(val_dist_losses))
-        if 'nn' in losses.keys():
-            val_nn_avg_loss = np.mean(np.asarray(val_nn_losses))
         if 'dir' in losses.keys():
             val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
-        val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
-        val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
+
+        val_deform_avg_loss = np.mean(np.asarray(val_deform_losses))
         val_total_avg_loss = np.mean(np.asarray(val_total_losses))
         print(
                 f'''---------------------------------------------\n'''
@@ -238,17 +230,14 @@ def train(args):
                 f''' - time : {strftime("%H:%M:%S", time.gmtime(time.time() - start_time)):>9s} \n'''
                 f''' - epoch : {epoch:>5.0f}/{stop_epoch:<5.0f} \n'''
                 f''' - lr : {network_opt.param_groups[0]['lr']:>5.2E} \n'''
+                f''' - val_cls_avg_loss : {val_cls_avg_loss if 'cls' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - val_afford_avg_loss : {val_afford_avg_loss if 'afford' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - val_dist_avg_loss : {val_dist_avg_loss if 'dist' in losses.keys() else 0.0:>10.5f}\n'''
-                f''' - val_nn_avg_loss : {val_nn_avg_loss if 'nn' in losses.keys() else 0.0:>10.5f}\n'''
                 f''' - val_dir_avg_loss : {val_dir_avg_loss if 'dir' in losses.keys() else 0.0:>10.5f}\n'''
-                f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
-                f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
+                f''' - val_deform_avg_loss : {val_deform_avg_loss:>10.5f}\n'''
                 f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
                 f'''---------------------------------------------\n'''
             )
-
-        kl_weight.update()
 
 def capture_from_viewer(geometries):
     vis = o3d.visualization.Visualizer()
@@ -626,9 +615,9 @@ def test(args):
     hook_urdfs = []
 
     class_num = 15
-    easy_cnt = 15
-    normal_cnt = 15
-    hard_cnt = 15
+    easy_cnt = 0
+    normal_cnt = 0
+    hard_cnt = 0
     devil_cnt = 0
     for inference_hook_path in inference_hook_paths:
         hook_name = inference_hook_path.split('/')[-2]

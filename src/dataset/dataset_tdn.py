@@ -1,0 +1,248 @@
+import os, glob, json, sys
+sys.path.append('../')
+
+import numpy as np
+import open3d as o3d
+
+from scipy.spatial.transform import Rotation as R
+from pointnet2_ops.pointnet2_utils import furthest_point_sample
+import torch
+from torch.utils.data import Dataset
+import matplotlib.pyplot as plt
+
+from utils.training_utils import get_model_module, optimizer_to_device, normalize_pc
+
+class KptrajDeformAffordanceDataset(Dataset):
+    def __init__(self, dataset_dir, num_steps=40, wpt_dim=6, sample_num_points=1000, device='cuda', with_noise=False):
+        
+        assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
+        assert wpt_dim == 9  or wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6'
+        
+        self.with_noise = with_noise
+        self.noise_pos_scale = 0.0005 # unit: meter
+        self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
+
+        self.device = device
+
+        dataset_subdirs = glob.glob(f'{dataset_dir}/*')
+
+        template_hooks = [
+            'Hook_my_bar_easy',
+            'Hook_my_60_normal',
+            'Hook_my_45_hard',
+            'Hook_my_90_devil',
+        ]
+
+        self.template_dict = {
+            0: {},
+            1: {},
+            2: {},
+            3: {}
+        }
+
+        self.type = "residual" if "residual" in dataset_dir else "absolute"
+        self.traj_len = num_steps
+        self.wpt_dim = wpt_dim
+        self.sample_num_points = sample_num_points
+        
+        self.shape_list = [] 
+        self.center_list = []
+        self.scale_list = [] 
+        self.fusion_list = []
+        self.traj_list = []
+        self.difficulty_list = []
+
+        for dataset_subdir in dataset_subdirs:
+
+            shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
+            shape_list_tmp = []
+            fusion_list_tmp = []
+            center_list_tmp = []
+            scale_list_tmp = [] 
+            
+            hook_name = dataset_subdir.split('/')[-1]
+            current_type = 'template' if hook_name in template_hooks else 'normal'
+            difficulty = 0 if 'easy' in hook_name else \
+                         1 if 'normal' in hook_name else \
+                         2 if 'hard' in hook_name else \
+                         3 # devil
+            
+            if current_type == 'normal':
+                self.difficulty_list.append(difficulty)
+            else:
+                template_info = {
+                    'shape': [],
+                    'center': [],
+                    'scale': [],
+                    'fusion': [],
+                    'traj': [],
+                }
+            
+            for shape_file in shape_files:
+                pcd = np.load(shape_file).astype(np.float32)
+                points = pcd[:,:3]
+
+                centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
+                centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
+                input_pcid = furthest_point_sample(centroid_points, self.sample_num_points).long().reshape(-1)  # BN
+                centroid_points = centroid_points[0, input_pcid, :].squeeze()
+
+                center = torch.from_numpy(center).to(device)
+
+                shape_list_tmp.append(centroid_points)
+                center_list_tmp.append(center)
+                scale_list_tmp.append(scale)
+
+                assert  pcd.shape[1] > 4, f''
+                fusion = (pcd[:,3] + pcd[:,4]) / 2 # just average it
+                fusion = torch.from_numpy(fusion).to(device)
+                fusion = fusion[input_pcid]
+                fusion_list_tmp.append(fusion)
+            
+            if current_type == 'normal':
+                self.shape_list.append(shape_list_tmp)
+                self.center_list.append(center_list_tmp)
+                self.scale_list.append(scale_list_tmp)
+                self.fusion_list.append(fusion_list_tmp)
+            else :
+                template_info['shape'] = shape_list_tmp
+                template_info['center'] = center_list_tmp
+                template_info['scale'] = scale_list_tmp
+                template_info['fusion'] = fusion_list_tmp
+
+            traj_list_tmp = []
+            traj_files = glob.glob(f'{dataset_subdir}/*.json')[:1] # trajectory in 7d format
+                
+            for traj_file in traj_files:
+                
+                f_traj = open(traj_file, 'r')
+                traj_dict = json.load(f_traj)
+
+                waypoints = np.asarray(traj_dict['trajectory'])
+                    
+                if self.wpt_dim == 6 and self.type == "residual":
+                    first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
+                    first_rot_matrix_xy = (first_rot_matrix.T).reshape(-1)[:6] # the first, second column of the rotation matrix
+                    waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
+
+                if self.wpt_dim == 9:
+                    waypoints_9d = np.zeros((waypoints.shape[0], 9))
+                    waypoints_9d[:, :3] = waypoints[:, :3]
+                    rot_matrix = R.from_rotvec(waypoints[:, 3:]).as_matrix() # omit absolute position of the first waypoint
+                    rot_matrix_xy = np.transpose(rot_matrix, (0, 2, 1)).reshape((waypoints.shape[0], -1))[:, :6] # the first, second column of the rotation matrix
+                    waypoints_9d[:, 3:] = rot_matrix_xy # rotation only (6d rotation representation)
+                    waypoints = waypoints_9d
+
+                waypoints = torch.FloatTensor(waypoints).to(device)
+                traj_list_tmp.append(waypoints)
+
+            if current_type == 'normal':
+                self.traj_list.append(traj_list_tmp)
+            else :
+                template_info['traj'] = traj_list_tmp
+                self.template_dict[difficulty] = template_info
+
+        assert len(self.shape_list) == len(self.center_list) == len(self.scale_list) == len(self.fusion_list) == len(self.traj_list) == len(self.difficulty_list), 'inconsistent length of shapes and affordance'
+        self.size = len(self.shape_list)
+
+    def print_data_shape(self):
+        print(f'dataset size : {self.size}')
+        print(f"trajectory : {len(self.traj_list)}")
+        print(f'sample_num_points : {self.sample_num_points}')
+        
+    def __len__(self):
+        return self.size
+    
+    def __getitem__(self, index):
+
+        ############################
+        # for template information #
+        ############################
+
+        difficulty = self.difficulty_list[index]
+        template_info = self.template_dict[difficulty]
+        temp_shape_id = np.random.randint(0, len(template_info['shape']))
+        temp_traj_id = np.random.randint(0, len(template_info['traj']))
+
+        temp_wpts = template_info['traj'][temp_traj_id].clone()
+        temp_center = template_info['center'][temp_shape_id].clone()
+        temp_scale = template_info['scale'][temp_shape_id]
+
+        # noise to waypoints
+        if self.with_noise:
+            pos_noises = torch.randn(temp_wpts[:, :3].shape).to(self.device) * self.noise_pos_scale 
+            temp_wpts[:, :3] += pos_noises
+            rot_noises = torch.randn(temp_wpts[:, 3:].shape).to(self.device) * self.noise_rot_scale 
+            temp_wpts[:, 3:] += rot_noises
+
+        if self.type == "absolute":
+            temp_wpts[:, :3] = (temp_wpts[:, :3] - temp_center) / temp_scale
+        elif self.type == "residual":
+            temp_wpts[1:, :3] = temp_wpts[1:, :3] / temp_scale
+        else :
+            print(f"dataset type undefined : {self.type}")
+            exit(-1)
+
+        ###############################
+        # for point cloud information #
+        ###############################
+        
+        num_pcd = len(self.shape_list[index])
+        shape_id = np.random.randint(0, num_pcd)
+        points = self.shape_list[index][shape_id].clone()
+        center = self.center_list[index][shape_id].clone()
+        scale = self.scale_list[index][shape_id]
+
+        # noise to point cloud
+        if self.with_noise:
+            point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
+            points += point_noises
+
+        # for fusion processing if enabled
+        fusion = self.fusion_list[index][shape_id]
+
+        # for waypoint preprocessing
+        num_traj = len(self.traj_list[index])
+        traj_id = np.random.randint(0, num_traj)
+        wpts = self.traj_list[index][traj_id].clone()
+
+        if self.type == "absolute":
+            wpts[:, :3] = (wpts[:, :3] - center) / scale
+        elif self.type == "residual":
+            wpts[1:, :3] = wpts[1:, :3] / scale
+        else :
+            print(f"dataset type undefined : {self.type}")
+            exit(-1)
+
+        ####################################
+        # for offset wpts information #
+        ####################################
+
+        # for position offset
+        offset_wpts = torch.zeros(wpts.shape).to(self.device)
+        first_pos_diff = wpts[0, :3] - temp_wpts[0, :3] # find the first-wpt difference
+        temp_wpts[:, :3] += first_pos_diff # align template traj to target traj via first wpt
+        pos_offset = wpts[:, :3] - temp_wpts[:, :3]
+        offset_wpts[:, :3] = pos_offset
+
+        # for rotation offset
+        if self.wpt_dim == 9:
+            temp_rotmat_xy = temp_wpts[:, 3:].reshape(-1, 2, 3)
+            temp_rotmat_z = torch.cross(temp_rotmat_xy[:, 0], temp_rotmat_xy[:, 1]).unsqueeze(1)
+            temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=1) # row vector (the inverse of the temp rotation matrix)
+
+            rotmat_xy = wpts[:, 3:].reshape(-1, 2, 3) # column vector 
+            rotmat_z = torch.cross(rotmat_xy[:, 0], rotmat_xy[:, 1]).unsqueeze(1)
+            rotmat = torch.cat([rotmat_xy, rotmat_z], dim=1).permute(0, 2, 1) # col vector (the inverse of the temp rotation matrix)
+            rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, 9)[:, :6]
+            offset_wpts[:, 3:] = rotmat_offset
+        
+        # ret value
+        return points, fusion, difficulty, temp_wpts, wpts
+
+if __name__=="__main__":
+    
+    dataset_dir = "../../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+    dataset = KptrajDeformAffordanceDataset(dataset_dir)
+    dataset.print_data_shape()
+

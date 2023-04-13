@@ -88,7 +88,7 @@ def get_model_module(module_name, model_name):
 
 def get_dataset_module(module_name, model_name):
     importlib.invalidate_caches()
-    module = importlib.import_module(module_name)
+    module = importlib.import_module('dataset.' + module_name)
     model = getattr(module, model_name)
     return model
 
