@@ -87,7 +87,7 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
 
 class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
-        c_in = 1
+        c_in = 4
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
@@ -306,13 +306,13 @@ class TrajDeformFusionLSTM(nn.Module):
 
         temp_traj_clone = temp_traj.clone()
         pcd_input_length = pcs.shape[1] + temp_traj.shape[1]
-        pn_input = torch.zeros((batch_size, pcd_input_length, 4)).to(pcs.device)
+        pn_input = torch.zeros((batch_size, pcd_input_length, 7)).to(pcs.device)
 
         temp_traj_align_offset = temp_traj[:, 0, :3] - contact_point
         temp_traj_clone[:, :, :3] -= temp_traj_align_offset.unsqueeze(1)
-        pn_input[:, :pcs.shape[1], :3] = pcs
-        pn_input[:, -temp_traj.shape[1]:, :3] = temp_traj[:, :, :3]
-        pn_input[:, -temp_traj.shape[1]:, 3]= 1
+        pn_input[:, :pcs.shape[1], :6] = pcs.repeat(1, 1, 2)
+        pn_input[:, pcs.shape[1]:, :6] = temp_traj[:, :, :3].repeat(1, 1, 2)
+        pn_input[:, pcs.shape[1]:, 6] = 1
 
         whole_feats = self.pointnet2seg(pn_input)
 
@@ -355,7 +355,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
-        f_traj = whole_feats[:, :, -temp_traj.shape[1]:].permute(0, 2, 1) # (batch, traj_length, feat_dim)
+        f_traj = whole_feats[:, :, pcs.shape[1]:].permute(0, 2, 1) # (batch, traj_length, feat_dim)
         
         #############################################
         # =========== for rotation head =========== #
@@ -368,10 +368,8 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
-
         f_s_repeat = f_s.unsqueeze(1).repeat(1, self.num_steps, 1)
-        f_traj_repeat = f_s.unsqueeze(1).repeat(1, self.num_steps, 1)
-        f_all = torch.cat([f_s_repeat, f_traj_repeat, temp_traj], dim=-1)
+        f_all = torch.cat([f_s_repeat, f_traj, temp_traj], dim=-1)
         traj_deform_offset = self.lstm_decoder(f_all)
 
         return difficulty, affordance, rotation, traj_deform_offset

@@ -202,9 +202,9 @@ class KptrajDeformAffordanceDataset(Dataset):
         fusion = self.fusion_list[index][shape_id]
 
         # for waypoint preprocessing
-        num_traj = len(self.traj_list[index])
-        traj_id = np.random.randint(0, num_traj)
-        wpts = self.traj_list[index][traj_id].clone()
+        # num_traj = len(self.traj_list[index])
+        # traj_id = np.random.randint(0, num_traj)
+        wpts = self.traj_list[index][0].clone()
 
         if self.type == "absolute":
             wpts[:, :3] = (wpts[:, :3] - center) / scale
@@ -213,29 +213,6 @@ class KptrajDeformAffordanceDataset(Dataset):
         else :
             print(f"dataset type undefined : {self.type}")
             exit(-1)
-
-        ####################################
-        # for offset wpts information #
-        ####################################
-
-        # for position offset
-        offset_wpts = torch.zeros(wpts.shape).to(self.device)
-        first_pos_diff = wpts[0, :3] - temp_wpts[0, :3] # find the first-wpt difference
-        temp_wpts[:, :3] += first_pos_diff # align template traj to target traj via first wpt
-        pos_offset = wpts[:, :3] - temp_wpts[:, :3]
-        offset_wpts[:, :3] = pos_offset
-
-        # for rotation offset
-        if self.wpt_dim == 9:
-            temp_rotmat_xy = temp_wpts[:, 3:].reshape(-1, 2, 3)
-            temp_rotmat_z = torch.cross(temp_rotmat_xy[:, 0], temp_rotmat_xy[:, 1]).unsqueeze(1)
-            temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=1) # row vector (the inverse of the temp rotation matrix)
-
-            rotmat_xy = wpts[:, 3:].reshape(-1, 2, 3) # column vector 
-            rotmat_z = torch.cross(rotmat_xy[:, 0], rotmat_xy[:, 1]).unsqueeze(1)
-            rotmat = torch.cat([rotmat_xy, rotmat_z], dim=1).permute(0, 2, 1) # col vector (the inverse of the temp rotation matrix)
-            rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, 9)[:, :6]
-            offset_wpts[:, 3:] = rotmat_offset
         
         # ret value
         return points, fusion, difficulty, temp_wpts, wpts
