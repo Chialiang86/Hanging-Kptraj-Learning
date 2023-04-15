@@ -19,6 +19,8 @@ def main(root_name : str):
             training_model_type = 'cvae'
         elif 'af' in fname:
             training_model_type = 'affordance'
+        elif 'af' in fname:
+            training_model_type = 'affordance'
         # elif '_cae' in fname:
         #     training_model_type = 'cae'
         # if 'traj_af' in fname:

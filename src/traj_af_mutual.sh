@@ -237,8 +237,8 @@ elif [ $1 = 'test' ]; then
                                                         --weight_subpath "1000_points-network_epoch-${iter}.pth" \
                                                         --obj_shape_root ${obj_shape_root} \
                                                         --hook_shape_root ${hook_shape_root} \
-                                                        --evaluate \
-                                                        --visualize 
+                                                        --evaluate 
+                                                        # --visualize 
         done
     done
 

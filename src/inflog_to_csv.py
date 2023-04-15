@@ -88,41 +88,41 @@ def main(input_dir):
                 print(ckpt)
             config = log_dict[ckpt]['config']
             dataset = log_dict[ckpt]['dataset']
-            # all_item = '{:00.03f}% / {:00.03f}%'.format(
-            #                 np.max(log_dict[ckpt]['train']['all']) if 'train' in log_dict[ckpt].keys() else -1, 
-            #                 np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else -1
-            #             )
-            # easy_item = '{:00.03f}% / {:00.03f}%'.format(
-            #                 np.max(log_dict[ckpt]['train']['easy']) if 'train' in log_dict[ckpt].keys() else -1, 
-            #                 np.max(log_dict[ckpt]['val']['easy']) if 'val' in log_dict[ckpt].keys() else -1
-            #             )
-            # normal_item = '{:00.03f}% / {:00.03f}%'.format(
-            #                 np.max(log_dict[ckpt]['train']['normal']) if 'train' in log_dict[ckpt].keys() else -1, 
-            #                 np.max(log_dict[ckpt]['val']['normal']) if 'val' in log_dict[ckpt].keys() else -1
-            #             )
-            # hard_item = '{:00.03f}% / {:00.03f}%'.format(
-            #                 np.max(log_dict[ckpt]['train']['hard']) if 'train' in log_dict[ckpt].keys() else -1, 
-            #                 np.max(log_dict[ckpt]['val']['hard']) if 'val' in log_dict[ckpt].keys() else -1
-            #             )
-            # devil_item = '{:00.03f}% / {:00.03f}%'.format(
-            #                 np.max(log_dict[ckpt]['train']['devil']) if 'train' in log_dict[ckpt].keys() else -1, 
-            #                 np.max(log_dict[ckpt]['val']['devil']) if 'val' in log_dict[ckpt].keys() else -1
-            #             )
-            all_item = '{:00.03f}%'.format(
+            all_item = '{:00.03f}% / {:00.03f}%'.format(
+                            np.max(log_dict[ckpt]['train']['all']) if 'train' in log_dict[ckpt].keys() else -1, 
                             np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else -1
                         )
-            easy_item = '{:00.03f}%'.format(
+            easy_item = '{:00.03f}% / {:00.03f}%'.format(
+                            np.max(log_dict[ckpt]['train']['easy']) if 'train' in log_dict[ckpt].keys() else -1, 
                             np.max(log_dict[ckpt]['val']['easy']) if 'val' in log_dict[ckpt].keys() else -1
                         )
-            normal_item = '{:00.03f}%'.format(
+            normal_item = '{:00.03f}% / {:00.03f}%'.format(
+                            np.max(log_dict[ckpt]['train']['normal']) if 'train' in log_dict[ckpt].keys() else -1, 
                             np.max(log_dict[ckpt]['val']['normal']) if 'val' in log_dict[ckpt].keys() else -1
                         )
-            hard_item = '{:00.03f}%'.format(
+            hard_item = '{:00.03f}% / {:00.03f}%'.format(
+                            np.max(log_dict[ckpt]['train']['hard']) if 'train' in log_dict[ckpt].keys() else -1, 
                             np.max(log_dict[ckpt]['val']['hard']) if 'val' in log_dict[ckpt].keys() else -1
                         )
-            devil_item = '{:00.03f}%'.format(
+            devil_item = '{:00.03f}% / {:00.03f}%'.format(
+                            np.max(log_dict[ckpt]['train']['devil']) if 'train' in log_dict[ckpt].keys() else -1, 
                             np.max(log_dict[ckpt]['val']['devil']) if 'val' in log_dict[ckpt].keys() else -1
                         )
+            # all_item = '{:00.03f}%'.format(
+            #                 np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else -1
+            #             )
+            # easy_item = '{:00.03f}%'.format(
+            #                 np.max(log_dict[ckpt]['val']['easy']) if 'val' in log_dict[ckpt].keys() else -1
+            #             )
+            # normal_item = '{:00.03f}%'.format(
+            #                 np.max(log_dict[ckpt]['val']['normal']) if 'val' in log_dict[ckpt].keys() else -1
+            #             )
+            # hard_item = '{:00.03f}%'.format(
+            #                 np.max(log_dict[ckpt]['val']['hard']) if 'val' in log_dict[ckpt].keys() else -1
+            #             )
+            # devil_item = '{:00.03f}%'.format(
+            #                 np.max(log_dict[ckpt]['val']['devil']) if 'val' in log_dict[ckpt].keys() else -1
+            #             )
 
             csv_line = f'{config}, {dataset}, {all_item}, {easy_item}, {normal_item}, {hard_item}, {devil_item}\n'
             f_out.write(csv_line)

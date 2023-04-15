@@ -739,7 +739,7 @@ def test(args):
         # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
 
         # generate trajectory using predicted contact points
-        affordance, recon_trajs = network.sample(points_batch)
+        affordance, recon_trajs = network.sample(points_batch, contact_point)
 
         ###############################################
         # =========== for affordance head =========== #

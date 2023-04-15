@@ -57,7 +57,6 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
             nn.ReLU(True),
             nn.Dropout(0.5),
             nn.Linear(256, 4), # class num = 4
-            nn.Softmax(),
         )
     
     def _break_up_pc(self, pc):
@@ -321,7 +320,8 @@ class TrajDeformFusionLSTM(nn.Module):
         ###################################################
 
         pcs_repeat = pcs.repeat(1, 1, 2)
-        difficulty = self.pointnet2cls(pcs_repeat)
+        pointnet2cls_out = self.pointnet2cls(pcs_repeat)
+        difficulty = F.log_softmax(pointnet2cls_out, -1)
 
         ###############################################
         # =========== for affordance head =========== #
