@@ -8,6 +8,8 @@ from tqdm import tqdm
 from time import strftime
 
 from sklearn.model_selection import train_test_split
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc, kl_annealing
 
@@ -298,7 +300,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
             for wpt_id in range(0, traj[traj_id].shape[0]): # waypoints
 
                 wpt = np.zeros(6)
-                if wpt_dim == 6 or wpt_dim == 9:
+                if wpt_dim == 6 :
                     wpt = traj[traj_id, wpt_id]
                     current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
                 elif wpt_dim == 3:
@@ -342,7 +344,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
             for wpt_id in range(0, traj[traj_id].shape[0]):
                 
                 wpt = np.zeros(6)
-                if wpt_dim == 6 or wpt_dim == 9:
+                if wpt_dim == 6 :
 
                     if wpt_id == 0 :
                         wpt = traj[traj_id, wpt_id]
@@ -677,13 +679,13 @@ def test(args):
 
     # Create pybullet GUI
     physics_client_id = None
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    # physics_client_id = p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -730,7 +732,7 @@ def test(args):
         'devil': [],
         'all': []
     }
-    
+
     obj_sucrate = {}
     for k in obj_names:
         obj_sucrate[k] = {
@@ -791,7 +793,7 @@ def test(args):
 
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors)
+        point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
 
         if visualize:
             img_list = []
@@ -851,102 +853,162 @@ def test(args):
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
         p.removeAllUserDebugItems()
-               
-        if visualize:
-            wpt_ids = []
-            for i, recovered_traj in enumerate(recovered_trajs):
-                colors = list(np.random.rand(3)) + [1]
-                for wpt_i, wpt in enumerate(recovered_traj):
 
-                    wpt_id = p.createMultiBody(
-                        baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
-                        baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
-                        basePosition=wpt[:3]
-                    )
-                    wpt_ids.append(wpt_id)
-            
-            cameraYaw = 90
-            p.resetDebugVisualizerCamera(
-                cameraDistance=0.08,
-                cameraYaw=cameraYaw,
-                cameraPitch=0,
-                cameraTargetPosition=[0.5, -0.1, 1.3]
-            )
-            cam_info = p.getDebugVisualizerCamera()
-            width = cam_info[0]
-            height = cam_info[1]
-            view_mat = cam_info[2]
-            proj_mat = cam_info[3]
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = np.asarray(img_info[2])[:,:,:3]
-            Image.fromarray(rgb).save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.jpg")
+def analysis(args):
 
-            for wpt_id in wpt_ids:
-                p.removeBody(wpt_id)
+    import matplotlib.pyplot as plt
+    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
 
-            # # capture a list of images and save as gif
-            # delta = 10
-            # delta_sum = 0
-            # cameraYaw = 90
-            # rgbs = []
-            # while True:
-            #     keys = p.getKeyboardEvents()
-            #     p.resetDebugVisualizerCamera(
-            #         cameraDistance=0.08,
-            #         cameraYaw=cameraYaw,
-            #         cameraPitch=0,
-            #         cameraTargetPosition=[0.5, -0.1, 1.3]
-            #     )
+    # ================== config ==================
 
-            #     cam_info = p.getDebugVisualizerCamera()
-            #     width = cam_info[0]
-            #     height = cam_info[1]
-            #     view_mat = cam_info[2]
-            #     proj_mat = cam_info[3]
-            #     img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            #     rgb = img_info[2]
-            #     rgbs.append(Image.fromarray(rgb))
+    checkpoint_dir = f'{args.checkpoint_dir}'
+    config_file = args.config
+    device = args.device
+    dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
+    weight_subpath = args.weight_subpath
+    weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
-            #     cameraYaw += delta 
-            #     delta_sum += delta 
-            #     cameraYaw = cameraYaw % 360
-            #     if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-            #         break
-            #     if delta_sum >= 360:
-            #         break
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
-            # for wpt_id in wpt_ids:
-            #     p.removeBody(wpt_id)
+    checkpoint_subdir = checkpoint_dir.split('/')[1]
+    checkpoint_subsubdir = checkpoint_dir.split('/')[2]
 
-            # rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-        p.removeBody(hook_id)
+    # sample_num_points = int(weight_subpath.split('_')[0])
+    sample_num_points = 1000
+    print(f'num of points = {sample_num_points}')
 
-    if evaluate:
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    print(f'checkpoint: {weight_path}')
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # params for network
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+    batch_size = config['batch_size']
+
+    # inference
+    inference_obj_dir = args.obj_shape_root
+    assert os.path.exists(inference_obj_dir), f'{inference_obj_dir} not exists'
+    inference_obj_whole_dirs = glob.glob(f'{inference_obj_dir}/*')
+
+    inference_hook_shape_root = args.hook_shape_root
+    assert os.path.exists(inference_hook_shape_root), f'{inference_hook_shape_root} not exists'
+
+    inference_hook_dir = args.inference_dir # for hook shapes
+    inference_hook_whole_dirs = glob.glob(f'{inference_hook_dir}/*')
+
+    inference_hook_paths = []
+
+    for inference_hook_path in inference_hook_whole_dirs:
+        # if 'Hook' in inference_hook_path:
+        paths = glob.glob(f'{inference_hook_path}/affordance*.npy')
+        inference_hook_paths.extend(paths) 
+
+    hook_pcds = []
+    hook_names = []
+
+    for inference_hook_path in inference_hook_paths:
+        hook_name = inference_hook_path.split('/')[-2]
+        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+
+        hook_pcds.append(points)
+        hook_names.append(hook_name)
+
+    inference_subdir = os.path.split(inference_hook_dir)[-1]
+    output_dir = f'inference/analysis/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # ================== Model ==================
+
+    # load model
+    network_class = get_model_module(module_name, model_name)
+    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    # ================== Inference ==================
+
+    batch_size = 1
+    difficulties = []
+
+    whole_feats = None
+    for sid, (hook_name, pcd) in enumerate(tqdm(zip(hook_names, hook_pcds), total=len(hook_pcds))):
+
+        # urdf file
+
+        # hook name
+        difficulty = 'easy' if 'easy' in hook_name else \
+                     'normal' if 'normal' in hook_name else \
+                     'hard' if 'hard' in hook_name else  \
+                     'devil'
+        difficulties.append(difficulty)
         
-        print("===============================================================================================")  # don't modify this
-        print("success rate of all objects")
-        for obj_name in obj_sucrate.keys():
-            for difficulty in ['easy', 'normal', 'hard', 'devil']:
-                assert difficulty in obj_sucrate[obj_name].keys() and f'{difficulty}_all' in obj_sucrate[obj_name].keys()
-                print('[{}] {}: {:00.03f}%'.format(obj_name, difficulty, obj_sucrate[obj_name][difficulty] / obj_sucrate[obj_name][f'{difficulty}_all'] * 100))
-        print("===============================================================================================")  # don't modify this
+        # sample trajectories
+        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        contact_point = centroid_pcd[0]
+        # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
-        easy_mean = np.asarray(all_scores['easy'])
-        normal_mean = np.asarray(all_scores['normal'])
-        hard_mean = np.asarray(all_scores['hard'])
-        devil_mean = np.asarray(all_scores['devil'])
-        all_mean = np.asarray(all_scores['all'])
-        print("===============================================================================================")  # don't modify this
-        print('checkpoint: {}'.format(weight_path))
-        print('inference_dir: {}'.format(args.inference_dir))
-        print('[easy] success rate: {:00.03f}%'.format(np.mean(easy_mean) * 100))
-        print('[normal] success rate: {:00.03f}%'.format(np.mean(normal_mean) * 100))
-        print('[hard] success rate: {:00.03f}%'.format(np.mean(hard_mean) * 100))
-        print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
-        print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
-        print("===============================================================================================")  # don't modify this
+        points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        points_batch = points_batch[0, input_pcid, :].squeeze()
+        points_batch = points_batch.repeat(batch_size, 1, 1)
+
+        # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
+
+        # generate trajectory using predicted contact points
+        affordance, recon_trajs, whole_feat = network.sample(points_batch, return_feat=True)
         
+        whole_feat = whole_feat.cpu().detach()
+
+        if whole_feats is None:
+            whole_feats = whole_feat
+        else :
+            whole_feats = torch.cat([whole_feats, whole_feat], axis=0)
+
+        ###############################################
+        # =========== for affordance head =========== #
+        ###############################################
+
+        # points = points_batch[0].cpu().detach().squeeze().numpy()
+        # affordance = affordance[0].cpu().detach().squeeze().numpy()
+        # affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
+        # colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+
+        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        # contact_point = points[contact_point_cond][0]
+
+        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
+        # contact_point_coor.translate(contact_point.reshape((3, 1)))
+
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
+    
+    whole_feats = whole_feats.numpy()
+    # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
+    X_embedded = PCA(n_components=2).fit_transform(whole_feats)
+    
+    difficulties = np.asarray(difficulties)
+    easy_ind = np.where(difficulties == 'easy')[0]
+    normal_ind = np.where(difficulties == 'normal')[0]
+    hard_ind = np.where(difficulties == 'hard')[0]
+    devil_ind = np.where(difficulties == 'devil')[0]
+    max_rgb = 255.0
+    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=2)
+    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=2)
+    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=2)
+    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=2)
+    plt.legend()
+    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
+
 def main(args):
     dataset_dir = args.dataset_dir
     checkpoint_dir = args.checkpoint_dir
@@ -967,6 +1029,9 @@ def main(args):
 
     if args.training_mode == "test":
         test(args)
+
+    if args.training_mode == "analysis":
+        analysis(args)
 
 
 if __name__=="__main__":

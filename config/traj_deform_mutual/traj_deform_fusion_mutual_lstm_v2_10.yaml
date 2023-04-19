@@ -1,20 +1,21 @@
 dataset_module: 'dataset_tdn'
 dataset_class: 'KptrajDeformAffordanceDataset'
 enable_affordance: 1
-module: 'traj_deform.traj_deform_fusion_lstm' 
+module: 'traj_deform.traj_deform_fusion_lstm_v2' 
 model: 'TrajDeformFusionLSTM'
 
 dataset_inputs:
-  num_steps: 20
+  num_steps: 10
   wpt_dim: 9
   sample_num_points: 1000
   with_noise: 1
   
 model_inputs:
-  pcd_feat_dim: 32
+  pcd_feat_dim: 64
   cp_feat_dim: 32
+  wpt_feat_dim: 64
   hidden_dim: 128
-  num_steps: 20
+  num_steps: 10
   wpt_dim: 9
   decoder_layers: 2
   lbd_cls: 0.1

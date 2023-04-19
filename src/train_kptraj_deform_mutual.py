@@ -8,6 +8,8 @@ from tqdm import tqdm
 from time import strftime
 
 from sklearn.model_selection import train_test_split
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc, kl_annealing
 
@@ -17,7 +19,7 @@ from torchsummary import summary
 
 from scipy.spatial.transform import Rotation as R
 from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
-                               pose_6d_to_7d, pose_7d_to_6d, draw_coordinate
+                               rot_6d_to_3d, draw_coordinate
 from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation, robot_kptraj_hanging
 
 def train_val_dataset(dataset, val_split=0.25):
@@ -321,7 +323,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     if dataset_mode == 1: # "residual"
 
         for traj_id in range(traj.shape[0]):
-            traj[traj_id, 0, :3] = (traj[traj_id, 0, :3] * scales[traj_id]) + centers[traj_id]
+            traj[traj_id,  0, :3] = (traj[traj_id,  0, :3] * scales[traj_id]) + centers[traj_id]
             traj[traj_id, 1:, :3] = (traj[traj_id, 1:, :3] * scales[traj_id])
 
         for traj_id in range(traj.shape[0]):
@@ -334,18 +336,19 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                 if wpt_dim == 6 or wpt_dim == 9:
 
                     if wpt_id == 0 :
-                        wpt = traj[traj_id, wpt_id]
-                        tmp_pos = wpt[:3]
-                        tmp_rot = wpt[3:]
+                        wpt_tmp = traj[traj_id, wpt_id]
+                        tmp_pos = wpt_tmp[:3]
+                        tmp_rot = wpt_tmp[3:] if wpt_dim == 6 else rot_6d_to_3d(wpt_tmp[3:])
+
                     else :
                         tmp_pos = tmp_pos + np.asarray(traj[traj_id, wpt_id, :3])
                         tmp_rot = R.from_matrix(
-                                            R.from_rotvec(
-                                                traj[traj_id, wpt_id, 3:]
-                                            ).as_matrix() @ R.from_rotvec(
-                                                tmp_rot
-                                            ).as_matrix()
-                                        ).as_rotvec()
+                                    R.from_rotvec(
+                                        traj[traj_id, wpt_id, 3:] if wpt_dim == 6 else rot_6d_to_3d(traj[traj_id, wpt_id, 3:])
+                                    ).as_matrix() @ R.from_rotvec(
+                                        tmp_rot
+                                    ).as_matrix()
+                                ).as_rotvec()
                         wpt[:3] = tmp_pos
                         wpt[3:] = tmp_rot
                         
@@ -601,6 +604,7 @@ def test(args):
     obj_contact_poses = []
     obj_grasping_infos = []
     obj_urdfs = []
+    obj_names = []
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
@@ -610,38 +614,99 @@ def test(args):
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
         obj_urdfs.append(obj_urdf)
 
+        obj_name = obj_urdf.split('/')[-2]
+        obj_names.append(obj_name)
+
+    template_hook_names = [
+        'Hook_my_bar_easy',
+        'Hook_my_60_normal',
+        'Hook_my_45_hard',
+        'Hook_my_90_devil',
+    ]
+    
+    template_trajs = {
+        0: [],
+        1: [],
+        2: [],
+        3: []
+    }
+
     hook_pcds = []
     hook_affords = []
     hook_urdfs = []
 
-    class_num = 15
+    class_num = 15 if '/val' in inference_obj_dir else 200
     easy_cnt = 0
     normal_cnt = 0
     hard_cnt = 0
     devil_cnt = 0
     for inference_hook_path in inference_hook_paths:
+
         hook_name = inference_hook_path.split('/')[-2]
+        difficulty = 0 if 'easy' in hook_name else \
+                     1 if 'normal' in hook_name else \
+                     2 if 'hard' in hook_name else \
+                     3 # devil
+        
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
         affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
         
-        easy_cnt += 1 if 'easy' in hook_name else 0
-        normal_cnt += 1 if 'normal' in hook_name else 0
-        hard_cnt += 1 if 'hard' in hook_name else 0
-        devil_cnt += 1 if 'devil' in hook_name else 0
+        if hook_name in template_hook_names:
 
-        if 'easy' in hook_name and easy_cnt > class_num:
-            continue
-        if 'normal' in hook_name and normal_cnt > class_num:
-            continue
-        if 'hard' in hook_name and hard_cnt > class_num:
-            continue
-        if 'devil' in hook_name and devil_cnt > class_num:
-            continue
-        
-        hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
-        assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
-        hook_urdfs.append(hook_urdf) 
-        hook_pcds.append(points)
+            traj_list_tmp = []
+            shape_files = glob.glob(f'{inference_hook_dir}/{hook_name}/affordance*.npy')[:1] # point cloud with affordance score (Nx4), the first element is the contact point
+            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[:1] # trajectory in 7d format
+
+            pcd = np.load(shape_files[0]).astype(np.float32)
+            points = pcd[:,:3]
+            centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
+            centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
+            input_pcid = furthest_point_sample(centroid_points, sample_num_points).long().reshape(-1)  # BN
+            centroid_points = centroid_points[0, input_pcid, :].squeeze()
+            center = torch.from_numpy(center).to(device)
+
+            for traj_file in traj_files:
+                
+                f_traj = open(traj_file, 'r')
+                traj_dict = json.load(f_traj)
+
+                waypoints = np.asarray(traj_dict['trajectory'])
+                    
+                waypoints_9d = np.zeros((waypoints.shape[0], 9))
+                waypoints_9d[:, :3] = waypoints[:, :3]
+                rot_matrix = R.from_rotvec(waypoints[:, 3:]).as_matrix() # omit absolute position of the first waypoint
+                rot_matrix_xy = np.transpose(rot_matrix, (0, 2, 1)).reshape((waypoints.shape[0], -1))[:, :6] # the first, second column of the rotation matrix
+                waypoints_9d[:, 3:] = rot_matrix_xy # rotation only (6d rotation representation)
+                waypoints_9d = torch.FloatTensor(waypoints_9d).to(device)
+                
+                if dataset_mode == 0:
+                    waypoints_9d[:, :3] = (waypoints_9d[:, :3] - center) / scale
+                elif dataset_mode == 1:
+                    waypoints_9d[1:, :3] = waypoints_9d[1:, :3] / scale 
+                traj_list_tmp.append(waypoints_9d)
+
+            template_trajs[difficulty] = traj_list_tmp
+
+        else :
+
+            easy_cnt   += 1 if 'easy'   in hook_name else 0
+            normal_cnt += 1 if 'normal' in hook_name else 0
+            hard_cnt   += 1 if 'hard'   in hook_name else 0
+            devil_cnt  += 1 if 'devil'  in hook_name else 0
+
+            if 'easy' in hook_name and easy_cnt > class_num:
+                continue
+            if 'normal' in hook_name and normal_cnt > class_num:
+                continue
+            if 'hard' in hook_name and hard_cnt > class_num:
+                continue
+            if 'devil' in hook_name and devil_cnt > class_num:
+                continue
+
+            hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
+            assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
+            hook_urdfs.append(hook_urdf)
+            hook_pcds.append(points)
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
@@ -711,6 +776,23 @@ def test(args):
         'devil': [],
         'all': []
     }
+    
+    obj_sucrate = {}
+    for k in obj_names:
+        obj_sucrate[k] = {
+            'easy': 0,
+            'easy_all': 0,
+            'normal': 0,
+            'normal_all': 0,
+            'hard': 0,
+            'hard_all': 0,
+            'devil': 0,
+            'devil_all': 0,
+        }
+
+
+    network.eval()
+    
     for sid, pcd in enumerate(hook_pcds):
 
         # urdf file
@@ -724,6 +806,12 @@ def test(args):
                      'normal' if 'normal' in hook_name else \
                      'hard' if 'hard' in hook_name else  \
                      'devil'
+        d = {
+            'easy': 0,
+            'normal': 1,
+            'hard': 2,
+            'devil': 3,
+        }[difficulty]
         
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
@@ -735,11 +823,14 @@ def test(args):
         points_batch = points_batch[0, input_pcid, :].squeeze()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
+        gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
+
         # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
         # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
 
         # generate trajectory using predicted contact points
-        affordance, recon_trajs = network.sample(points_batch, contact_point)
+        target_difficulty, contact_point, affordance, recon_trajs = network.sample(points_batch, template_trajs, gt_difficulty)
+        contact_point = contact_point.detach().cpu().numpy()
 
         ###############################################
         # =========== for affordance head =========== #
@@ -758,7 +849,7 @@ def test(args):
 
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors)
+        point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
 
         if visualize:
             img_list = []
@@ -798,9 +889,13 @@ def test(args):
                     reversed_recovered_traj = recovered_traj[::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
+                    obj_name = obj_urdf.split('/')[-2]
+
                     obj_id = p.loadURDF(obj_urdf)
                     rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
                     res = 'success' if success else 'failed'
+                    obj_sucrate[obj_name][difficulty] += 1 if success else 0
+                    obj_sucrate[obj_name][f'{difficulty}_all'] += 1
                     obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
 
@@ -809,6 +904,7 @@ def test(args):
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
+            print('[{} / {}] success rate: {:00.03f}%'.format(sid, hook_name, max_obj_success_cnt / len(obj_contact_poses) * 100))
             all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
@@ -885,6 +981,15 @@ def test(args):
         p.removeBody(hook_id)
 
     if evaluate:
+        
+        print("===============================================================================================")  # don't modify this
+        print("success rate of all objects")
+        for obj_name in obj_sucrate.keys():
+            for difficulty in ['easy', 'normal', 'hard', 'devil']:
+                assert difficulty in obj_sucrate[obj_name].keys() and f'{difficulty}_all' in obj_sucrate[obj_name].keys()
+                print('[{}] {}: {:00.03f}%'.format(obj_name, difficulty, obj_sucrate[obj_name][difficulty] / obj_sucrate[obj_name][f'{difficulty}_all'] * 100))
+        print("===============================================================================================")  # don't modify this
+
         easy_mean = np.asarray(all_scores['easy'])
         normal_mean = np.asarray(all_scores['normal'])
         hard_mean = np.asarray(all_scores['hard'])
@@ -899,7 +1004,233 @@ def test(args):
         print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
         print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
         print("===============================================================================================")  # don't modify this
+
+
+def analysis(args):
+
+    import matplotlib.pyplot as plt
+
+    # ================== config ==================
+
+    checkpoint_dir = f'{args.checkpoint_dir}'
+    config_file = args.config
+    device = args.device
+    dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
+    weight_subpath = args.weight_subpath
+    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    checkpoint_subdir = checkpoint_dir.split('/')[1]
+    checkpoint_subsubdir = checkpoint_dir.split('/')[2]
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # sample_num_points = int(weight_subpath.split('_')[0])
+    sample_num_points = 1000
+    print(f'num of points = {sample_num_points}')
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+    print(f'checkpoint: {weight_path}')
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+
+    # inference
+    inference_obj_dir = args.obj_shape_root
+    assert os.path.exists(inference_obj_dir), f'{inference_obj_dir} not exists'
+    inference_obj_whole_dirs = glob.glob(f'{inference_obj_dir}/*')
+
+    inference_hook_shape_root = args.hook_shape_root
+    assert os.path.exists(inference_hook_shape_root), f'{inference_hook_shape_root} not exists'
+
+    inference_hook_dir = args.inference_dir # for hook shapes
+    inference_hook_whole_dirs = glob.glob(f'{inference_hook_dir}/*')
+
+    inference_hook_paths = []
+
+    for inference_hook_path in inference_hook_whole_dirs:
+        # if 'Hook' in inference_hook_path:
+        paths = glob.glob(f'{inference_hook_path}/affordance*.npy')
+        inference_hook_paths.extend(paths) 
+
+    template_hook_names = [
+        'Hook_my_bar_easy',
+        'Hook_my_60_normal',
+        'Hook_my_45_hard',
+        'Hook_my_90_devil',
+    ]
+    
+    template_trajs = {
+        0: [],
+        1: [],
+        2: [],
+        3: []
+    }
+
+    hook_pcds = []
+    hook_names = []
+
+    for inference_hook_path in inference_hook_paths:
+
+        hook_name = inference_hook_path.split('/')[-2]
+        difficulty = 0 if 'easy' in hook_name else \
+                     1 if 'normal' in hook_name else \
+                     2 if 'hard' in hook_name else \
+                     3 # devil
         
+        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+        
+        if hook_name in template_hook_names:
+
+            traj_list_tmp = []
+            shape_files = glob.glob(f'{inference_hook_dir}/{hook_name}/affordance*.npy')[:1] # point cloud with affordance score (Nx4), the first element is the contact point
+            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[:1] # trajectory in 7d format
+
+            pcd = np.load(shape_files[0]).astype(np.float32)
+            points = pcd[:,:3]
+            centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
+            centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
+            input_pcid = furthest_point_sample(centroid_points, sample_num_points).long().reshape(-1)  # BN
+            centroid_points = centroid_points[0, input_pcid, :].squeeze()
+            center = torch.from_numpy(center).to(device)
+
+            for traj_file in traj_files:
+                
+                f_traj = open(traj_file, 'r')
+                traj_dict = json.load(f_traj)
+
+                waypoints = np.asarray(traj_dict['trajectory'])
+                    
+                waypoints_9d = np.zeros((waypoints.shape[0], 9))
+                waypoints_9d[:, :3] = waypoints[:, :3]
+                rot_matrix = R.from_rotvec(waypoints[:, 3:]).as_matrix() # omit absolute position of the first waypoint
+                rot_matrix_xy = np.transpose(rot_matrix, (0, 2, 1)).reshape((waypoints.shape[0], -1))[:, :6] # the first, second column of the rotation matrix
+                waypoints_9d[:, 3:] = rot_matrix_xy # rotation only (6d rotation representation)
+                waypoints_9d = torch.FloatTensor(waypoints_9d).to(device)
+                
+                if dataset_mode == 0:
+                    waypoints_9d[:, :3] = (waypoints_9d[:, :3] - center) / scale
+                elif dataset_mode == 1:
+                    waypoints_9d[1:, :3] = waypoints_9d[1:, :3] / scale 
+                traj_list_tmp.append(waypoints_9d)
+
+            template_trajs[difficulty] = traj_list_tmp
+
+        else :
+
+            hook_pcds.append(points)
+            hook_names.append(hook_name)
+    
+    inference_subdir = os.path.split(inference_hook_dir)[-1]
+    output_dir = f'inference/analysis/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    os.makedirs(output_dir, exist_ok=True)
+
+    # ================== Model ==================
+    
+    # params for network
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+
+    # load model
+    network_class = get_model_module(module_name, model_name)
+    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    # ================== Inference ==================
+
+    network.eval()
+    
+    batch_size = 1
+    difficulties = []
+
+    whole_feats = None
+
+    for sid, (hook_name, pcd) in enumerate(tqdm(zip(hook_names, hook_pcds), total=len(hook_pcds))):
+        # urdf file
+
+        # hook name
+        difficulty = 'easy' if 'easy' in hook_name else \
+                     'normal' if 'normal' in hook_name else \
+                     'hard' if 'hard' in hook_name else  \
+                     'devil'
+        difficulties.append(difficulty)
+
+        d = {
+            'easy': 0,
+            'normal': 1,
+            'hard': 2,
+            'devil': 3,
+        }[difficulty]
+        
+        # sample trajectories
+        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        contact_point = centroid_pcd[0]
+        # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
+
+        points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        points_batch = points_batch[0, input_pcid, :].squeeze()
+        points_batch = points_batch.repeat(batch_size, 1, 1)
+
+        gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
+
+        # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
+
+        # generate trajectory using predicted contact points
+        target_difficulty, contact_point, affordance, recon_trajs, whole_feat = network.sample(points_batch, template_trajs, gt_difficulty, return_feat=True)
+
+        whole_feat = whole_feat.cpu().detach()
+
+        if whole_feats is None:
+            whole_feats = whole_feat
+        else :
+            whole_feats = torch.cat([whole_feats, whole_feat], axis=0)
+
+        ###############################################
+        # =========== for affordance head =========== #
+        ###############################################
+        
+        # contact_point = contact_point.detach().cpu().numpy()
+
+        # points = points_batch[0].cpu().detach().squeeze().numpy()
+        # affordance = affordance[0].cpu().detach().squeeze().numpy()
+        # affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
+        # colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+
+        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        # contact_point = points[contact_point_cond][0]
+
+        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
+        # contact_point_coor.translate(contact_point.reshape((3, 1)))
+
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
+
+    whole_feats = whole_feats.numpy()
+    # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
+    X_embedded = PCA(n_components=2).fit_transform(whole_feats)
+    
+    difficulties = np.asarray(difficulties)
+    easy_ind = np.where(difficulties == 'easy')[0]
+    normal_ind = np.where(difficulties == 'normal')[0]
+    hard_ind = np.where(difficulties == 'hard')[0]
+    devil_ind = np.where(difficulties == 'devil')[0]
+    max_rgb = 255.0
+    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=2)
+    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=2)
+    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=2)
+    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=2)
+    plt.legend()
+    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
+
 def main(args):
     dataset_dir = args.dataset_dir
     checkpoint_dir = args.checkpoint_dir
@@ -920,6 +1251,9 @@ def main(args):
 
     if args.training_mode == "test":
         test(args)
+
+    if args.training_mode == "analysis":
+        analysis(args)
 
 
 if __name__=="__main__":

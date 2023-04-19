@@ -20,9 +20,7 @@ def main(input_dir):
         }
         while i < line_num:
 
-            if input_logs[i] == match_token:
-
-                assert i + 8 < line_num and input_logs[i + 8] == match_token
+            if input_logs[i] == match_token and i + 8 < line_num and input_logs[i + 8] == match_token:
 
                 ckpt_line = input_logs[i + 1].strip()
                 infd_line = input_logs[i + 2].strip()
@@ -46,7 +44,7 @@ def main(input_dir):
                 dataset = infd_line.split('/')[3]
 
                 subset = infd_line.split('/')[-1]
-                assert subset == 'val' or subset == 'train'
+                assert subset == 'val' or subset == 'train', f'subset should be train or val or val_deform, but got {subset}'
 
                 easy_suc_rate = float(easy_line.split(' ')[-1][:-1]) # ignore %
                 normal_suc_rate = float(normal_line.split(' ')[-1][:-1]) # ignore %

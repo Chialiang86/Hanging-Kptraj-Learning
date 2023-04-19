@@ -173,7 +173,7 @@ class Affordance(PointNet2ClassificationSSG):
 
         return xyz, features
 
-    def forward(self, pointcloud):
+    def forward(self, pointcloud, return_feat=False):
         r"""
             Forward pass of the network
 
@@ -198,8 +198,9 @@ class Affordance(PointNet2ClassificationSSG):
                 l_xyz[i - 1], l_xyz[i], l_features[i - 1], l_features[i]
             )
 
+        if return_feat:
+            return self.fc_layer(l_features[0]), l_features[0]
         return self.fc_layer(l_features[0])
-        # return l_features[0], self.fc_layer(l_features[0])
 
     def get_loss(self, pcs, affords):
         pcs = pcs.repeat(1, 1, 2)
@@ -212,14 +213,26 @@ class Affordance(PointNet2ClassificationSSG):
         BCE_loss = F.binary_cross_entropy_with_logits(affords_pred, affords.unsqueeze(1))
         return BCE_loss
 
-    def inference(self, pcs):
+    def inference(self, pcs, return_feat=False):
         pcs = pcs.repeat(1, 1, 2)
-        affords_pred = self.forward(pcs)
+        
+        if return_feat:
+            affords_pred, feat = self.forward(pcs, return_feat)
+        else :
+            affords_pred = self.forward(pcs)
 
+        if return_feat:
+            return affords_pred, feat
         return affords_pred
 
-    def inference_sigmoid(self, pcs):
+    def inference_sigmoid(self, pcs, return_feat=False):
         pcs = pcs.repeat(1, 1, 2)
-        affords_pred = self.forward(pcs)
+    
+        if return_feat:
+            affords_pred, feat = self.forward(pcs, return_feat)
+        else :
+            affords_pred = self.forward(pcs)
 
+        if return_feat:
+            return self.sigmoid(affords_pred), feat
         return self.sigmoid(affords_pred)

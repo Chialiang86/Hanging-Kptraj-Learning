@@ -622,6 +622,7 @@ def test(args):
     obj_contact_poses = []
     obj_grasping_infos = []
     obj_urdfs = []
+    obj_names = []
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
@@ -631,11 +632,14 @@ def test(args):
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
         obj_urdfs.append(obj_urdf)
 
+        obj_name = obj_urdf.split('/')[-2]
+        obj_names.append(obj_name)
+
     hook_pcds = []
     hook_affords = []
     hook_urdfs = []
 
-    class_num = 15
+    class_num = 15 if '/val' in inference_obj_dir else 200
     easy_cnt = 0
     normal_cnt = 0
     hard_cnt = 0
@@ -672,13 +676,13 @@ def test(args):
     # ================== Simulator ================== #
 
     # Create pybullet GUI
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    # physics_client_id = p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -726,6 +730,20 @@ def test(args):
         'devil': [],
         'all': []
     }
+    
+    obj_sucrate = {}
+    for k in obj_names:
+        obj_sucrate[k] = {
+            'easy': 0,
+            'easy_all': 0,
+            'normal': 0,
+            'normal_all': 0,
+            'hard': 0,
+            'hard_all': 0,
+            'devil': 0,
+            'devil_all': 0,
+        }
+
     for sid, pcd in enumerate(hook_pcds):
 
         # hook urdf file
@@ -782,9 +800,13 @@ def test(args):
                     reversed_recovered_traj = recovered_traj[::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
+                    obj_name = obj_urdf.split('/')[-2]
+
                     obj_id = p.loadURDF(obj_urdf)
                     rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
                     res = 'success' if success else 'failed'
+                    obj_sucrate[obj_name][difficulty] += 1 if success else 0
+                    obj_sucrate[obj_name][f'{difficulty}_all'] += 1
                     obj_success_cnt += 1 if success else 0
                     p.removeBody(obj_id)
 
@@ -793,6 +815,7 @@ def test(args):
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
+            print('[{} / {}] success rate: {:00.03f}%'.format(sid, hook_name, max_obj_success_cnt / len(obj_contact_poses) * 100))
             all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
@@ -869,6 +892,15 @@ def test(args):
         p.removeBody(hook_id)
 
     if evaluate:
+        
+        print("===============================================================================================")  # don't modify this
+        print("success rate of all objects")
+        for obj_name in obj_sucrate.keys():
+            for difficulty in ['easy', 'normal', 'hard', 'devil']:
+                assert difficulty in obj_sucrate[obj_name].keys() and f'{difficulty}_all' in obj_sucrate[obj_name].keys()
+                print('[{}] {}: {:00.03f}%'.format(obj_name, difficulty, obj_sucrate[obj_name][difficulty] / obj_sucrate[obj_name][f'{difficulty}_all'] * 100))
+        print("===============================================================================================")  # don't modify this
+
         easy_mean = np.asarray(all_scores['easy'])
         normal_mean = np.asarray(all_scores['normal'])
         hard_mean = np.asarray(all_scores['hard'])

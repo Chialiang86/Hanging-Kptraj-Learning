@@ -288,6 +288,103 @@ class TrajDeformFusionLSTM(nn.Module):
         gt_Rs = self.rot6d_to_rotmat(gt_6d.reshape(-1, 2, 3).permute(0, 2, 1))
         theta = self.bgdR(gt_Rs, pred_Rs)
         return theta
+    
+    #########################################
+    # ===================================== #
+    # =========== loss function =========== #
+    # ===================================== #
+    #########################################
+
+    def get_loss(self, iter, pcs, affordance, difficulty, temp_traj, traj):
+        batch_size = traj.shape[0]
+
+        difficulty_pred, affordance_pred, rotation_pred, traj_deform_offset_pred = self.forward(iter, pcs, temp_traj, traj) 
+
+        deform_loss = torch.Tensor([0]).to(pcs.device)
+        dir_loss = torch.Tensor([0]).to(pcs.device)
+
+        ###################################################
+        # =========== for classification head =========== #
+        ###################################################
+
+        difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
+        cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
+
+        ###############################################
+        # =========== for affordance head =========== #
+        ###############################################
+
+        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
+
+        if iter < self.train_traj_start:
+            losses = {}
+            losses['cls'] = cls_loss
+            losses['afford'] = affordance_loss
+            losses['deform'] = deform_loss
+            losses['dir'] = dir_loss
+
+            losses['total'] = affordance_loss
+            return losses
+
+        #############################################
+        # =========== for rotation head =========== #
+        #############################################
+
+        input_dir = traj[:, 0, 3:] # 9d
+        dir_loss = self.get_6d_rot_loss(rotation_pred, input_dir).mean()
+
+        ###########################################################
+        # =========== for trajectory deformation head =========== #
+        ###########################################################
+
+        # trajectory deformation loss
+
+        # for position offset
+        first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
+        if self.dataset_type == 0: # absolute
+            temp_traj[:, :, :3] += first_pos_diff.unsqueeze(1) # align template traj to target traj via first wpt
+        elif self.dataset_type == 1: # residual
+            temp_traj[:, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
+        pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
+
+        # for rotation offset
+        temp_rotmat_xy = temp_traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3)
+        temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, 0], temp_rotmat_xy[:, :, 1]).unsqueeze(2)
+        temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=2) # row vector (the inverse of the temp rotation matrix)
+        temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
+
+        rotmat_xy = traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3) # column vector 
+        rotmat_z = torch.cross(rotmat_xy[:, :, 0], rotmat_xy[:, :, 1]).unsqueeze(2)
+        rotmat = torch.cat([rotmat_xy, rotmat_z], dim=2).permute(0, 1, 3, 2) # col vector (the inverse of the temp rotation matrix)
+        rotmat = rotmat.reshape(-1, 3, 3)
+        rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, 9)[:, :6]
+
+        # compute loss
+        deform_wps_pos = traj_deform_offset_pred[:, :, :3]
+        deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
+                                       pos_offset.reshape(batch_size, self.num_steps * 3))
+        
+        deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
+        deform_wps_rot = deform_wps_rot.reshape(-1, 6)
+        deform_rot_loss = self.get_6d_rot_loss(deform_wps_rot, 
+                                               rotmat_offset)
+        
+        deform_rot_loss = deform_rot_loss.mean()
+        deform_loss = deform_pos_loss + deform_rot_loss
+
+        losses = {}
+        losses['cls'] = cls_loss
+        losses['afford'] = affordance_loss
+        losses['dir'] = dir_loss
+        losses['deform'] = deform_loss
+
+        losses['total'] = self.lbd_cls * cls_loss + \
+                            self.lbd_affordance * affordance_loss + \
+                            self.lbd_dir * dir_loss + \
+                            self.lbd_deform * deform_loss
+
+        return losses
+
 
     ############################################
     # ======================================== #
@@ -308,11 +405,14 @@ class TrajDeformFusionLSTM(nn.Module):
         pn_input = torch.zeros((batch_size, pcd_input_length, 7)).to(pcs.device)
 
         temp_traj_align_offset = temp_traj[:, 0, :3] - contact_point
-        temp_traj_clone[:, :, :3] -= temp_traj_align_offset.unsqueeze(1)
+        if self.dataset_type == 0: # absolute
+            temp_traj_clone[:, :, :3] -= temp_traj_align_offset.unsqueeze(1)
+        elif self.dataset_type == 1: # residual
+            temp_traj_clone[:, 0, :3] -= temp_traj_align_offset
         pn_input[:, :pcs.shape[1], :6] = pcs.repeat(1, 1, 2)
-        pn_input[:, pcs.shape[1]:, :6] = temp_traj[:, :, :3].repeat(1, 1, 2)
+        pn_input[:, pcs.shape[1]:, :6] = temp_traj_clone[:, :, :3].repeat(1, 1, 2)
         pn_input[:, pcs.shape[1]:, 6] = 1
-
+        
         whole_feats = self.pointnet2seg(pn_input)
 
         ###################################################
@@ -369,117 +469,34 @@ class TrajDeformFusionLSTM(nn.Module):
         ##############################################################
 
         f_s_repeat = f_s.unsqueeze(1).repeat(1, self.num_steps, 1)
-        f_all = torch.cat([f_s_repeat, f_traj, temp_traj], dim=-1)
+        f_all = torch.cat([f_s_repeat, f_traj, temp_traj_clone], dim=-1)
         traj_deform_offset = self.lstm_decoder(f_all)
 
         return difficulty, affordance, rotation, traj_deform_offset
     
-    #########################################
-    # ===================================== #
-    # =========== loss function =========== #
-    # ===================================== #
-    #########################################
+    def sample(self, pcs, template_info, difficulty, return_feat=False):
 
-    def get_loss(self, iter, pcs, affordance, difficulty, temp_traj, traj):
-        batch_size = traj.shape[0]
-
-        difficulty_pred, affordance_pred, rotation_pred, traj_deform_offset_pred = self.forward(iter, pcs, temp_traj, traj) 
-
-        deform_loss = torch.Tensor([0]).to(pcs.device)
-        dir_loss = torch.Tensor([0]).to(pcs.device)
+        batch_size = pcs.shape[0]
 
         ###################################################
         # =========== for classification head =========== #
         ###################################################
 
-        difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
-        cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
+        pcs_repeat = pcs.repeat(1, 1, 2)
+        # pointnet2cls_out = self.pointnet2cls(pcs_repeat)
+        # difficulty = F.log_softmax(pointnet2cls_out, -1)
+        # target_difficulty = torch.argmax(difficulty, dim=-1)
+        target_difficulty = difficulty
 
         ###############################################
         # =========== for affordance head =========== #
         ###############################################
 
-        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
-
-        if iter < self.train_traj_start:
-            losses = {}
-            losses['cls'] = cls_loss
-            losses['afford'] = affordance_loss
-            losses['deform'] = deform_loss
-            losses['dir'] = dir_loss
-
-            losses['total'] = affordance_loss
-            return losses
-
-        #############################################
-        # =========== for rotation head =========== #
-        #############################################
-
-        input_dir = traj[:, 0, 3:] # 9d
-        dir_loss = self.get_6d_rot_loss(rotation_pred, input_dir).mean()
-
-        ###########################################################
-        # =========== for trajectory deformation head =========== #
-        ###########################################################
-
-        # trajectory deformation loss
-
-        # for position offset
-        first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
-        first_pos_diff = first_pos_diff.unsqueeze(1)
-        temp_traj[:, :, :3] += first_pos_diff # align template traj to target traj via first wpt
-        pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
-
-        # for rotation offset
-        temp_rotmat_xy = temp_traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3)
-        temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, 0], temp_rotmat_xy[:, :, 1]).unsqueeze(2)
-        temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=2) # row vector (the inverse of the temp rotation matrix)
-        temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
-
-        rotmat_xy = traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3) # column vector 
-        rotmat_z = torch.cross(rotmat_xy[:, :, 0], rotmat_xy[:, :, 1]).unsqueeze(2)
-        rotmat = torch.cat([rotmat_xy, rotmat_z], dim=2).permute(0, 1, 3, 2) # col vector (the inverse of the temp rotation matrix)
-        rotmat = rotmat.reshape(-1, 3, 3)
-        rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, 9)[:, :6]
-
-        # compute loss
-        deform_wps_pos = traj_deform_offset_pred[:, :, :3]
-        deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
-                                       pos_offset.reshape(batch_size, self.num_steps * 3))
-        
-        deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
-        deform_wps_rot = deform_wps_rot.reshape(-1, 6)
-        deform_rot_loss = self.get_6d_rot_loss(deform_wps_rot, 
-                                               rotmat_offset)
-        
-        deform_rot_loss = deform_rot_loss.mean()
-        deform_loss = deform_pos_loss + deform_rot_loss
-
-        losses = {}
-        losses['cls'] = cls_loss
-        losses['afford'] = affordance_loss
-        losses['dir'] = dir_loss
-        losses['deform'] = deform_loss
-
-        losses['total'] = self.lbd_cls * cls_loss + \
-                            self.lbd_affordance * affordance_loss + \
-                            self.lbd_dir * dir_loss + \
-                            self.lbd_deform * deform_loss
-
-        return losses
-    
-    def sample(self, pcs):
-        batch_size = pcs.shape[0]
-
-        pn_input = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2(pn_input)
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        affordance = self.affordance_head(whole_feats)
-        affordance = self.sigmoid(affordance)
+        pn_input = torch.zeros((batch_size, pcs.shape[1], 7)).to(pcs.device)
+        pn_input[:, :, :6] = pcs_repeat
+        pcs_feats = self.pointnet2seg(pn_input)
+        affordance = self.affordance_head(pcs_feats)
+        affordance = self.sigmoid(affordance) # Todo: remove comment
 
         affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
@@ -488,19 +505,53 @@ class TrajDeformFusionLSTM(nn.Module):
         contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
         contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
 
-        contact_point = pcs[contact_cond0, contact_cond2]
+        # contact_point = pcs[contact_cond0, contact_cond2]
+        contact_point = pcs[:, 0]
+
+        ########################################################
+        # =========== get the target template info =========== #
+        ########################################################
+
+        temp_traj = None
+        for i, current_cls in enumerate(target_difficulty):
+            c = current_cls.int().item()
+            if temp_traj is None:
+                temp_traj = template_info[c][0].unsqueeze(0)
+            else :
+                traj = template_info[c][0].unsqueeze(0)
+                temp_traj = torch.cat([temp_traj, traj], dim=0)
+
+        temp_traj_clone = temp_traj.clone()
+        pcd_input_length = pcs.shape[1] + temp_traj_clone.shape[1]
+        pn_input = torch.zeros((batch_size, pcd_input_length, 7)).to(pcs.device)
+
+        temp_traj_align_offset = temp_traj[:, 0, :3] - contact_point
+        if self.dataset_type == 0: # absolute
+            temp_traj_clone[:, :, :3] -= temp_traj_align_offset.unsqueeze(1)
+        elif self.dataset_type == 1: # residual
+            temp_traj_clone[:, 0, :3] -= temp_traj_align_offset
+        pn_input[:, :pcs.shape[1], :6] = pcs.repeat(1, 1, 2)
+        pn_input[:, pcs.shape[1]:, :6] = temp_traj[:, :, :3].repeat(1, 1, 2)
+        pn_input[:, pcs.shape[1]:, 6] = 1
 
         #######################################################################
         # =========== extract shape feature using affordance head =========== #
         #######################################################################
 
+        whole_feats = self.pointnet2seg(pn_input)
+        part_score = self.affordance_head(whole_feats[:, :, :pcs.shape[1]])
+        part_score = self.sigmoid(part_score) # Todo: remove comment
+
         # choose 10 features from segmented point cloud
-        part_cond = torch.where(affordance > 0.3) # only high response region selected
+        part_score_min = torch.unsqueeze(torch.min(part_score, dim=2).values, 1)
+        part_score_max = torch.unsqueeze(torch.max(part_score, dim=2).values, 1)
+        part_score = (part_score - part_score_min) / (part_score_max - part_score_min)
+
+        part_cond = torch.where(part_score > 0.3) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()
-        max_iter = torch.max(part_cond0) + 1
-        for i in range(max_iter):
+        for i in range(batch_size):
             
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
@@ -508,6 +559,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
+        f_traj = whole_feats[:, :, pcs.shape[1]:].permute(0, 2, 1) # (batch, traj_length, feat_dim)
 
         #############################################
         # =========== for rotation head =========== #
@@ -520,16 +572,21 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for trajectory deformstruction head =========== #
         ##############################################################
 
-        z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).to(pcs.device)
-
-        first_wpt = torch.cat([contact_point, contact_rotation], dim=-1)
-        deform_traj = self.lstm_decoder.inference(first_wpt, self.mlp_wpt, f_s, z_all)
+        f_s_repeat = f_s.unsqueeze(1).repeat(1, self.num_steps, 1)
+        f_all = torch.cat([f_s_repeat, f_traj, temp_traj_clone], dim=-1)
+        traj_deform_offset = self.lstm_decoder(f_all)
         
-        ret_traj = torch.zeros((batch_size, self.num_steps, 6))
-        deform_dirmat = self.rot6d_to_rotmat(deform_traj[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
-        deform_rotvec = R.from_matrix(deform_dirmat.cpu().detach().numpy()).as_rotvec()
-        deform_rotvec = torch.from_numpy(deform_rotvec).to(pcs.device)
-        ret_traj[:, :, :3] = deform_traj[:, :, :3]
-        ret_traj[:, :, 3:] = deform_rotvec.reshape(batch_size, self.num_steps, 3)
+        # for position offset
+        ret_traj = torch.zeros((batch_size, self.num_steps, self.wpt_dim))
+        ret_traj[:, :, :3] = temp_traj_clone[:, :, :3] + traj_deform_offset[:, :, :3]
 
-        return affordance, ret_traj
+        # for rotation offset
+        temp_rotmat = self.rot6d_to_rotmat(temp_traj_clone[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+        offset_rotmat = self.rot6d_to_rotmat(traj_deform_offset[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+
+        bmm_res = torch.bmm(offset_rotmat, temp_rotmat).permute(0, 2, 1).reshape(batch_size, self.num_steps, 3, 3)
+        ret_traj[:, :, 3:] = bmm_res.reshape(batch_size, self.num_steps, 9)[:, :, :6] # only the first two column vectors in the rotation matrix used
+
+        if return_feat:
+            return target_difficulty, contact_point, part_score, ret_traj, whole_feats_part
+        return target_difficulty, contact_point, part_score, ret_traj

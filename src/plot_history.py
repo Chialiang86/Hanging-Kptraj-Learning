@@ -10,41 +10,29 @@ def main(root_name : str):
 
     for fname in fnames:
 
-        print(f'processing {fname} ...')
+        model_type = fname.split('/')[1]
+
+        if 'deform' not in model_type:
+            continue
+
+        print(f'processing {model_type} ...')
         f = open(fname, 'r')
         lines = f.readlines()
 
         training_model_type = None
-        if 'traj' in fname:
+        if 'deform' in model_type:
+            training_model_type = 'deform'
+        elif 'traj' in model_type:
             training_model_type = 'cvae'
-        elif 'af' in fname:
+        elif 'af' in model_type or 'fusion' in model_type:
             training_model_type = 'affordance'
-        elif 'af' in fname:
-            training_model_type = 'affordance'
-        # elif '_cae' in fname:
-        #     training_model_type = 'cae'
-        # if 'traj_af' in fname:
-        #     training_model_type = 'cvae'
-        # elif 'affordance' in fname:
-        #     training_model_type = 'affordance'
-        # else :
-        #     print('the training type of the log file is not specified')
-        #     exit(0)
 
-        mutual = True if 'mutual' in fname else False
+        mutual = True if 'mutual' in model_type else False
 
         training_epoch = []
         training_res = None
         validation_epoch = []
         validation_res = None
-
-        # if training_model_type == 'ae' or training_model_type == 'cae':
-        #     training_res = {
-        #         'total_loss': []
-        #     }
-        #     validation_res = {
-        #         'total_loss': []
-        #     }
 
         if mutual:
             if training_model_type == 'cvae':
@@ -65,6 +53,23 @@ def main(root_name : str):
                     'kl_loss': [],
                     'recon_loss': [],
                     'total_loss': []
+                }
+            if training_model_type == 'deform':
+                training_res = {
+                    'cls_loss': [],
+                    'afford_loss': [],
+                    'dist_loss': [],
+                    'dir_loss': [],
+                    'deform_loss': [],
+                    'total_loss': [],
+                }
+                validation_res = {
+                    'cls_loss': [],
+                    'afford_loss': [],
+                    'dist_loss': [],
+                    'dir_loss': [],
+                    'deform_loss': [],
+                    'total_loss': [],
                 }
         else :
             if training_model_type == 'cvae':
@@ -128,6 +133,25 @@ def main(root_name : str):
                         training_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                         training_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
                         training_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
+                    
+                    if training_model_type == 'deform':
+                        time_line = lines[i + 1]
+                        epoch_line = lines[i + 2]
+                        lr_line = lines[i + 3]
+                        cls_loss_line = lines[i + 4]
+                        afford_loss_line = lines[i + 5]
+                        dist_loss_line = lines[i + 6]
+                        dir_loss_line = lines[i + 7]
+                        deform_loss_line = lines[i + 8]
+                        total_loss_line = lines[i + 9]
+
+                        training_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
+                        training_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
+                        training_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        training_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
+                        training_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
+                        training_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
+                        training_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
                 
                 else :
                     if training_model_type == 'cvae':
@@ -190,6 +214,25 @@ def main(root_name : str):
                         validation_res['kl_loss'].append(float(kl_loss_line.split(':')[-1].strip()))
                         validation_res['recon_loss'].append(float(recon_loss_line.split(':')[-1].strip()))
                         validation_res['total_loss'].append(float(total_liss_line.split(':')[-1].strip()))
+                    
+                    if training_model_type == 'deform':
+                        time_line = lines[i + 1]
+                        epoch_line = lines[i + 2]
+                        lr_line = lines[i + 3]
+                        cls_loss_line = lines[i + 4]
+                        afford_loss_line = lines[i + 5]
+                        dist_loss_line = lines[i + 6]
+                        dir_loss_line = lines[i + 7]
+                        deform_loss_line = lines[i + 8]
+                        total_loss_line = lines[i + 9]
+
+                        validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
+                        validation_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
+                        validation_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        validation_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
+                        validation_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
+                        validation_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
+                        validation_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
                 
                 else :
                     if training_model_type == 'cvae':
@@ -240,7 +283,7 @@ def main(root_name : str):
         plt.close()
         # print(f'{output_dir}/total.png saved')
         
-        if training_model_type == 'cvae':
+        if training_model_type != 'affordance':
             # all
             plt.figure(figsize=(10, 5))
             for key in training_res.keys():

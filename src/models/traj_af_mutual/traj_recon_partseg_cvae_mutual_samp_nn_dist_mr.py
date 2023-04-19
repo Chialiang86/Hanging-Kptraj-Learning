@@ -314,7 +314,7 @@ class TrajReconPartSegMutual(nn.Module):
 
         return affordance, pcs_part_list, recon_traj, mu, logvar
 
-    def sample(self, pcs):
+    def sample(self, pcs, return_feat=False):
         batch_size = pcs.shape[0]
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
@@ -373,6 +373,8 @@ class TrajReconPartSegMutual(nn.Module):
 
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
+        if return_feat:
+            return affordance, ret_traj, whole_feats_part
         return affordance, ret_traj
 
     def get_nn_loss(self, pcs_part_list : list, traj : torch.Tensor):

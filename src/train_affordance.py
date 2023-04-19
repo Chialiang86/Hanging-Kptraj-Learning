@@ -9,6 +9,8 @@ from tqdm import tqdm
 from time import strftime
 
 from sklearn.model_selection import train_test_split
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from utils.training_utils import get_model_module, get_dataset_module, optimizer_to_device, normalize_pc
 
@@ -257,7 +259,6 @@ def test(args):
     checkpoint_dir = args.checkpoint_dir
     inference_dir = args.inference_dir
     config_file = args.config
-    verbose = args.verbose
     device = args.device
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
@@ -276,8 +277,6 @@ def test(args):
     config = None
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
-
-    # sample_num_points = int(weight_subpath.split('_')[0])
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
@@ -321,7 +320,7 @@ def test(args):
     network.load_state_dict(torch.load(weight_path))
 
     # ================== Inference ==================
-    frames = 36
+    frames = 10
     rotate_per_frame = (2 * np.pi) / frames
 
     batch_size = 1
@@ -402,7 +401,7 @@ def test(args):
 
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors)
+        point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
 
         if args.visualize:
             img_list = []
@@ -414,10 +413,18 @@ def test(args):
 
                 img = capture_from_viewer(geometries)
                 img_list.append(img)
-            
             save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
-            imageio.mimsave(save_path, img_list, fps=10)
+            imageio.mimsave(save_path, img_list, fps=2)
             print(f'{save_path} saved')
+            
+            # r = point_cloud.get_rotation_matrix_from_xyz((0, (2 * np.pi) / 2, 0)) # (rx, ry, rz) = (right, up, inner)
+            # point_cloud.rotate(r, center=(0, 0, 0))
+            # contact_point_coor.rotate(r, center=(0, 0, 0))
+            # geometries = [point_cloud, contact_point_coor]
+            # img = capture_from_viewer(geometries)
+            # save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.png"
+            # imageio.imwrite(save_path, img)
+            # print(f'{save_path} saved')
 
     if evaluate == 1:
         # differences = np.asarray(differences)
@@ -447,7 +454,181 @@ def test(args):
         print('within 5mm rate: {:.4f} ({}/{})'.format(within_5mm_cnt / len(pcds), within_5mm_cnt, len(pcds)))
         print('within 10mm rate: {:.4f} ({}/{})'.format(within_10mm_cnt / len(pcds), within_10mm_cnt, len(pcds)))
         print('======================================')
+
+
+def analysis(args):
+
+    import matplotlib.pyplot as plt
+
+    # ================== config ==================
+
+    checkpoint_dir = args.checkpoint_dir
+    inference_dir = args.inference_dir
+    config_file = args.config
+    device = args.device
+    weight_subpath = args.weight_subpath
+    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    checkpoint_subdir = checkpoint_dir.split('/')[1]
+    checkpoint_subsubdir = checkpoint_dir.split('/')[2]
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    sample_num_points = 1000
+    print(f'num of points = {sample_num_points}')
+
+    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+
+    config = None
+    with open(config_file, 'r') as f:
+        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+
+    # params for training
+    module_name = config['module']
+    model_name = config['model']
+    model_inputs = config['model_inputs']
+    
+    # ================== Model ==================
+
+    # load model
+    network_class = get_model_module(module_name, model_name)
+    network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
+    network.load_state_dict(torch.load(weight_path))
+
+    # ================== Load Inference Shape ==================
+
+    inference_hook_dir = args.inference_dir # for hook shapes
+    inference_hook_whole_dirs = glob.glob(f'{inference_hook_dir}/*')
+
+    inference_hook_paths = []
+    for inference_hook_path in inference_hook_whole_dirs:
+        # if 'Hook' in inference_hook_path:
+        paths = glob.glob(f'{inference_hook_path}/affordance-*.npy')
+        inference_hook_paths.extend(paths) 
+    
+    hook_pcds = []
+    hook_names = []
+    for inference_hook_path in inference_hook_paths:
+        hook_name = inference_hook_path.split('/')[-2]
+        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+    
+        hook_pcds.append(points)
+        hook_names.append(hook_name)
+
+    inference_subdir = os.path.split(inference_hook_dir)[-1]
+    output_dir = f'inference/analysis/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # ================== Inference ==================
+    batch_size = 1
+    difficulties = []
+
+    whole_feats_parts = None
+    for sid, (hook_name, pcd) in enumerate(tqdm(zip(hook_names, hook_pcds), total=len(hook_pcds))):
+
+        # hook name
+        difficulty = 'easy' if 'easy' in hook_name else \
+                     'normal' if 'normal' in hook_name else \
+                     'hard' if 'hard' in hook_name else  \
+                     'devil'
+        difficulties.append(difficulty)
         
+        # sample trajectories
+        pcd_copy = copy.deepcopy(pcd)
+        centroid_pcd, centroid, scale = normalize_pc(pcd_copy, copy_pts=True) # points will be in a unit sphere
+        contact_point = centroid_pcd[0]
+
+        # points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        # input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        # points_batch = points_batch[0, input_pcid, :].squeeze()
+        # points_batch = points_batch.repeat(batch_size, 1, 1)
+
+        # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
+        # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
+
+        points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
+        points_batch = points_batch.repeat(batch_size, 1, 1)
+
+        # generate trajectory using predicted contact points
+        affords, whole_feat = network.inference_sigmoid(points_batch, return_feat=True)
+
+        # normalize affordance
+        affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+
+        ##############################################################
+        # =========== for whole shape feature extraction =========== #
+        ##############################################################
+
+        contact_point_cond = torch.where(affords == torch.max(affords))
+        whole_feats_part = whole_feat[contact_point_cond[0], :, contact_point_cond[2]]
+
+        #######################################################
+        # =========== for part feature extraction =========== #
+        #######################################################
+
+        # part_cond = torch.where(affords > 0.3) # only high response region selected
+        # part_cond0 = part_cond[0].to(torch.long)
+        # part_cond2 = part_cond[2].to(torch.long)
+        # whole_feats_part = whole_feat[:, :, 0].clone()
+        # for i in range(batch_size):
+            
+        #     cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
+        #     tmp_max = torch.max(whole_feat[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
+        #     whole_feats_part[i] = tmp_max
+        
+
+        ##############################################################
+        # =========== for whole shape feature extraction =========== #
+        ##############################################################
+        
+        # whole_feats_part = torch.max(whole_feat, dim=2).values
+
+        whole_feats_part = whole_feats_part.cpu().detach()
+        if whole_feats_parts is None:
+            whole_feats_parts = whole_feats_part
+        else :
+            whole_feats_parts = torch.cat([whole_feats_parts, whole_feats_part], axis=0)
+        
+        # ###############################################
+        # # =========== for affordance head =========== #
+        # ###############################################
+
+        # points = points_batch[0].cpu().detach().squeeze().numpy()
+        # affordance = affordance[0].cpu().detach().squeeze().numpy()
+        # affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
+        # colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+
+        # # contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        # # contact_point = points[contact_point_cond][0]
+
+        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
+        # contact_point_coor.translate(contact_point.reshape((3, 1)))
+
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
+    
+    whole_feats_parts = whole_feats_parts.numpy()
+    # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
+    X_embedded = PCA(n_components=2).fit_transform(whole_feats_parts)
+    
+    difficulties = np.asarray(difficulties)
+    easy_ind = np.where(difficulties == 'easy')[0]
+    normal_ind = np.where(difficulties == 'normal')[0]
+    hard_ind = np.where(difficulties == 'hard')[0]
+    devil_ind = np.where(difficulties == 'devil')[0]
+    max_rgb = 255.0
+    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=2)
+    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=2)
+    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=2)
+    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=2)
+    plt.legend()
+    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
+
 def main(args):
     dataset_dir = args.dataset_dir
     checkpoint_dir = args.checkpoint_dir
@@ -466,6 +647,9 @@ def main(args):
 
     if args.training_mode == "test":
         test(args)
+
+    if args.training_mode == "analysis":
+        analysis(args)
 
 
 if __name__=="__main__":

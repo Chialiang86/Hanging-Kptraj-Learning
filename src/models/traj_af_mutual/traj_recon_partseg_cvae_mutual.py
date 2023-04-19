@@ -299,10 +299,6 @@ class TrajReconPartSegMutual(nn.Module):
             
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
         # f_s = whole_feats[:, :, 0]
@@ -314,7 +310,7 @@ class TrajReconPartSegMutual(nn.Module):
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         return affordance, recon_traj, mu, logvar
 
-    def sample(self, pcs):
+    def sample(self, pcs, return_feat=False):
         batch_size = pcs.shape[0]
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
@@ -351,12 +347,8 @@ class TrajReconPartSegMutual(nn.Module):
             
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            # pcs_part = pcs[i, part_cond2[cond]] # choose the sub point cloud that affordance score > threshold
-            # ind = furthest_point_sample(pcs_part.unsqueeze(0).contiguous(), self.num_steps).long().reshape(-1) # get the 10 indexes from the sub point cloud using furthest point sampling
-            # point_ind = part_cond2[cond][ind]
-            # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
-
+        
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
@@ -375,6 +367,8 @@ class TrajReconPartSegMutual(nn.Module):
 
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
+        if return_feat:
+            return affordance, ret_traj, whole_feats_part
         return affordance, ret_traj
 
     def get_loss(self, iter, pcs, traj, contact_point, affordance, lbd_kl=1.0):
