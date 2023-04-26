@@ -8,6 +8,7 @@ from tqdm import tqdm
 from time import strftime
 
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import NearestNeighbors
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
@@ -48,6 +49,24 @@ def train(args):
     config = None
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
+    
+    # ================== load trained affordance network ==================
+
+    weight_path = "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/1000_points-network_epoch-2000.pth"
+
+    # params for training
+    module_name = 'af.affordance' 
+    model_name = 'Affordance'
+    model_inputs = {
+        'model.use_xyz': 1
+    }
+
+    # load model
+    afford_network = get_model_module(module_name, model_name)
+    afford_network = afford_network({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
+    afford_network.load_state_dict(torch.load(weight_path))
+
+    # =====================================================================
 
     # params for training
     dataset_name = config['dataset_module']
@@ -127,6 +146,7 @@ def train(args):
             # set models to training mode
             network.train()
 
+            # get segmented point cloud
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()
             sample_cp = sample_pcds[:, 0]
@@ -203,10 +223,6 @@ def train(args):
 
             # set models to evaluation mode
             network.eval()
-
-            sample_pcds = sample_pcds.to(device).contiguous() 
-            sample_trajs = sample_trajs.to(device).contiguous()
-            sample_cp = sample_pcds[:, 0]
 
             with torch.no_grad():
                 losses = network.get_loss(epoch, sample_pcds, sample_trajs, sample_cp, sample_affords, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
@@ -808,7 +824,7 @@ def test(args):
                 img = capture_from_viewer(geometries)
                 img_list.append(img)
             
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}-noise.gif"
             imageio.mimsave(save_path, img_list, fps=10)
 
         ##############################################################
@@ -822,6 +838,7 @@ def test(args):
 
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
+        p.removeBody(hook_id)
         # conting inference score using object and object contact information
         if evaluate:
             max_obj_success_cnt = 0
@@ -844,7 +861,7 @@ def test(args):
                     p.removeBody(obj_id)
 
                     if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
-                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}-noise.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
@@ -909,18 +926,24 @@ def analysis(args):
 
     for inference_hook_path in inference_hook_whole_dirs:
         # if 'Hook' in inference_hook_path:
-        paths = glob.glob(f'{inference_hook_path}/affordance*.npy')
+        paths = glob.glob(f'{inference_hook_path}/affordance-*.npy')
+        paths.sort(key=lambda x : int(x.split('/')[-1].split('-')[-1].split('.')[0])) # sort by trajectory id : [parent_dir]/traj-8.json => 8
+        paths = paths[:10]
         inference_hook_paths.extend(paths) 
 
     hook_pcds = []
     hook_names = []
-
+    hook_trajectories = []
     for inference_hook_path in inference_hook_paths:
         hook_name = inference_hook_path.split('/')[-2]
-        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
+        points = np.load(inference_hook_path).astype(np.float32)
 
         hook_pcds.append(points)
         hook_names.append(hook_name)
+
+        traj_path = f'{os.path.split(inference_hook_path)[0]}/traj-0.json'
+        wpts = json.load(open(traj_path, 'r'))['trajectory']
+        hook_trajectories.append(np.asarray(wpts))
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/analysis/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
@@ -951,7 +974,7 @@ def analysis(args):
         difficulties.append(difficulty)
         
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        centroid_pcd, centroid, scale = normalize_pc(pcd[:, :3], copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
@@ -995,17 +1018,65 @@ def analysis(args):
     whole_feats = whole_feats.numpy()
     # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
     X_embedded = PCA(n_components=2).fit_transform(whole_feats)
-    
+    X_embedded = np.hstack((X_embedded, np.zeros((X_embedded.shape[0], 1)))).astype(np.float32)
+
+    centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
+    input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
+    selected_points = X_embedded[input_pcid]
+
+    num_nn = 5
+    nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
+    distances, indices = nn.kneighbors(selected_points)
+
+    fig = plt.figure(figsize=(16, 12))
+    ax = fig.add_subplot()
+    ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
+
+    colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
+    for cls_id, (indice, color) in enumerate(zip(indices, colors)):
+
+        for ind in indice:
+            pcd = hook_pcds[ind]
+            pcd_points = pcd[:, :3]
+            pcd_afford = pcd[:, 4]
+            pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+            point_cloud = o3d.geometry.PointCloud()
+            point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
+            point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
+            r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
+            point_cloud.rotate(r, center=(0, 0, 0))
+
+            wpts = hook_trajectories[ind]
+            geometries = []
+            for wpt_raw in wpts[:20]:
+                wpt = wpt_raw[:3]
+                coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
+                coor.translate(wpt.reshape((3, 1)))
+                coor.rotate(r, center=(0, 0, 0))
+                geometries.append(coor)
+            geometries.append(point_cloud)
+
+            img = capture_from_viewer(geometries)
+            save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
+            imageio.imsave(save_path, img)
+            print(f'{save_path} saved')
+
+        ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
+
+    out_path = f'{output_dir}/fps-clustering.png'
+    plt.savefig(out_path)
+    plt.clf()
+
     difficulties = np.asarray(difficulties)
     easy_ind = np.where(difficulties == 'easy')[0]
     normal_ind = np.where(difficulties == 'normal')[0]
     hard_ind = np.where(difficulties == 'hard')[0]
     devil_ind = np.where(difficulties == 'devil')[0]
     max_rgb = 255.0
-    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=2)
-    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=2)
-    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=2)
-    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=2)
+    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
+    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
+    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
+    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
     plt.legend()
     plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
 

@@ -22,7 +22,7 @@ class AffordanceMSG(PointNet2SemSegSSG):
 
     def _build_model(self):
         self.SA_modules = nn.ModuleList()
-        c_in = 3
+        c_in = 3 if "feat_dim" not in self.hparams.keys() else self.hparams["feat_dim"]
         self.SA_modules.append(
             PointnetSAModuleMSG(
                 npoint=1024,

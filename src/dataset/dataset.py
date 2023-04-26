@@ -215,7 +215,6 @@ class KptrajReconAffordanceDataset(Dataset):
 
             hook_name = dataset_subdir.split('/')[-1]
 
-
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
             affordance_list_tmp = []
@@ -395,7 +394,7 @@ class KptrajReconAffordanceDataset(Dataset):
             return points, waypoints[:,:self.wpt_dim]
         elif self.affordance_name == 'affordance':
             return points, affordance
-        elif self.affordance_name == 'parseg':
+        elif self.affordance_name == 'partseg':
             return points, partseg
         elif self.affordance_name == 'both':
             return points, affordance, partseg

@@ -1,4 +1,4 @@
-import argparse, yaml, os, time, glob, cv2, imageio, copy
+import argparse, json, yaml, os, time, glob, cv2, imageio, copy
 import open3d as o3d
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,6 +9,7 @@ from tqdm import tqdm
 from time import strftime
 
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import NearestNeighbors
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
@@ -78,8 +79,8 @@ def train(args):
         model.use_xyz: 256
     '''
     network_class = get_model_module(module_name, model_name)
-    network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
-    # network = network_class(**model_inputs).to(device)
+    # network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
+    network = network_class(model_inputs).to(device)
     
     if verbose:
         summary(network)
@@ -108,7 +109,6 @@ def train(args):
         # training
         train_total_losses = []
         for i_batch, (sample_pcds, sample_affords) in tqdm(train_batches, total=len(train_loader)):
-
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_affords = sample_affords.to(device).contiguous()
@@ -150,7 +150,6 @@ def train(args):
         val_total_losses = []
         # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
         for i_batch, (sample_pcds, sample_affords) in tqdm(val_batches, total=len(val_loader)):
-
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_affords = sample_affords.to(device).contiguous()
@@ -297,16 +296,19 @@ def test(args):
                                 if args.visualize else (glob.glob(f'{inference_dir}/*/*.npy') \
                                     if args.evaluate else glob.glob(f'{inference_dir}/*/affordance-0.npy'))
     pcds = []
+    hook_names = []
     affordances = []
     urdfs = []
     for inference_shape_path in inference_shape_paths:
         # pcd = o3d.io.read_point_cloud(inference_shape_path)
         # points = np.asarray(pcd.points, dtype=np.float32)
+        hook_name = inference_shape_path.split('/')[-2]
         urdf_prefix = os.path.split(inference_shape_path)[0]
         data = np.load(inference_shape_path)
         points = data[:, :3].astype(np.float32)
         urdfs.append(f'{urdf_prefix}/base.urdf') 
         pcds.append(points)
+        hook_names.append(hook_name)
         if data.shape[1] > 3: # affordance only
             affor_dim = 3 if evaluate == 1 else 4
             affordance = data[:, affor_dim].astype(np.float32)
@@ -320,7 +322,7 @@ def test(args):
     network.load_state_dict(torch.load(weight_path))
 
     # ================== Inference ==================
-    frames = 10
+    frames = 20
     rotate_per_frame = (2 * np.pi) / frames
 
     batch_size = 1
@@ -339,6 +341,8 @@ def test(args):
         # pcd_feat, affords = network.inference(points_batch)
         affords = network.inference_sigmoid(points_batch)
         affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+        part_cond = torch.where(affords > 0.3) # only high response region selected
+        print(f'hook_name:{hook_names[sid]}, sid:{sid}, partsize:{len(part_cond[0])}')
         affords = affords.squeeze().cpu().detach().numpy()
 
         points = pcd
@@ -414,7 +418,7 @@ def test(args):
                 img = capture_from_viewer(geometries)
                 img_list.append(img)
             save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
-            imageio.mimsave(save_path, img_list, fps=2)
+            imageio.mimsave(save_path, img_list, fps=10)
             print(f'{save_path} saved')
             
             # r = point_cloud.get_rotation_matrix_from_xyz((0, (2 * np.pi) / 2, 0)) # (rx, ry, rz) = (right, up, inner)
@@ -508,16 +512,24 @@ def analysis(args):
     for inference_hook_path in inference_hook_whole_dirs:
         # if 'Hook' in inference_hook_path:
         paths = glob.glob(f'{inference_hook_path}/affordance-*.npy')
+        paths.sort(key=lambda x : int(x.split('/')[-1].split('-')[-1].split('.')[0])) # sort by trajectory id : [parent_dir]/traj-8.json => 8
+        paths = paths[:10]
         inference_hook_paths.extend(paths) 
     
     hook_pcds = []
     hook_names = []
+    hook_trajectories = []
     for inference_hook_path in inference_hook_paths:
+
         hook_name = inference_hook_path.split('/')[-2]
-        points = np.load(inference_hook_path)[:, :3].astype(np.float32)
-    
+        points = np.load(inference_hook_path).astype(np.float32)
+        
         hook_pcds.append(points)
         hook_names.append(hook_name)
+
+        traj_path = f'{os.path.split(inference_hook_path)[0]}/traj-0.json'
+        wpts = json.load(open(traj_path, 'r'))['trajectory']
+        hook_trajectories.append(np.asarray(wpts))
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/analysis/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
@@ -538,7 +550,7 @@ def analysis(args):
         difficulties.append(difficulty)
         
         # sample trajectories
-        pcd_copy = copy.deepcopy(pcd)
+        pcd_copy = copy.deepcopy(pcd[:, :3])
         centroid_pcd, centroid, scale = normalize_pc(pcd_copy, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
 
@@ -580,7 +592,6 @@ def analysis(args):
         #     tmp_max = torch.max(whole_feat[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
         #     whole_feats_part[i] = tmp_max
         
-
         ##############################################################
         # =========== for whole shape feature extraction =========== #
         ##############################################################
@@ -613,8 +624,55 @@ def analysis(args):
         # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
     
     whole_feats_parts = whole_feats_parts.numpy()
-    # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
     X_embedded = PCA(n_components=2).fit_transform(whole_feats_parts)
+    X_embedded = np.hstack((X_embedded, np.zeros((X_embedded.shape[0], 1)))).astype(np.float32)
+
+    centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
+    input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
+    selected_points = X_embedded[input_pcid]
+
+    num_nn = 5
+    nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
+    distances, indices = nn.kneighbors(selected_points)
+
+    fig = plt.figure(figsize=(16, 12))
+    ax = fig.add_subplot()
+    ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
+
+    colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
+    for cls_id, (indice, color) in enumerate(zip(indices, colors)):
+
+        for ind in indice:
+            pcd = hook_pcds[ind]
+            pcd_points = pcd[:, :3]
+            pcd_afford = pcd[:, 4]
+            pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+            point_cloud = o3d.geometry.PointCloud()
+            point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
+            point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
+            r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
+            point_cloud.rotate(r, center=(0, 0, 0))
+
+            wpts = hook_trajectories[ind]
+            geometries = []
+            for wpt_raw in wpts[:20]:
+                wpt = wpt_raw[:3]
+                coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
+                coor.translate(wpt.reshape((3, 1)))
+                coor.rotate(r, center=(0, 0, 0))
+                geometries.append(coor)
+            geometries.append(point_cloud)
+
+            img = capture_from_viewer(geometries)
+            save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
+            imageio.imsave(save_path, img)
+            print(f'{save_path} saved')
+
+        ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
+
+    out_path = f'{output_dir}/fps-clustering.png'
+    plt.savefig(out_path)
+    plt.clf()
     
     difficulties = np.asarray(difficulties)
     easy_ind = np.where(difficulties == 'easy')[0]
@@ -622,10 +680,10 @@ def analysis(args):
     hard_ind = np.where(difficulties == 'hard')[0]
     devil_ind = np.where(difficulties == 'devil')[0]
     max_rgb = 255.0
-    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=2)
-    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=2)
-    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=2)
-    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=2)
+    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
+    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
+    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
+    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
     plt.legend()
     plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
 

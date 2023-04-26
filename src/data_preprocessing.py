@@ -261,7 +261,7 @@ def main(args):
 
     num_each_class = 15
     # k_fold = min_num_in_class // num_each_class
-    k_fold = 4
+    k_fold = 1
     for k in range(k_fold):
 
         # start_id = k * num_each_class
@@ -492,7 +492,7 @@ if __name__=="__main__":
     parser.add_argument('--shape_num_pts', '-snp', type=int, default=1000, help='the number of points threshold, if the number of points larger than this threshold, then this script will save it')
     parser.add_argument('--data_root', '-dr', type=str, default='../dataset', help='the output dataset directory root')
     parser.add_argument('--data_tag', '-dt', type=str, default='', help='the output dataset tag')
-    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.008) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
+    parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.002) # # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)
     parser.add_argument('--kptraj_length', '-kl', type=int, default=40)
     parser.add_argument('--visualize', '-v', action='store_true')
 

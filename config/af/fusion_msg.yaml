@@ -23,4 +23,4 @@ save_freq: 200
 batch_size: 64
 
 start_epoch: 0
-stop_epoch: 10000
+stop_epoch: 2000

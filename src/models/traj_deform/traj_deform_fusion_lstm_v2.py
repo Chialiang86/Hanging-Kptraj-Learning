@@ -67,7 +67,6 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def forward(self, pointcloud):
         r"""
             Forward pass of the network
-
             Parameters
             ----------
             pointcloud: Variable(torch.cuda.FloatTensor)
@@ -145,7 +144,6 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def forward(self, pointcloud):
         r"""
             Forward pass of the network
-
             Parameters
             ----------
             pointcloud: Variable(torch.cuda.FloatTensor)

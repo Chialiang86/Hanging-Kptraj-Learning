@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from scipy.spatial.transform import Rotation as R
 
 # https://github.com/erikwijmans/Pointnet2_PyTorch
-from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from pointnet2_ops.pointnet2_modules import PointnetFPModule, PointnetSAModule
 from pointnet2.models.pointnet2_ssg_cls import PointNet2ClassificationSSG
 
@@ -474,7 +473,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         return difficulty, affordance, rotation, traj_deform_offset
     
-    def sample(self, pcs, template_info, difficulty, return_feat=False):
+    def sample(self, pcs, template_info, difficulty=None, use_gt_cp=False, return_feat=False):
 
         batch_size = pcs.shape[0]
 
@@ -483,10 +482,12 @@ class TrajDeformFusionLSTM(nn.Module):
         ###################################################
 
         pcs_repeat = pcs.repeat(1, 1, 2)
-        # pointnet2cls_out = self.pointnet2cls(pcs_repeat)
-        # difficulty = F.log_softmax(pointnet2cls_out, -1)
-        # target_difficulty = torch.argmax(difficulty, dim=-1)
-        target_difficulty = difficulty
+        if difficulty is not None:
+            target_difficulty = difficulty
+        else :
+            pointnet2cls_out = self.pointnet2cls(pcs_repeat)
+            difficulty = F.log_softmax(pointnet2cls_out, -1)
+            target_difficulty = torch.argmax(difficulty, dim=-1)
 
         ###############################################
         # =========== for affordance head =========== #
@@ -498,15 +499,16 @@ class TrajDeformFusionLSTM(nn.Module):
         affordance = self.affordance_head(pcs_feats)
         affordance = self.sigmoid(affordance) # Todo: remove comment
 
-        affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
-        affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
-        affordance = (affordance - affordance_min) / (affordance_max - affordance_min)
-        contact_cond = torch.where(affordance == torch.max(affordance)) # only high response region selected
-        contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
-        contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
-
-        # contact_point = pcs[contact_cond0, contact_cond2]
-        contact_point = pcs[:, 0]
+        if use_gt_cp == True:
+            contact_point = pcs[:, 0]
+        else :
+            affordance_min = torch.unsqueeze(torch.min(affordance, dim=2).values, 1)
+            affordance_max = torch.unsqueeze(torch.max(affordance, dim=2).values, 1)
+            affordance = (affordance - affordance_min) / (affordance_max - affordance_min)
+            contact_cond = torch.where(affordance == torch.max(affordance)) # only high response region selected
+            contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
+            contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
+            contact_point = pcs[contact_cond0, contact_cond2]
 
         ########################################################
         # =========== get the target template info =========== #
@@ -557,6 +559,7 @@ class TrajDeformFusionLSTM(nn.Module):
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
+        # f_s = torch.randn(whole_feats_part.shape).to(whole_feats_part.device)
         f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
         f_traj = whole_feats[:, :, pcs.shape[1]:].permute(0, 2, 1) # (batch, traj_length, feat_dim)

@@ -1,0 +1,13 @@
+pybullet build time: May 20 2022 19:43:01
+Traceback (most recent call last):
+  File "train_kptraj_deform_mutual.py", line 1409, in <module>
+    main(args)
+  File "train_kptraj_deform_mutual.py", line 1366, in main
+    test(args)
+  File "train_kptraj_deform_mutual.py", line 732, in test
+    network.load_state_dict(torch.load(weight_path))
+  File "/home/hcis-s16/miniconda3/envs/kptraj/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1672, in load_state_dict
+    self.__class__.__name__, "\n\t".join(error_msgs)))
+RuntimeError: Error(s) in loading state_dict for Traj3dDeformFusionLSTM:
+	Missing key(s) in state_dict: "mlp_wpt.mlp.0.weight", "mlp_wpt.mlp.0.bias", "mlp_wpt.mlp.2.weight", "mlp_wpt.mlp.2.bias", "mlp_wpt.mlp.4.weight", "mlp_wpt.mlp.4.bias". 
+	Unexpected key(s) in state_dict: "mlp_traj.mlp.0.weight", "mlp_traj.mlp.0.bias", "mlp_traj.mlp.2.weight", "mlp_traj.mlp.2.bias", "mlp_traj.mlp.4.weight", "mlp_traj.mlp.4.bias". 

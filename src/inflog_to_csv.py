@@ -44,7 +44,7 @@ def main(input_dir):
                 dataset = infd_line.split('/')[3]
 
                 subset = infd_line.split('/')[-1]
-                assert subset == 'val' or subset == 'train', f'subset should be train or val or val_deform, but got {subset}'
+                assert subset == 'val' or subset == 'val_deform' or subset == 'train', f'subset should be train or val or val_deform, but got {subset}'
 
                 easy_suc_rate = float(easy_line.split(' ')[-1][:-1]) # ignore %
                 normal_suc_rate = float(normal_line.split(' ')[-1][:-1]) # ignore %
@@ -88,23 +88,28 @@ def main(input_dir):
             dataset = log_dict[ckpt]['dataset']
             all_item = '{:00.03f}% / {:00.03f}%'.format(
                             np.max(log_dict[ckpt]['train']['all']) if 'train' in log_dict[ckpt].keys() else -1, 
-                            np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else -1
+                            np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else \
+                            np.max(log_dict[ckpt]['val_deform']['all']) if 'val_deform' in log_dict[ckpt].keys() else -1
                         )
             easy_item = '{:00.03f}% / {:00.03f}%'.format(
                             np.max(log_dict[ckpt]['train']['easy']) if 'train' in log_dict[ckpt].keys() else -1, 
-                            np.max(log_dict[ckpt]['val']['easy']) if 'val' in log_dict[ckpt].keys() else -1
+                            np.max(log_dict[ckpt]['val']['easy']) if 'val' in log_dict[ckpt].keys() else \
+                            np.max(log_dict[ckpt]['val_deform']['easy']) if 'val_deform' in log_dict[ckpt].keys() else -1
                         )
             normal_item = '{:00.03f}% / {:00.03f}%'.format(
                             np.max(log_dict[ckpt]['train']['normal']) if 'train' in log_dict[ckpt].keys() else -1, 
-                            np.max(log_dict[ckpt]['val']['normal']) if 'val' in log_dict[ckpt].keys() else -1
+                            np.max(log_dict[ckpt]['val']['normal']) if 'val' in log_dict[ckpt].keys() else \
+                            np.max(log_dict[ckpt]['val_deform']['normal']) if 'val_deform' in log_dict[ckpt].keys() else -1
                         )
             hard_item = '{:00.03f}% / {:00.03f}%'.format(
                             np.max(log_dict[ckpt]['train']['hard']) if 'train' in log_dict[ckpt].keys() else -1, 
-                            np.max(log_dict[ckpt]['val']['hard']) if 'val' in log_dict[ckpt].keys() else -1
+                            np.max(log_dict[ckpt]['val']['hard']) if 'val' in log_dict[ckpt].keys() else \
+                            np.max(log_dict[ckpt]['val_deform']['hard']) if 'val_deform' in log_dict[ckpt].keys() else -1
                         )
             devil_item = '{:00.03f}% / {:00.03f}%'.format(
                             np.max(log_dict[ckpt]['train']['devil']) if 'train' in log_dict[ckpt].keys() else -1, 
-                            np.max(log_dict[ckpt]['val']['devil']) if 'val' in log_dict[ckpt].keys() else -1
+                            np.max(log_dict[ckpt]['val']['devil']) if 'val' in log_dict[ckpt].keys() else \
+                            np.max(log_dict[ckpt]['val_deform']['devil']) if 'val_deform' in log_dict[ckpt].keys() else -1
                         )
             # all_item = '{:00.03f}%'.format(
             #                 np.max(log_dict[ckpt]['val']['all']) if 'val' in log_dict[ckpt].keys() else -1

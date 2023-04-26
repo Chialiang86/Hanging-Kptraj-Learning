@@ -32,13 +32,24 @@ def mean_waypt_dist(traj : list or np.ndarray):
     return sum / traj_num
 
 def dist(wpt1 : list or np.ndarray, wpt2 : list or np.ndarray):
+    # tmp_trans = get_matrix_from_pose(wpt1)
+    # next_trans = get_matrix_from_pose(wpt2)
+    # diff_trans = np.linalg.inv(tmp_trans) @ next_trans
+    # diff_6pose = get_pose_from_matrix(diff_trans, 6)
+    # diff_pos_sum = np.sum(diff_6pose[:3] ** 2)
+    # diff_rot_sum = np.sum((diff_6pose[:3] * 180.0 / np.pi * 0.001) ** 2)
+    # diff_pose_dist = (diff_pos_sum + diff_rot_sum) ** 0.5
+    # return diff_pose_dist
+
+    pos_diff = np.asarray(wpt2[:3]) - np.asarray(wpt1[:3])
     tmp_trans = get_matrix_from_pose(wpt1)
     next_trans = get_matrix_from_pose(wpt2)
     diff_trans = np.linalg.inv(tmp_trans) @ next_trans
     diff_6pose = get_pose_from_matrix(diff_trans, 6)
-    diff_pos_sum = np.sum(diff_6pose[:3] ** 2)
+    diff_pos_sum = np.sum(pos_diff ** 2)
     diff_rot_sum = np.sum((diff_6pose[:3] * 180.0 / np.pi * 0.001) ** 2)
-    diff_pose_dist = (diff_pos_sum + diff_rot_sum) ** 0.5
+    diff_pose_dist = ((diff_pos_sum + diff_rot_sum)) ** 0.5
+    diff_pose_dist = np.linalg.norm(pos_diff)
     return diff_pose_dist
     
 def refine_waypoint_rotation(wpts : np.ndarray or list):
@@ -50,7 +61,8 @@ def refine_waypoint_rotation(wpts : np.ndarray or list):
     tmp_pos = wpts[0][:3]
     tmp_dir = np.asarray(next_pos) - np.asarray(tmp_pos) 
     tmp_quat = wpts[0][3:]
-    tmp_rotmat = R.from_quat(tmp_quat).as_matrix()
+    tmp_rotmat = R.from_rotvec(tmp_quat).as_matrix()
+    # tmp_rotmat = R.from_quat(tmp_quat).as_matrix()
     tmp_rot_dir = (tmp_rotmat @ np.asarray([[1], [0], [0]])).T
 
     # no need to refine
@@ -63,7 +75,8 @@ def refine_waypoint_rotation(wpts : np.ndarray or list):
     for i in range(len(wpts) - 1):
         tmp_pos = wpts[i][:3]
         tmp_rot = wpts[i][3:]
-        tmp_refined_rot = R.from_matrix(R.from_quat(tmp_rot).as_matrix() @ refine_mat).as_quat()
+        tmp_refined_rot = R.from_matrix(R.from_rotvec(tmp_rot).as_matrix() @ refine_mat).as_quat()
+        # tmp_refined_rot = R.from_matrix(R.from_quat(tmp_rot).as_matrix() @ refine_mat).as_quat()
         tmp_refined_pose = list(tmp_pos) + list(tmp_refined_rot)
         refined_wpts.append(tmp_refined_pose)
     return refined_wpts
@@ -74,7 +87,7 @@ def shorten_kpt_trajectory(kpt_trajectory : np.ndarray or list, length=20):
         kpt_trajectory = np.asarray(kpt_trajectory)
 
     assert kpt_trajectory.shape[0] > 0, f'no waypoint in trajectory'
-    assert kpt_trajectory.shape[1] == 7, f'waypoint should be in 7d (x, y, z, x, y, z, w) format'
+    assert kpt_trajectory.shape[1] == 7 or kpt_trajectory.shape[1] == 6, f'waypoint should be in 7d (x, y, z, x, y, z, w) format'
 
     # tmp_length = 0.0
     # tmp_index = kpt_trajectory.shape[0] - 1
@@ -127,7 +140,7 @@ def main(args):
 
     sample_dist = args.kptraj_sample_distance
     
-    kptraj_files = glob.glob(f'{kptraj_dir}/*.json')
+    kptraj_files = glob.glob(f'{kptraj_dir}/*devil/traj-0.json')
     kptraj_files.sort()
     # shape_files = glob.glob(f'{shape_dir}/*/*.ply')
 
@@ -138,12 +151,13 @@ def main(args):
     for i, kptraj_file in enumerate(tqdm(kptraj_files)):
         if 'Hook' not in kptraj_file:
             continue
-        if i < 5:
-            continue
 
         # ../raw/keypoint_trajectory_1104/Hook_skew#3_aug.json -> Hook_skew
-        shape_name = kptraj_file.split('/')[-1].split('.')[0].split('_aug')[0].split('#')[0]  
-        shape_name_postfix = kptraj_file.split('/')[-1].split('.')[0]
+        # shape_name = kptraj_file.split('/')[-1].split('.')[0].split('_aug')[0].split('#')[0]  
+        # shape_name_postfix = kptraj_file.split('/')[-1].split('.')[0]
+        # shape_name_hash = shape_name_postfix.split('_aug')[0]
+        shape_name = kptraj_file.split('/')[-2].split('.')[0].split('_aug')[0].split('#')[0]  
+        shape_name_postfix = kptraj_file.split('/')[-2].split('.')[0]
         shape_name_hash = shape_name_postfix.split('_aug')[0]
 
         # affordance_name_complete = f'{shape_dir}/{shape_name}/affordance.npy'
@@ -152,7 +166,6 @@ def main(args):
         # print(pcd_affordance)
 
         urdf_path = f"../shapes/{args.shape_dir}/{shape_name_hash}/base.urdf"
-        print(urdf_path)
         hook_id = p.loadURDF(urdf_path, hook_pose[:3], hook_pose[3:])
         # print(f'GT pose: {hook_pose}')
         # # get pose of loadURDF
@@ -173,11 +186,12 @@ def main(args):
         f_kptraj.close()
 
         kptrajs = json_kptraj['trajectory']
+        kptrajs = [kptrajs]
 
         wpt_ids = []
         for i, kptraj in enumerate(kptrajs):
 
-            if i == 10:
+            if i == 1:
                 break
             
             # decide sample frequency by waypoint intervals
@@ -190,12 +204,12 @@ def main(args):
             tmp_wpt = kptraj[0]
             for wpt_id in range(1, len(kptraj)):
                 
-                tmp_diff += dist(tmp_wpt, kptraj[wpt_id])
-                if tmp_diff > sample_dist:
-                    # add first 6d pose
-                    wpts.append(list(kptraj[wpt_id]))
-                    tmp_diff = 0
-                    tmp_wpt = kptraj[wpt_id]
+                # tmp_diff += dist(tmp_wpt, kptraj[wpt_id])
+                # if tmp_diff > sample_dist:
+                #     # add first 6d pose
+                wpts.append(list(kptraj[wpt_id]))
+                tmp_diff = 0
+                tmp_wpt = kptraj[wpt_id]
 
                 # if wpt_id % sample_freq == 0:
                 #     # add first 6d pose
@@ -262,8 +276,8 @@ def main(args):
         for wpt_id in wpt_ids:
             p.removeBody(wpt_id)
 
-        rgbs[0].save(f"{output_dir}/{shape_name}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
-        print(f"{output_dir}/{shape_name}.gif has been written")
+        # rgbs[0].save(f"{output_dir}/{shape_name}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+        # print(f"{output_dir}/{shape_name}.gif has been written")
 
         # while True:
         #     keys = p.getKeyboardEvents()
@@ -275,8 +289,9 @@ def main(args):
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--kptraj_root', '-kr', type=str, default='../raw')
-    parser.add_argument('--kptraj_dir', '-kd', type=str, default='kptraj_all_smooth_bad')
+    # parser.add_argument('--kptraj_root', '-kr', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000')
+    parser.add_argument('--kptraj_root', '-kr', type=str, default='../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/04.25.20.06-1000')
+    parser.add_argument('--kptraj_dir', '-kd', type=str, default='train')
     parser.add_argument('--shape_root', '-sr', type=str, default='../shapes')
     parser.add_argument('--shape_dir', '-sd', type=str, default='hook_all_new')
     parser.add_argument('--kptraj_sample_distance', '-ksd', type=float, default=0.0028284) # ((0.0028284 ** 2) / 2) ** 0.5 ~= 0.002 mm (for position error)

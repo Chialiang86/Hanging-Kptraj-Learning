@@ -6,14 +6,12 @@ def main(root_name : str):
 
     fnames = [root_name]
     if os.path.isdir(root_name):
-        fnames = glob.glob(f'{root_name}/*/*.txt')
+        fnames = glob.glob(f'{root_name}/af*/*.txt')
+        print(fnames)
 
     for fname in fnames:
 
         model_type = fname.split('/')[1]
-
-        if 'deform' not in model_type:
-            continue
 
         print(f'processing {model_type} ...')
         f = open(fname, 'r')

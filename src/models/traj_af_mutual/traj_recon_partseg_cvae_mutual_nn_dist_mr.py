@@ -356,7 +356,8 @@ class TrajReconPartSegMutual(nn.Module):
             # tmp_max = torch.max(whole_feats[i, :, point_ind], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
 
-        f_s = whole_feats_part
+        f_s = torch.randn(whole_feats_part.shape).to(whole_feats_part.device)
+        # f_s = whole_feats_part
         f_cp = self.mlp_cp(contact_point)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)

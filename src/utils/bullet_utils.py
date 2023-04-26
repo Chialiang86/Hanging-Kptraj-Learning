@@ -63,7 +63,7 @@ def rot_6d_to_3d(rot) -> np.ndarray:
     assert rot_xy.shape == (6,), f'dimension of rot should be (6,), but got {rot_xy.shape}'
 
     rot_xy = rot_xy.reshape(2, 3)
-    rot_mat = np.hstack((rot_xy, np.cross(rot_xy[0], rot_xy[1]))).T 
+    rot_mat = np.vstack((rot_xy, np.cross(rot_xy[0], rot_xy[1]))).T 
 
     return R.from_matrix(rot_mat).as_rotvec()
 

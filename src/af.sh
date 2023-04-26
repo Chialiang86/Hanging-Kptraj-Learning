@@ -8,14 +8,14 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        # "af" 
-        # "af_msg"
+        "af" 
+        "af_msg"
         # "fusion" 
-        "fusion_msg"
+        # "fusion_msg"
     )
 
     affordance_datasets=(
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000"
     )
 
     training_tag='' # $1
@@ -75,7 +75,7 @@ if [ $1 = 'train' ]; then
 elif [ $1 = 'val' ]; then 
 
     iters=(
-        '20000'
+        '600'
     )
 
     model_configs=(
@@ -90,7 +90,8 @@ elif [ $1 = 'val' ]; then
     # element number should be the same as model_configs
     affordance_checkpoints=(
 
-        "checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000"
+        # "checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000"
+        "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
 
     )
     # element number should be the same as model_configs
@@ -117,13 +118,16 @@ elif [ $1 = 'val' ]; then
 elif [ $1 = 'test' ]; then 
 
     iters=(
-        '200' '400' '600' '800' '1000'
-        '8200' '8400' '8600' '8800' '9000'
+        # '200' '400' '600' '800' '1000'
+        # '8200' '8400' '8600' '8800' '9000'
+        '600' '800' '1000' '2000'
     )
 
     model_configs=(
-        "fusion_msg" 
-        "fusion_msg" 
+        # "fusion_msg" 
+        # "fusion_msg" 
+        "af"
+        "af_msg"
     )
 
     # element number should be the same as model_configs
@@ -131,15 +135,24 @@ elif [ $1 = 'test' ]; then
 
         # "../shapes/realworld_hook"
         # "../shapes/realworld_hook"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/val"
+
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
     )
 
     # element number should be the same as model_configs
     affordance_checkpoints=(
 
-        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
-        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        # "checkpoints/fusion_msg_04.25.20.30/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/fusion_msg_04.25.20.30/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        "checkpoints/af_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
 
     )
 
@@ -164,11 +177,12 @@ elif [ $1 = 'test' ]; then
 elif [ $1 = 'analysis' ]; then 
 
     iters=(
-        '200' '400' '600' '800' '1000'
-        '2200' '2400' '2600' '2800' '3000'
-        '4200' '4400' '4600' '4800' '5000'
-        '6200' '6400' '6600' '6800' '7000'
-        '8200' '8400' '8600' '8800' '9000'
+        # '200' '400' '600' '800' '1000'
+        # '2200' '2400' '2600' '2800' '3000'
+        # '4200' '4400' '4600' '4800' '5000'
+        # '6200' '6400' '6600' '6800' '7000'
+        # '8200' '8400' '8600' '8800' '9000'
+        '600' '800' '1000'
     )
 
     model_configs=(
@@ -179,15 +193,17 @@ elif [ $1 = 'analysis' ]; then
     # element number should be the same as model_configs
     inference_directories=(
 
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
     )
 
     # element number should be the same as model_configs
     affordance_checkpoints=(
 
-        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
-        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
 
     )
 
@@ -203,8 +219,8 @@ elif [ $1 = 'analysis' ]; then
                                         --checkpoint_dir ${affordance_checkpoints[$i]} \
                                         --config "../config/af/${model_configs[$i]}.yaml" \
                                         --weight_subpath "1000_points-network_epoch-${iter}.pth" \
+                                        -v \
                                         --evaluate
-                                        # -v \
     
         done 
     done 
