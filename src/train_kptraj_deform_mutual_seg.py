@@ -140,9 +140,6 @@ def train(args):
             # set models to training mode
             network.train()
 
-            sample_pcds = sample_pcds.to(device).contiguous() 
-            sample_trajs = sample_trajs.to(device).contiguous()
-
             # get segmented point cloud
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()

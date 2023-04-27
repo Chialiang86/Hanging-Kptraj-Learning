@@ -233,6 +233,7 @@ class TrajDeformFusionLSTM(nn.Module):
         self.wpt_dim = wpt_dim
         self.decoder_layers = decoder_layers
         self.gt_trajs = gt_trajs
+        self.segmented = segmented
 
         pcd_input_feat_dim = 3 if segmented == 0 else 4
         self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})

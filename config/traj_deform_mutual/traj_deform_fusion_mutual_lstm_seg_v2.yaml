@@ -1,5 +1,5 @@
 dataset_module: 'dataset_tdn'
-dataset_class: 'KptrajDeformAffordanceDataset'
+dataset_class: 'KptrajDeformAffordanceSegDataset'
 enable_affordance: 1
 module: 'traj_deform.traj_deform_fusion_lstm_seg_v2' 
 model: 'TrajDeformFusionLSTM'
@@ -25,6 +25,7 @@ model_inputs:
   lbd_deform: 1.0
   train_traj_start: 500
   gt_trajs: 1
+  segmented: 1
 
 lr: 0.0001
 lr_decay_rate: 0.95
