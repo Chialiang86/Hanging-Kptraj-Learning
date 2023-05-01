@@ -219,7 +219,8 @@ class TrajDeformFusionLSTM(nn.Module):
     def __init__(self, pcd_feat_dim=32, cp_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
-                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, train_traj_start=1000, dataset_type=0):
+                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
+                        train_traj_start=1000, dataset_type=0, gt_trajs=1):
         super(TrajDeformFusionLSTM, self).__init__()
 
         self.rot_dim = 6 if wpt_dim == 9 else 3
@@ -229,6 +230,7 @@ class TrajDeformFusionLSTM(nn.Module):
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
         self.decoder_layers = decoder_layers
+        self.gt_trajs = gt_trajs
 
         self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
 
@@ -328,12 +330,12 @@ class TrajDeformFusionLSTM(nn.Module):
 
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
-    def forward(self, iter, pcs, temp_traj, traj):
+    def forward(self, iter, pcs, temp_traj):
 
         batch_size = pcs.shape[0]
 
         pcs_repeat = pcs.repeat(1, 1, 2)
-        contact_point = traj[:, 0, :3]
+        contact_point = pcs[:, 0, :3]
 
         temp_traj_align_offset = temp_traj[:, 0, :3] - contact_point
         temp_traj_clone = temp_traj.clone()
@@ -412,7 +414,7 @@ class TrajDeformFusionLSTM(nn.Module):
     def get_loss(self, iter, pcs, affordance, difficulty, temp_traj, traj):
         batch_size = traj.shape[0]
 
-        difficulty_pred, affordance_pred, rotation_pred, traj_deform_offset_pred = self.forward(iter, pcs, temp_traj, traj) 
+        difficulty_pred, affordance_pred, rotation_pred, traj_deform_offset_pred = self.forward(iter, pcs, temp_traj) 
 
         cls_loss = torch.Tensor([0]).to(pcs.device)
         deform_loss = torch.Tensor([0]).to(pcs.device)
@@ -452,39 +454,47 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for trajectory deformation head =========== #
         ###########################################################
 
+
         # trajectory deformation loss
+        temp_traj_repeat = temp_traj.unsqueeze(1).repeat(1, self.gt_trajs, 1, 1)
 
         # for position offset
-        first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
+        first_pos_diff = traj[:, :, 0, :3] - temp_traj_repeat[:, :, 0, :3] # find the first-wpt difference
         if self.dataset_type == 0: # absolute
-            temp_traj[:, :, :3] += first_pos_diff.unsqueeze(1) # align template traj to target traj via first wpt
+            temp_traj_repeat[:, :, :, :3] += first_pos_diff.unsqueeze(2) # align template traj to target traj via first wpt
         elif self.dataset_type == 1: # residual
-            temp_traj[:, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
-        pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
+            temp_traj_repeat[:, :, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
+        pos_offset = traj[:, :, :, :3] - temp_traj_repeat[:, :, :, :3]
 
         # for rotation offset
-        temp_rotmat_xy = temp_traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3)
-        temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, 0], temp_rotmat_xy[:, :, 1]).unsqueeze(2)
-        temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=2) # row vector (the inverse of the temp rotation matrix)
+        temp_rotmat_xy = temp_traj_repeat[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3)
+        temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, :, 0], temp_rotmat_xy[:, :, :, 1]).unsqueeze(3)
+        temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=3) # row vector (the inverse of the temp rotation matrix)
         temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
 
-        rotmat_xy = traj[:, :, 3:].reshape(batch_size, self.num_steps, 2, 3) # column vector 
-        rotmat_z = torch.cross(rotmat_xy[:, :, 0], rotmat_xy[:, :, 1]).unsqueeze(2)
-        rotmat = torch.cat([rotmat_xy, rotmat_z], dim=2).permute(0, 1, 3, 2) # col vector (the inverse of the temp rotation matrix)
+        rotmat_xy = traj[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3) # column vector 
+        rotmat_z = torch.cross(rotmat_xy[:, :, :, 0], rotmat_xy[:, :, :, 1]).unsqueeze(3)
+        rotmat = torch.cat([rotmat_xy, rotmat_z], dim=3).permute(0, 1, 2, 4, 3) # col vector (the inverse of the temp rotation matrix)
         rotmat = rotmat.reshape(-1, 3, 3)
-        
-        rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, 9)[:, :6]
+
+        rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, self.gt_trajs, 9)[:, :, :6]
 
         # compute loss
         deform_wps_pos = traj_deform_offset_pred[:, :, :3]
-        deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
-                                       pos_offset.reshape(batch_size, self.num_steps * 3))
+        deform_pos_loss = torch.tensor(1000000)
+        for i in range(self.gt_trajs):
+            deform_pos_loss_tmp = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
+                                             pos_offset[:, i].reshape(batch_size, self.num_steps * 3))
+            deform_pos_loss = torch.min(deform_pos_loss, deform_pos_loss_tmp)
         
         deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
         deform_wps_rot = deform_wps_rot.reshape(-1, 6)
-        deform_rot_loss = self.get_6d_rot_loss(deform_wps_rot, 
-                                               rotmat_offset)
-        deform_rot_loss = deform_rot_loss.mean()
+        deform_rot_loss = torch.tensor(1000000)
+        for i in range(self.gt_trajs):
+            deform_rot_loss_tmp = self.get_6d_rot_loss(deform_wps_rot, 
+                                                        rotmat_offset[:, i])
+            deform_rot_loss_tmp = deform_rot_loss_tmp.mean()
+            deform_rot_loss = torch.min(deform_rot_loss, deform_rot_loss_tmp)
         
         deform_loss = deform_pos_loss + deform_rot_loss
 
@@ -501,7 +511,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         return losses
     
-    def sample(self, pcs, template_info, difficulty, return_feat=False):
+    def sample(self, pcs, template_info, difficulty=None, use_gt_cp=False, return_feat=False):
         batch_size = pcs.shape[0]
 
         pn_input = pcs.repeat(1, 1, 2)
@@ -517,12 +527,14 @@ class TrajDeformFusionLSTM(nn.Module):
         part_score_min = torch.unsqueeze(torch.min(part_score, dim=2).values, 1)
         part_score_max = torch.unsqueeze(torch.max(part_score, dim=2).values, 1)
         part_score = (part_score - part_score_min) / (part_score_max - part_score_min)
-        contact_cond = torch.where(part_score == torch.max(part_score)) # only high response region selected
-        contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
-        contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
 
-        # contact_point = pcs[contact_cond0, contact_cond2]
-        contact_point = pcs[:, 0]
+        if use_gt_cp == True:
+            contact_point = pcs[:, 0]
+        else :
+            contact_cond = torch.where(part_score == torch.max(part_score)) # only high response region selected
+            contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
+            contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
+            contact_point = pcs[contact_cond0, contact_cond2]
 
         #######################################################################
         # =========== extract shape feature using affordance head =========== #
@@ -544,11 +556,13 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for classification head =========== #
         ###################################################
 
-        classification_out = self.classification_head(whole_feats_part)
-        # difficulty = F.log_softmax(classification_out, -1)
-        # target_difficulty = torch.argmax(difficulty, dim=-1)
-        target_difficulty = difficulty
-
+        if difficulty is not None:
+            target_difficulty = difficulty
+        else :
+            classification_out = self.classification_head(whole_feats_part)
+            difficulty = F.log_softmax(classification_out, -1)
+            target_difficulty = torch.argmax(difficulty, dim=-1)
+            
         ########################################################
         # =========== get the target template info =========== #
         ########################################################

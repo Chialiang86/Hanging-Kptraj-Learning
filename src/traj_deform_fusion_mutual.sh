@@ -153,15 +153,15 @@ elif [ $1 = 'test' ]; then
 
         # # 40
         # "traj_deform_fusion_mutual_lstm_v2"
-        # "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
         # "traj_deform_fusion_mutual_lstm_v2"
         # "traj_deform_fusion_mutual_lstm_v2"
 
         # 40
-        "traj3d_deform_fusion_mutual_lstm_v2"
-        "traj3d_deform_fusion_mutual_lstm_v2"
-        "traj3d_deform_fusion_mutual_lstm_v2"
-        "traj3d_deform_fusion_mutual_lstm_v2"
+        # "traj3d_deform_fusion_mutual_lstm_v2"
+        # "traj3d_deform_fusion_mutual_lstm_v2"
+        # "traj3d_deform_fusion_mutual_lstm_v2"
+        # "traj3d_deform_fusion_mutual_lstm_v2"
     )
 
     dataset_dirs=(
@@ -191,10 +191,10 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
         # 40
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
     )
 
@@ -225,10 +225,10 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
     
         # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
     
     )
 
@@ -247,10 +247,13 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
         
         # # 40
-        "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
-        "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+
+        # 40
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
 
     )
 
@@ -274,10 +277,10 @@ elif [ $1 = 'test' ]; then
                                                         --weight_subpath "1000_points-network_epoch-${iter}.pth" \
                                                         --obj_shape_root ${obj_shape_root} \
                                                         --hook_shape_root ${hook_shape_root} \
+                                                        --visualize \
                                                         --evaluate 
                                                         # --use_gt_cls \
                                                         # --use_gt_cp 
-                                                        # --visualize \
         done
     done
 
@@ -296,17 +299,23 @@ elif [ $1 = 'analysis' ]; then
         # "traj_deform_fusion_mutual_lstm_v1_10"
         # "traj_deform_fusion_mutual_lstm_v1_10"
 
-        # 40
-        "traj_deform_fusion_mutual_lstm_v1"
-        "traj_deform_fusion_mutual_lstm_v1"
-        "traj_deform_fusion_mutual_lstm_v1"
-        "traj_deform_fusion_mutual_lstm_v1"
+        # # 40
+        # "traj_deform_fusion_mutual_lstm_v1"
+        # "traj_deform_fusion_mutual_lstm_v1"
+        # "traj_deform_fusion_mutual_lstm_v1"
+        # "traj_deform_fusion_mutual_lstm_v1"
 
         # # 10
         # "traj_deform_fusion_mutual_lstm_v2_10"
         # "traj_deform_fusion_mutual_lstm_v2_10"
         # "traj_deform_fusion_mutual_lstm_v2_10"
         # "traj_deform_fusion_mutual_lstm_v2_10"
+
+        # 40
+        "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
 
         # 40
         "traj_deform_fusion_mutual_lstm_v2"
@@ -323,17 +332,23 @@ elif [ $1 = 'analysis' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
 
-        # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # # 40
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
+
+        # 40
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
         # 40
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
@@ -351,11 +366,11 @@ elif [ $1 = 'analysis' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000/val_deform"
 
-        # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
+        # # 40
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
@@ -369,23 +384,35 @@ elif [ $1 = 'analysis' ]; then
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
     
+        # 40
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
+    
     )
 
     traj_recon_shape_checkpoints=(
 
         # # 10
 
-        # 40
-        "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # # 40
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v1-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
         # 40
         "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
         "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.18.23.00/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
         "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
         "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.18.23.00/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+
+        # 40
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
     )
 

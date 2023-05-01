@@ -482,9 +482,6 @@ def analysis(args):
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    sample_num_points = 1000
-    print(f'num of points = {sample_num_points}')
-
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
     config = None
@@ -536,6 +533,10 @@ def analysis(args):
     os.makedirs(output_dir, exist_ok=True)
     
     # ================== Inference ==================
+
+    interval = 500
+    point_nums = {interval * n: 0 for n in range(15)}
+    
     batch_size = 1
     difficulties = []
 
@@ -582,7 +583,13 @@ def analysis(args):
         # =========== for part feature extraction =========== #
         #######################################################
 
-        # part_cond = torch.where(affords > 0.3) # only high response region selected
+        part_cond = torch.where(affords > 0.1) # only high response region selected
+        part_point_num = len(part_cond[-1])
+        point_nums[int((part_point_num // interval) * interval)] += 1
+
+        # point_num = pcd.shape[0]
+        # point_nums[int((point_num // interval) * interval)] += 1
+
         # part_cond0 = part_cond[0].to(torch.long)
         # part_cond2 = part_cond[2].to(torch.long)
         # whole_feats_part = whole_feat[:, :, 0].clone()
@@ -622,70 +629,82 @@ def analysis(args):
         # point_cloud = o3d.geometry.PointCloud()
         # point_cloud.points = o3d.utility.Vector3dVector(points)
         # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
+
     
-    whole_feats_parts = whole_feats_parts.numpy()
-    X_embedded = PCA(n_components=2).fit_transform(whole_feats_parts)
-    X_embedded = np.hstack((X_embedded, np.zeros((X_embedded.shape[0], 1)))).astype(np.float32)
-
-    centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
-    input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
-    selected_points = X_embedded[input_pcid]
-
-    num_nn = 5
-    nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
-    distances, indices = nn.kneighbors(selected_points)
-
-    fig = plt.figure(figsize=(16, 12))
-    ax = fig.add_subplot()
-    ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
-
-    colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
-    for cls_id, (indice, color) in enumerate(zip(indices, colors)):
-
-        for ind in indice:
-            pcd = hook_pcds[ind]
-            pcd_points = pcd[:, :3]
-            pcd_afford = pcd[:, 4]
-            pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
-            point_cloud = o3d.geometry.PointCloud()
-            point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
-            point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
-            r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
-            point_cloud.rotate(r, center=(0, 0, 0))
-
-            wpts = hook_trajectories[ind]
-            geometries = []
-            for wpt_raw in wpts[:20]:
-                wpt = wpt_raw[:3]
-                coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
-                coor.translate(wpt.reshape((3, 1)))
-                coor.rotate(r, center=(0, 0, 0))
-                geometries.append(coor)
-            geometries.append(point_cloud)
-
-            img = capture_from_viewer(geometries)
-            save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
-            imageio.imsave(save_path, img)
-            print(f'{save_path} saved')
-
-        ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
-
-    out_path = f'{output_dir}/fps-clustering.png'
-    plt.savefig(out_path)
-    plt.clf()
+    x_keys = list(point_nums.keys())
+    x_labels = [f'{x_keys[i]} ~ {x_keys[i+1]}' for i in range(len(x_keys) - 1)]
+    x_labels.append(f'> {x_keys[-1]}')
+    y_values = point_nums.values()
+    subset = inference_dir.split('/')[-1]
+    plt.figure(figsize=(8, 12))
+    plt.title('part point distribution')
+    plt.xticks(range(len(x_labels)), x_labels, rotation = 90)
+    plt.bar(range(len(y_values)), y_values)
+    plt.savefig(f'part_{weight_subpath}_{subset}.png')
     
-    difficulties = np.asarray(difficulties)
-    easy_ind = np.where(difficulties == 'easy')[0]
-    normal_ind = np.where(difficulties == 'normal')[0]
-    hard_ind = np.where(difficulties == 'hard')[0]
-    devil_ind = np.where(difficulties == 'devil')[0]
-    max_rgb = 255.0
-    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
-    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
-    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
-    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
-    plt.legend()
-    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
+    # whole_feats_parts = whole_feats_parts.numpy()
+    # X_embedded = PCA(n_components=2).fit_transform(whole_feats_parts)
+    # X_embedded = np.hstack((X_embedded, np.zeros((X_embedded.shape[0], 1)))).astype(np.float32)
+
+    # centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
+    # input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
+    # selected_points = X_embedded[input_pcid]
+
+    # num_nn = 5
+    # nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
+    # distances, indices = nn.kneighbors(selected_points)
+
+    # fig = plt.figure(figsize=(16, 12))
+    # ax = fig.add_subplot()
+    # ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
+
+    # colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
+    # for cls_id, (indice, color) in enumerate(zip(indices, colors)):
+
+    #     for ind in indice:
+    #         pcd = hook_pcds[ind]
+    #         pcd_points = pcd[:, :3]
+    #         pcd_afford = pcd[:, 4]
+    #         pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+    #         point_cloud = o3d.geometry.PointCloud()
+    #         point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
+    #         point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
+    #         r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
+    #         point_cloud.rotate(r, center=(0, 0, 0))
+
+    #         wpts = hook_trajectories[ind]
+    #         geometries = []
+    #         for wpt_raw in wpts[:20]:
+    #             wpt = wpt_raw[:3]
+    #             coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
+    #             coor.translate(wpt.reshape((3, 1)))
+    #             coor.rotate(r, center=(0, 0, 0))
+    #             geometries.append(coor)
+    #         geometries.append(point_cloud)
+
+    #         img = capture_from_viewer(geometries)
+    #         save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
+    #         imageio.imsave(save_path, img)
+    #         print(f'{save_path} saved')
+
+    #     ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
+
+    # out_path = f'{output_dir}/fps-clustering.png'
+    # plt.savefig(out_path)
+    # plt.clf()
+    
+    # difficulties = np.asarray(difficulties)
+    # easy_ind = np.where(difficulties == 'easy')[0]
+    # normal_ind = np.where(difficulties == 'normal')[0]
+    # hard_ind = np.where(difficulties == 'hard')[0]
+    # devil_ind = np.where(difficulties == 'devil')[0]
+    # max_rgb = 255.0
+    # plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
+    # plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
+    # plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
+    # plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
+    # plt.legend()
+    # plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
 
 def main(args):
     dataset_dir = args.dataset_dir

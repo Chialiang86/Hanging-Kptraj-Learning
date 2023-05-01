@@ -1,5 +1,6 @@
 
 import time
+import torch
 import numpy as np
 import quaternion
 import pybullet as p
@@ -7,7 +8,7 @@ from PIL import Image
 from scipy.spatial.transform import Rotation as R
 
 from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
-from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, draw_coordinate
+from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, draw_coordinate, rot_6d_to_3d
 
 PENETRATION_THRESHOLD = 0.0003 # 0.00003528
 
@@ -247,6 +248,127 @@ def refine_rotation(src_transform, tgt_transform):
 
     return tgt_transform if np.sum((src_rotvec - tgt_rotvec) ** 2) < np.sum((src_rotvec - tgt_dual_rotvec) ** 2) else tgt_dual_transform
 
+def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch.Tensor or np.ndarray, 
+                        centers : torch.Tensor or np.ndarray, scales : torch.Tensor or np.ndarray, dataset_mode : int=0, wpt_dim : int=6):
+    # traj : dim = batch x num_steps x 6
+    # dataset_mode : 0 for abosute, 1 for residual 
+
+    traj = None
+    if type(traj_src) == torch.Tensor:
+        traj = traj_src.clone().cpu().detach().numpy()
+        centers = centers.clone().cpu().detach().numpy()
+        scales = scales.clone().cpu().detach().numpy()
+        hook_poses = hook_poses.clone().cpu().detach().numpy()
+    elif type(traj_src) == np.ndarray:
+        traj = np.copy(traj_src)
+
+    # base_trans = get_matrix_from_pose(hook_pose)
+
+    waypoints = []
+
+    if dataset_mode == 0: # "absolute"
+
+        for traj_id in range(traj.shape[0]):
+            traj[traj_id, :, :3] = traj[traj_id, :, :3] * scales[traj_id] + centers[traj_id]
+
+        for traj_id in range(traj.shape[0]): # batches
+            waypoints.append([])
+            for wpt_id in range(0, traj[traj_id].shape[0]): # waypoints
+
+                wpt = np.zeros(6)
+                if wpt_dim == 6 or wpt_dim == 9:
+                    wpt = traj[traj_id, wpt_id]
+                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
+                elif wpt_dim == 3:
+                    # contact pose rotation
+                    wpt[:3] = traj[traj_id, wpt_id]
+
+                    # transform to world coordinate first
+                    current_trans = np.identity(4)
+                    current_trans[:3, 3] = traj[traj_id, wpt_id]
+                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
+
+                    if wpt_id < traj[traj_id].shape[0] - 1:
+                        # transform to world coordinate first
+                        next_trans = np.identity(4)
+                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
+                        next_trans =  get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
+
+                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
+                        x_direction /= np.linalg.norm(-x_direction, ord=2)
+                        y_direction = np.cross(x_direction, [0, 0, -1])
+                        y_direction /= np.linalg.norm(y_direction, ord=2)
+                        z_direction = np.cross(x_direction, y_direction)
+                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
+                        current_trans[:3, :3] = rotation_mat
+                        
+                    else :
+                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
+                
+                waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
+    
+    if dataset_mode == 1: # "residual"
+
+        for traj_id in range(traj.shape[0]):
+            traj[traj_id,  0, :3] = (traj[traj_id,  0, :3] * scales[traj_id]) + centers[traj_id]
+            traj[traj_id, 1:, :3] = (traj[traj_id, 1:, :3] * scales[traj_id])
+
+        for traj_id in range(traj.shape[0]):
+            waypoints.append([])
+            tmp_pos = np.array([0.0, 0.0, 0.0])
+            tmp_rot = np.array([0.0, 0.0, 0.0])
+            for wpt_id in range(0, traj[traj_id].shape[0]):
+                
+                wpt = np.zeros(6)
+                if wpt_dim == 6 or wpt_dim == 9:
+
+                    if wpt_id == 0 :
+                        wpt_tmp = traj[traj_id, wpt_id]
+                        tmp_pos = wpt_tmp[:3]
+                        tmp_rot = wpt_tmp[3:] if wpt_dim == 6 else rot_6d_to_3d(wpt_tmp[3:])
+
+                    else :
+                        tmp_pos = tmp_pos + np.asarray(traj[traj_id, wpt_id, :3])
+                        tmp_rot = R.from_matrix(
+                                    R.from_rotvec(
+                                        traj[traj_id, wpt_id, 3:] if wpt_dim == 6 else rot_6d_to_3d(traj[traj_id, wpt_id, 3:])
+                                    ).as_matrix() @ R.from_rotvec(
+                                        tmp_rot
+                                    ).as_matrix()
+                                ).as_rotvec()
+                        wpt[:3] = tmp_pos
+                        wpt[3:] = tmp_rot
+                        
+                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
+                
+                elif wpt_dim == 3 :
+                    
+                    # transform to world coordinate first
+                    current_trans = np.identity(4)
+                    current_trans[:3, 3] = tmp_pos + traj[traj_id, wpt_id]
+                    tmp_pos += traj[traj_id, wpt_id]
+                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
+
+                    if wpt_id < traj[traj_id].shape[0] - 1:
+                        # transform to world coordinate first
+                        next_trans = np.identity(4)
+                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
+                        next_trans = get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
+
+                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
+                        x_direction /= np.linalg.norm(-x_direction, ord=2)
+                        y_direction = np.cross(x_direction, [0, 0, -1])
+                        y_direction /= np.linalg.norm(y_direction, ord=2)
+                        z_direction = np.cross(x_direction, y_direction)
+                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
+                        current_trans[:3, :3] = rotation_mat
+                    else :
+                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
+
+                waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
+    
+    return waypoints
+
 def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, contact_pose, grasping_info, sim_timestep=1.0/240, visualize=False):
 
     height_thresh = 0.8
@@ -309,7 +431,6 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
         for fine_gripper_pose in fine_gripper_poses:
             robot.apply_action(fine_gripper_pose)
             p.stepSimulation()
-            
             
             robot.grasp()
             for _ in range(5): # 1 sec

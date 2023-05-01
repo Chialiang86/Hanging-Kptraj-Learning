@@ -228,9 +228,19 @@ class KptrajReconAffordanceDataset(Dataset):
 
                 centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
                 centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
-                input_pcid = furthest_point_sample(centroid_points, self.sample_num_points).long().reshape(-1)  # BN
-                centroid_points = centroid_points[0, input_pcid, :].squeeze()
-
+                
+                input_pcid = None
+                point_num = centroid_points.shape[1]
+                if point_num >= self.sample_num_points:
+                    input_pcid = furthest_point_sample(centroid_points, self.sample_num_points).long().reshape(-1)  # BN
+                    centroid_points = centroid_points[0, input_pcid, :].squeeze()
+                else :
+                    mod_num = self.sample_num_points % point_num
+                    repeat_num = int(self.sample_num_points // point_num)
+                    input_pcid = furthest_point_sample(centroid_points, mod_num).long().reshape(-1)  # BN
+                    centroid_points = torch.cat([centroid_points.repeat(1, repeat_num, 1), centroid_points[:, input_pcid]], dim=1).squeeze()
+                    input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(self.device), input_pcid])
+                
                 center = torch.from_numpy(center).to(device)
 
                 shape_list_tmp.append(centroid_points)
@@ -404,7 +414,7 @@ class KptrajReconAffordanceDataset(Dataset):
 
 if __name__=="__main__":
     
-    dataset_dir = "../dataset/traj_recon_affordance/hook-kptraj_1104_origin_last2hook-absolute-30/02.03.13.28/train"
+    dataset_dir = "../../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
     dataset = KptrajReconAffordanceDataset(dataset_dir)
     dataset.print_data_shape()
 

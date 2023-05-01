@@ -8,10 +8,10 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        "af" 
-        "af_msg"
+        # "af" 
+        # "af_msg"
         # "fusion" 
-        # "fusion_msg"
+        "fusion_msg"
     )
 
     affordance_datasets=(
@@ -72,47 +72,47 @@ if [ $1 = 'train' ]; then
 
     done 
 
-elif [ $1 = 'val' ]; then 
+# elif [ $1 = 'val' ]; then 
 
-    iters=(
-        '600'
-    )
+    # iters=(
+    #     '600'
+    # )
 
-    model_configs=(
-        # "af" 
-        "af_msg" 
-    )
+    # model_configs=(
+    #     # "af" 
+    #     "af_msg" 
+    # )
 
-    dataset_dirs=(
-        "../dataset/traj_recon_affordance/kptraj_all_new-absolute-40/03.05.12.50-1000"
-    )
+    # dataset_dirs=(
+    #     "../dataset/traj_recon_affordance/kptraj_all_new-absolute-40/03.05.12.50-1000"
+    # )
 
-    # element number should be the same as model_configs
-    affordance_checkpoints=(
+    # # element number should be the same as model_configs
+    # affordance_checkpoints=(
 
-        # "checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000"
-        "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+    #     # "checkpoints/af_msg-03.05.13.45/hook_all_new-kptraj_all_new-absolute-40_03.05.12.50-1000"
+    #     "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
 
-    )
-    # element number should be the same as model_configs
+    # )
+    # # element number should be the same as model_configs
 
-    length=${#model_configs[@]}
+    # length=${#model_configs[@]}
 
-    for (( i=0; i<$length; i++ )) 
-    do 
-        for iter in "${iters[@]}"
-        do 
+    # for (( i=0; i<$length; i++ )) 
+    # do 
+    #     for iter in "${iters[@]}"
+    #     do 
 
-            python3 train_affordance.py -tm 'val' \
-                                        --checkpoint_dir ${affordance_checkpoints[$i]} \
-                                        --config "../config/af/${model_configs[$i]}.yaml" \
-                                        --dataset_dir "${dataset_dirs[$i]}" \
-                                        --weight_subpath "1000_points-network_epoch-${iter}.pth" \
-                                        -v 
-                                        # --evaluate
+    #         python3 train_affordance.py -tm 'val' \
+    #                                     --checkpoint_dir ${affordance_checkpoints[$i]} \
+    #                                     --config "../config/af/${model_configs[$i]}.yaml" \
+    #                                     --dataset_dir "${dataset_dirs[$i]}" \
+    #                                     --weight_subpath "1000_points-network_epoch-${iter}.pth" \
+    #                                     -v 
+    #                                     # --evaluate
     
-        done 
-    done 
+    #     done 
+    # done 
 
     
 elif [ $1 = 'test' ]; then 
@@ -182,7 +182,8 @@ elif [ $1 = 'analysis' ]; then
         # '4200' '4400' '4600' '4800' '5000'
         # '6200' '6400' '6600' '6800' '7000'
         # '8200' '8400' '8600' '8800' '9000'
-        '600' '800' '1000'
+        # '600' '800' 
+        '1000'
     )
 
     model_configs=(
@@ -202,8 +203,8 @@ elif [ $1 = 'analysis' ]; then
     # element number should be the same as model_configs
     affordance_checkpoints=(
 
-        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
-        # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
+        "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
 
     )
 

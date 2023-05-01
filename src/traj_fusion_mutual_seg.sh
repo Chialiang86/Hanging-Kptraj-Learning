@@ -138,10 +138,10 @@ elif [ $1 = 'test' ]; then
 
     model_configs=(
 
+        # "traj_fusion_mutual_seg"
         "traj_fusion_mutual_seg"
-        "traj_fusion_mutual_seg"
-        "traj_fusion_mutual_seg"
-        "traj_fusion_mutual_seg"
+        # "traj_fusion_mutual_seg"
+        # "traj_fusion_mutual_seg"
 
         # "traj_fusion_mutual_seg_10"
         # "traj_fusion_mutual_seg_10"
@@ -158,10 +158,10 @@ elif [ $1 = 'test' ]; then
     dataset_dirs=(
 
         # 40
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
@@ -178,10 +178,10 @@ elif [ $1 = 'test' ]; then
 
     inference_dirs=(
         # 40
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/train"
@@ -200,27 +200,15 @@ elif [ $1 = 'test' ]; then
     traj_recon_shape_checkpoints=(
 
         # 40
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000" # sigmoid
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
-
-        # # 10
-        # "checkpoints/traj_fusion_mutual_seg_10-03.27.17.10/kptraj_all_smooth-absolute-10-k0-03.24.19.24-1000" # sigmoid
-        # "checkpoints/traj_fusion_mutual_seg_10-03.27.17.10/kptraj_all_smooth-absolute-10-k0-03.24.19.24-1000"
-        # "checkpoints/traj_fusion_mutual_seg_10-03.27.17.10/kptraj_all_smooth-residual-10-k0-03.24.19.24-1000" # sigmoid
-        # "checkpoints/traj_fusion_mutual_seg_10-03.27.17.10/kptraj_all_smooth-residual-10-k0-03.24.19.24-1000"
-
-        # # 20
-        # "checkpoints/traj_fusion_mutual_seg_20-03.25.15.52/kptraj_all_smooth-absolute-20-k0-03.24.19.28-1000" # sigmoid
-        # "checkpoints/traj_fusion_mutual_seg_20-03.25.15.52/kptraj_all_smooth-absolute-20-k0-03.24.19.28-1000"
-        # "checkpoints/traj_fusion_mutual_seg_20-03.25.15.52/kptraj_all_smooth-residual-20-k0-03.24.19.28-1000" # sigmoid
-        # "checkpoints/traj_fusion_mutual_seg_20-03.25.15.52/kptraj_all_smooth-residual-20-k0-03.24.19.28-1000"
+        # "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
+        "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
+        # "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
 
     )
 
     iters=(
-        '20000' '30000'
+        '5000' '10000' '20000' '30000'
         # '20000' 
         # '30000'  
     )
@@ -318,10 +306,10 @@ elif [ $1 = 'analysis' ]; then
     traj_recon_shape_checkpoints=(
 
         # 40
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000" # sigmoid
-        "checkpoints/traj_fusion_mutual_seg-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
+        "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000" # sigmoid
+        "checkpoints/traj_fusion_mutual_seg-04.26.23.48/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
         # # 10
         # "checkpoints/traj_fusion_mutual_seg_10-03.27.17.10/kptraj_all_smooth-absolute-10-k0-03.24.19.24-1000" # sigmoid

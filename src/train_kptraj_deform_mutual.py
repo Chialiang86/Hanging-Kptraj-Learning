@@ -19,9 +19,8 @@ from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
 from scipy.spatial.transform import Rotation as R
-from utils.bullet_utils import get_pose_from_matrix, get_matrix_from_pose, \
-                               rot_6d_to_3d, draw_coordinate
-from utils.testing_utils import trajectory_scoring, refine_waypoint_rotation, robot_kptraj_hanging
+from utils.bullet_utils import draw_coordinate
+from utils.testing_utils import refine_waypoint_rotation, robot_kptraj_hanging, recover_trajectory
 
 def train_val_dataset(dataset, val_split=0.25):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
@@ -297,128 +296,6 @@ def capture_from_viewer(geometries):
     vis.destroy_window()
 
     return o3d_screenshot_mat
-
-def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch.Tensor or np.ndarray, 
-                        centers : torch.Tensor or np.ndarray, scales : torch.Tensor or np.ndarray, dataset_mode : int=0, wpt_dim : int=6):
-    # traj : dim = batch x num_steps x 6
-    # dataset_mode : 0 for abosute, 1 for residual 
-
-    traj = None
-    if type(traj_src) == torch.Tensor:
-        traj = traj_src.clone().cpu().detach().numpy()
-        centers = centers.clone().cpu().detach().numpy()
-        scales = scales.clone().cpu().detach().numpy()
-        hook_poses = hook_poses.clone().cpu().detach().numpy()
-    elif type(traj_src) == np.ndarray:
-        traj = np.copy(traj_src)
-
-    # base_trans = get_matrix_from_pose(hook_pose)
-
-    waypoints = []
-
-    if dataset_mode == 0: # "absolute"
-
-        for traj_id in range(traj.shape[0]):
-            traj[traj_id, :, :3] = traj[traj_id, :, :3] * scales[traj_id] + centers[traj_id]
-
-        for traj_id in range(traj.shape[0]): # batches
-            waypoints.append([])
-            for wpt_id in range(0, traj[traj_id].shape[0]): # waypoints
-
-                wpt = np.zeros(6)
-                if wpt_dim == 6 or wpt_dim == 9:
-                    wpt = traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
-                elif wpt_dim == 3:
-                    # contact pose rotation
-                    wpt[:3] = traj[traj_id, wpt_id]
-
-                    # transform to world coordinate first
-                    current_trans = np.identity(4)
-                    current_trans[:3, 3] = traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
-
-                    if wpt_id < traj[traj_id].shape[0] - 1:
-                        # transform to world coordinate first
-                        next_trans = np.identity(4)
-                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
-                        next_trans =  get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
-
-                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
-                        x_direction /= np.linalg.norm(-x_direction, ord=2)
-                        y_direction = np.cross(x_direction, [0, 0, -1])
-                        y_direction /= np.linalg.norm(y_direction, ord=2)
-                        z_direction = np.cross(x_direction, y_direction)
-                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
-                        current_trans[:3, :3] = rotation_mat
-                        
-                    else :
-                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
-                
-                waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
-    
-    if dataset_mode == 1: # "residual"
-
-        for traj_id in range(traj.shape[0]):
-            traj[traj_id,  0, :3] = (traj[traj_id,  0, :3] * scales[traj_id]) + centers[traj_id]
-            traj[traj_id, 1:, :3] = (traj[traj_id, 1:, :3] * scales[traj_id])
-
-        for traj_id in range(traj.shape[0]):
-            waypoints.append([])
-            tmp_pos = np.array([0.0, 0.0, 0.0])
-            tmp_rot = np.array([0.0, 0.0, 0.0])
-            for wpt_id in range(0, traj[traj_id].shape[0]):
-                
-                wpt = np.zeros(6)
-                if wpt_dim == 6 or wpt_dim == 9:
-
-                    if wpt_id == 0 :
-                        wpt_tmp = traj[traj_id, wpt_id]
-                        tmp_pos = wpt_tmp[:3]
-                        tmp_rot = wpt_tmp[3:] if wpt_dim == 6 else rot_6d_to_3d(wpt_tmp[3:])
-
-                    else :
-                        tmp_pos = tmp_pos + np.asarray(traj[traj_id, wpt_id, :3])
-                        tmp_rot = R.from_matrix(
-                                    R.from_rotvec(
-                                        traj[traj_id, wpt_id, 3:] if wpt_dim == 6 else rot_6d_to_3d(traj[traj_id, wpt_id, 3:])
-                                    ).as_matrix() @ R.from_rotvec(
-                                        tmp_rot
-                                    ).as_matrix()
-                                ).as_rotvec()
-                        wpt[:3] = tmp_pos
-                        wpt[3:] = tmp_rot
-                        
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
-                
-                elif wpt_dim == 3 :
-                    
-                    # transform to world coordinate first
-                    current_trans = np.identity(4)
-                    current_trans[:3, 3] = tmp_pos + traj[traj_id, wpt_id]
-                    tmp_pos += traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
-
-                    if wpt_id < traj[traj_id].shape[0] - 1:
-                        # transform to world coordinate first
-                        next_trans = np.identity(4)
-                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
-                        next_trans = get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
-
-                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
-                        x_direction /= np.linalg.norm(-x_direction, ord=2)
-                        y_direction = np.cross(x_direction, [0, 0, -1])
-                        y_direction /= np.linalg.norm(y_direction, ord=2)
-                        z_direction = np.cross(x_direction, y_direction)
-                        rotation_mat = np.vstack((x_direction, y_direction, z_direction)).T
-                        current_trans[:3, :3] = rotation_mat
-                    else :
-                        current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
-
-                waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
-    
-    return waypoints
-
 
 def val(args):
 
@@ -1246,12 +1123,23 @@ def analysis(args):
 
     # ================== Inference ==================
 
+    hook_pose = [
+        0.5,
+        -0.1,
+        1.3,
+        4.329780281177466e-17,
+        0.7071067811865475,
+        0.7071067811865476,
+        4.329780281177467e-17
+    ]
+
     network.eval()
     
     batch_size = 1
     difficulties = []
 
     whole_feats = None
+    whole_trajs = None
 
     for sid, (hook_name, pcd) in enumerate(tqdm(zip(hook_names, hook_pcds), total=len(hook_pcds))):
         # urdf file
@@ -1288,8 +1176,17 @@ def analysis(args):
         # generate trajectory using predicted contact points
         target_difficulty, contact_point, affordance, recon_trajs, whole_feat = network.sample(points_batch, template_trajs, gt_difficulty, return_feat=True)
 
-        whole_feat = whole_feat.cpu().detach()
+        hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
+        scales = torch.Tensor([scale]).repeat(batch_size).to(device)
+        centroids = torch.from_numpy(centroid).repeat(batch_size, 1).to(device)
+        recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
+        recovered_trajs = torch.Tensor(np.asarray(recovered_trajs)[:, :, :3]).reshape(batch_size, -1)
+        if whole_trajs is None:
+            whole_trajs = recovered_trajs
+        else :
+            whole_trajs = torch.cat([whole_trajs, recovered_trajs], axis=0)
 
+        whole_feat = whole_feat.cpu().detach()
         if whole_feats is None:
             whole_feats = whole_feat
         else :
@@ -1316,70 +1213,87 @@ def analysis(args):
         # point_cloud.points = o3d.utility.Vector3dVector(points)
         # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
 
+    whole_trajs = whole_trajs.numpy()
+    # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
+    X_embedded_trajs = PCA(n_components=2).fit_transform(whole_trajs)
+    X_embedded_trajs = np.hstack((X_embedded_trajs, np.zeros((X_embedded_trajs.shape[0], 1)))).astype(np.float32)
+    
     whole_feats = whole_feats.numpy()
     # X_embedded = TSNE(n_components=2, learning_rate='auto', init='random', perplexity=3).fit_transform(whole_feats)
-    X_embedded = PCA(n_components=2).fit_transform(whole_feats)
-    X_embedded = np.hstack((X_embedded, np.zeros((X_embedded.shape[0], 1)))).astype(np.float32)
+    X_embedded_feat = PCA(n_components=2).fit_transform(whole_feats)
+    X_embedded_feat = np.hstack((X_embedded_feat, np.zeros((X_embedded_feat.shape[0], 1)))).astype(np.float32)
 
-    centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
-    input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
-    selected_points = X_embedded[input_pcid]
+    # centroid_points = torch.from_numpy(X_embedded).unsqueeze(0).to('cuda').contiguous()
+    # input_pcid = furthest_point_sample(centroid_points, 10).cpu().long().reshape(-1)  # BN
+    # selected_points = X_embedded[input_pcid]
 
-    num_nn = 5
-    nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
-    distances, indices = nn.kneighbors(selected_points)
+    # num_nn = 5
+    # nn = NearestNeighbors(n_neighbors=num_nn, algorithm='ball_tree').fit(X_embedded)
+    # distances, indices = nn.kneighbors(selected_points)
 
-    fig = plt.figure(figsize=(16, 12))
-    ax = fig.add_subplot()
-    ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
+    # fig = plt.figure(figsize=(16, 12))
+    # ax = fig.add_subplot()
+    # ax.scatter(X_embedded[:, 0],   X_embedded[:, 1], c=[[0.8, 0.8, 0.8]], s=10)
 
-    colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
-    for cls_id, (indice, color) in enumerate(zip(indices, colors)):
+    # colors = cv2.applyColorMap((255 * np.linspace(0, 1, num_nn)).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze() / 255.0
+    # for cls_id, (indice, color) in enumerate(zip(indices, colors)):
 
-        for ind in indice:
-            pcd = hook_pcds[ind]
-            pcd_points = pcd[:, :3]
-            pcd_afford = pcd[:, 4]
-            pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
-            point_cloud = o3d.geometry.PointCloud()
-            point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
-            point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
-            r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
-            point_cloud.rotate(r, center=(0, 0, 0))
+    #     for ind in indice:
+    #         pcd = hook_pcds[ind]
+    #         pcd_points = pcd[:, :3]
+    #         pcd_afford = pcd[:, 4]
+    #         pcd_colors = cv2.applyColorMap((255 * pcd_afford).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+    #         point_cloud = o3d.geometry.PointCloud()
+    #         point_cloud.points = o3d.utility.Vector3dVector(pcd_points)
+    #         point_cloud.colors = o3d.utility.Vector3dVector(pcd_colors / 255)
+    #         r = point_cloud.get_rotation_matrix_from_xyz((0, np.pi / 2, 0)) # (rx, ry, rz) = (right, up, inner)
+    #         point_cloud.rotate(r, center=(0, 0, 0))
 
-            wpts = hook_trajectories[ind]
-            geometries = []
-            for wpt_raw in wpts[:20]:
-                wpt = wpt_raw[:3]
-                coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
-                coor.translate(wpt.reshape((3, 1)))
-                coor.rotate(r, center=(0, 0, 0))
-                geometries.append(coor)
-            geometries.append(point_cloud)
+    #         wpts = hook_trajectories[ind]
+    #         geometries = []
+    #         for wpt_raw in wpts[:20]:
+    #             wpt = wpt_raw[:3]
+    #             coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.003)
+    #             coor.translate(wpt.reshape((3, 1)))
+    #             coor.rotate(r, center=(0, 0, 0))
+    #             geometries.append(coor)
+    #         geometries.append(point_cloud)
 
-            img = capture_from_viewer(geometries)
-            save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
-            imageio.imsave(save_path, img)
-            print(f'{save_path} saved')
+    #         img = capture_from_viewer(geometries)
+    #         save_path = f'{output_dir}/cls-{cls_id}-{ind}.png'
+    #         imageio.imsave(save_path, img)
+    #         print(f'{save_path} saved')
 
-        ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
+    #     ax.scatter(X_embedded[indice, 0],   X_embedded[indice, 1], c=color.reshape(1, -1), s=10)
 
-    out_path = f'{output_dir}/fps-clustering.png'
-    plt.savefig(out_path)
-    plt.clf()
+    # out_path = f'{output_dir}/fps-clustering.png'
+    # plt.savefig(out_path)
+    # plt.clf()
     
+
     difficulties = np.asarray(difficulties)
     easy_ind = np.where(difficulties == 'easy')[0]
     normal_ind = np.where(difficulties == 'normal')[0]
     hard_ind = np.where(difficulties == 'hard')[0]
     devil_ind = np.where(difficulties == 'devil')[0]
     max_rgb = 255.0
-    plt.scatter(X_embedded[easy_ind, 0],   X_embedded[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
-    plt.scatter(X_embedded[normal_ind, 0], X_embedded[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
-    plt.scatter(X_embedded[hard_ind, 0],   X_embedded[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
-    plt.scatter(X_embedded[devil_ind, 0],  X_embedded[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
+
+    fig = plt.gcf()
+    fig.set_size_inches(8, 6)
+    plt.scatter(X_embedded_trajs[easy_ind, 0],   X_embedded_trajs[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
+    plt.scatter(X_embedded_trajs[normal_ind, 0], X_embedded_trajs[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
+    plt.scatter(X_embedded_trajs[hard_ind, 0],   X_embedded_trajs[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
+    plt.scatter(X_embedded_trajs[devil_ind, 0],  X_embedded_trajs[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
+    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}_traj.png')
+    plt.clf()
+
+    plt.scatter(X_embedded_feat[easy_ind, 0],   X_embedded_feat[easy_ind, 1],   c=[[123/max_rgb, 234/max_rgb ,0/max_rgb]],   label='easy',   s=10)
+    plt.scatter(X_embedded_feat[normal_ind, 0], X_embedded_feat[normal_ind, 1], c=[[123/max_rgb, 0/max_rgb   ,234/max_rgb]], label='normal', s=10)
+    plt.scatter(X_embedded_feat[hard_ind, 0],   X_embedded_feat[hard_ind, 1],   c=[[234/max_rgb, 123/max_rgb ,0/max_rgb]],   label='hard',   s=10)
+    plt.scatter(X_embedded_feat[devil_ind, 0],  X_embedded_feat[devil_ind, 1],  c=[[234/max_rgb, 0/max_rgb   ,123/max_rgb]], label='devil',  s=10)
     plt.legend()
-    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}.png')
+    plt.savefig(f'{output_dir}/pca_{checkpoint_subdir}_{weight_subpath}_feat.png')
+    plt.clf()
 
 def main(args):
     dataset_dir = args.dataset_dir
