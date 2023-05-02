@@ -17,7 +17,9 @@ if [ $1 = 'train' ]; then
     )
 
     affordance_datasets=(
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.15.51-1000-fullview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.18.59-1000-fullview"
     )
 
     training_tag='' # $1
@@ -140,7 +142,7 @@ elif [ $1 = 'test' ]; then
         # "fusion_msg" 
         # "fusion_msg" 
 
-        "part" 
+        # "part" 
         "part_msg" 
         "fusion" 
         "fusion_msg" 
@@ -163,7 +165,7 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
 
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
@@ -186,10 +188,15 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/fusion_msg_05.01.14.27-3000/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
         # "checkpoints/fusion_msg_05.01.14.27-3000/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
         
-        "checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
-        "checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
-        "checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
-        "checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+
+        # "checkpoints/part_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
+        "checkpoints/part_msg_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
+        "checkpoints/fusion_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
+        "checkpoints/fusion_msg_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
 
     )
 

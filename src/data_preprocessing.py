@@ -346,13 +346,19 @@ def main(args):
                 
                 src_affordance_path_todo = []
                 target_affordance_path_todo = []
+                contact_point = None
                 # copy affordance paths to dest directory
                 if 'affordance' in dataset_category:
                     # copy point cloud to dest
-                    src_affordance_paths = glob.glob(f'{src_shape_dir}/{shape_name}/affordance*.npy')
+                    src_affordance_paths = glob.glob(f'{src_shape_dir}/{shape_name}/affordance-*.npy')
                     for src_affordance_path in src_affordance_paths:
 
+                        if 'fullview' in src_affordance_path:
+                            print(f'ignore {src_affordance_path}...')
+                            continue
+
                         src_affordance_map = np.load(src_affordance_path)
+                        contact_point = src_affordance_map[0, :3]
                         num_pts = src_affordance_map.shape[0]
                         if num_pts >= args.shape_num_pts: # check num of points
                             shape_id = os.path.split(src_affordance_path)[1].split('.')[0].split('-')[-1] # affordance-0.npy -> 0
@@ -364,7 +370,7 @@ def main(args):
                         # f_out.write(f'{shape_name} doesn\'t contain enough points\n')
                         less_pts_num += 1
                         continue
-                
+
                 # ================================ #
                 # for semantic keypoint trajectory #
                 # ================================ #
@@ -375,29 +381,34 @@ def main(args):
                 json_kptraj = json.load(f_kptraj)
                 f_kptraj.close()
 
-                kptrajs = json_kptraj['trajectory'][:args.kptraj_num]
+                kptrajs = json_kptraj['trajectory'][-args.kptraj_num:]
                 kptrajs_shorten = []
                 target_kptraj_path_todo = []
                 
                 # preprocess the trajectories in the json file
                 for kptraj_id, kptraj in enumerate(kptrajs):
                     
+                    first_rot = kptraj[0][3:]
+                    first_wpt = list(contact_point) + list(first_rot)
+                    kptraj.append(first_wpt)
+                    
+                    kptraj_reverse = kptraj[::-1]
+                    
                     # copy point cloud to dest
-                    wpts = [list(kptraj[0])]
+                    wpts_reverse = [kptraj_reverse[0]]
                     tmp_diff = 0
-                    tmp_wpt = kptraj[0]
-                    for wpt_id in range(1, len(kptraj)):
+                    tmp_wpt = kptraj_reverse[0]
+                    for wpt_id in range(1, len(kptraj_reverse)):
                         
-                        tmp_diff += dist(tmp_wpt, kptraj[wpt_id])
+                        tmp_diff += dist(tmp_wpt, kptraj_reverse[wpt_id])
                         if tmp_diff > sample_dist:
                             # add first 6d pose
-                            wpts.append(list(kptraj[wpt_id]))
+                            wpts_reverse.append(list(kptraj_reverse[wpt_id]))
                             tmp_diff = 0
-                            tmp_wpt = kptraj[wpt_id]
-
-                    wpts.append(list(kptraj[-1]))
+                            tmp_wpt = kptraj_reverse[wpt_id]
 
                     # refine the trajectory rotation (roll may need to be rotated by 180 degree)
+                    wpts = wpts_reverse[::-1]
                     wpts = refine_waypoint_rotation(wpts)
 
                     # shorten the trajectory to the specific sizes (default 30)

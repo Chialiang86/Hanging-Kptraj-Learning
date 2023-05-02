@@ -8,13 +8,14 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        # "traj_deform_fusion_mutual_lstm_v1_10"
-        # "traj_deform_fusion_mutual_lstm_v1_20"
-        # "traj_deform_fusion_mutual_lstm_v1"
 
         # "traj_deform_fusion_mutual_lstm_v2_10"
         # "traj_deform_fusion_mutual_lstm_v2_20"
-        "traj_deform_fusion_mutual_lstm_v2"
+        # "traj_deform_fusion_mutual_lstm_v2"
+
+        # "traj_deform_fusion_mutual_lstm_v2_noise_10"
+        # "traj_deform_fusion_mutual_lstm_v2_noise_20"
+        # "traj_deform_fusion_mutual_lstm_v2_noise"
 
         # "traj3d_deform_fusion_mutual_lstm_v2_10"
         # "traj3d_deform_fusion_mutual_lstm_v2_20"
@@ -23,14 +24,19 @@ if [ $1 = 'train' ]; then
 
     traj_recon_affordance_datasets=(
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/03.24.19.24-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.19.28-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.19.28-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.19.14-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.19.14-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.18.59-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.18.59-1000-fullview"
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/03.24.19.28-1000"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/03.24.19.28-1000"
-
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
     )
 
     training_tag='' # $1

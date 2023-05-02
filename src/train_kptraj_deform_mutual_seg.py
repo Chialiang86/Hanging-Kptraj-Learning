@@ -332,8 +332,6 @@ def val(args):
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # sample_num_points = int(weight_subpath.split('_')[0])
-
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
     config = None
@@ -487,10 +485,6 @@ def test(args):
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # sample_num_points = int(weight_subpath.split('_')[0])
-    sample_num_points = 1000
-    print(f'num of points = {sample_num_points}')
-
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
     print(f'checkpoint: {weight_path}')
 
@@ -520,10 +514,12 @@ def test(args):
     module_name = config['module']
     model_name = config['model']
     model_inputs = config['model_inputs']
-    dataset_inputs = config['dataset_inputs']
     batch_size = config['batch_size']
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
+
+    sample_num_points = config['dataset_inputs']['sample_num_points']
+    print(f'num of points = {sample_num_points}')
 
     # inference
     inference_obj_dir = args.obj_shape_root
@@ -608,9 +604,6 @@ def test(args):
             pcd = np.load(shape_files[0]).astype(np.float32)
             points = pcd[:,:3]
             centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
-            centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
-            input_pcid = furthest_point_sample(centroid_points, sample_num_points).long().reshape(-1)  # BN
-            centroid_points = centroid_points[0, input_pcid, :].squeeze()
             center = torch.from_numpy(center).to(device)
 
             for traj_file in traj_files:
@@ -777,7 +770,15 @@ def test(args):
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
-        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        input_pcid = None
+        point_num = points_batch.shape[1]
+        if point_num >= sample_num_points:
+            input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        else :
+            mod_num = sample_num_points % point_num
+            repeat_num = int(sample_num_points // point_num)
+            input_pcid = furthest_point_sample(points_batch, mod_num).long().reshape(-1)  # BN
+            input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(device), input_pcid])
         points_batch = points_batch[0, input_pcid, :].squeeze()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
@@ -1013,10 +1014,6 @@ def analysis(args):
     checkpoint_subdir = checkpoint_dir.split('/')[1]
     checkpoint_subsubdir = checkpoint_dir.split('/')[2]
 
-    # sample_num_points = int(weight_subpath.split('_')[0])
-    sample_num_points = 1000
-    print(f'num of points = {sample_num_points}')
-
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
     print(f'checkpoint: {weight_path}')
 
@@ -1043,6 +1040,8 @@ def analysis(args):
     # =====================================================================
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
+    sample_num_points = config['dataset_inputs']['sample_num_points']
+    print(f'num of points = {sample_num_points}')
 
     # inference
     inference_obj_dir = args.obj_shape_root
@@ -1100,9 +1099,6 @@ def analysis(args):
             pcd = np.load(shape_files[0]).astype(np.float32)
             points = pcd[:,:3]
             centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
-            centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
-            input_pcid = furthest_point_sample(centroid_points, sample_num_points).long().reshape(-1)  # BN
-            centroid_points = centroid_points[0, input_pcid, :].squeeze()
             center = torch.from_numpy(center).to(device)
 
             for traj_file in traj_files:
@@ -1203,7 +1199,15 @@ def analysis(args):
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
-        input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        input_pcid = None
+        point_num = points_batch.shape[1]
+        if point_num >= sample_num_points:
+            input_pcid = furthest_point_sample(points_batch, sample_num_points).long().reshape(-1)  # BN
+        else :
+            mod_num = sample_num_points % point_num
+            repeat_num = int(sample_num_points // point_num)
+            input_pcid = furthest_point_sample(points_batch, mod_num).long().reshape(-1)  # BN
+            input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(device), input_pcid])
         points_batch = points_batch[0, input_pcid, :].squeeze()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 

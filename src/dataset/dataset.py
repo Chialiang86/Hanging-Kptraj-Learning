@@ -348,8 +348,10 @@ class KptrajReconAffordanceDataset(Dataset):
 
         # noise to point cloud
         if self.with_noise:
+            points_cp = points[0].clone()
             point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
             points += point_noises
+            points[0] = points_cp
 
         # for affordance processing if enabled
         affordance = None

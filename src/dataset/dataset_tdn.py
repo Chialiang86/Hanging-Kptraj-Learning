@@ -20,7 +20,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         
         self.with_noise = with_noise
         self.gt_trajs = gt_trajs
-        self.noise_pos_scale = 0.0005 # unit: meter
+        self.noise_pos_scale = 0.0002 # unit: meter
         self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
 
         self.device = device
@@ -217,8 +217,10 @@ class KptrajDeformAffordanceDataset(Dataset):
 
         # noise to point cloud
         if self.with_noise:
+            points_cp = points[0].clone()
             point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
             points += point_noises
+            points[0] = points_cp
 
         # for fusion processing if enabled
         fusion = self.fusion_list[index][shape_id]
@@ -436,8 +438,10 @@ class KptrajDeformAffordanceSegDataset(Dataset):
 
         # noise to point cloud
         if self.with_noise:
+            points_cp = points[0].clone()
             point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
             points += point_noises
+            points[0] = points_cp
 
         # for waypoint preprocessing
         num_traj = len(self.traj_list[index])
