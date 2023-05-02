@@ -34,25 +34,22 @@ class kl_annealing():
     def get_beta(self):
         return self.L[self.index]
 
-def normalize_pc(points : np.ndarray, copy_pts=False):
+def normalize_pc(points : np.ndarray or torch.Tensor, copy_pts=False):
+
+    assert len(points.shape) == 2 or len(points.shape) == 3 
+    is_ndarray = True if type(points) == np.ndarray else False
+
     if copy_pts:
+        points = copy.deepcopy(points)
 
-        points_copy = copy.deepcopy(points)
-        centroid = np.mean(points_copy, axis=0, dtype=np.float32)
-        points_copy -= centroid
-        max_ratio = np.max(np.sqrt(np.sum(abs(points_copy)**2,axis=-1)))
-        points_copy /= max_ratio
-
-        return points_copy, centroid, max_ratio
+    centroid = np.mean(points, axis=0 if (len(points.shape) == 2) else 1, dtype=np.float32) if is_ndarray else \
+               torch.mean(points, dim=0 if (len(points.shape) == 2) else 1, ).float()
+    points -= centroid
+    max_ratio = np.max(np.sqrt(np.sum(points**2, axis=-1)), axis=-1) if is_ndarray else \
+                torch.max(torch.sqrt(torch.sum(points**2, dim=-1)), dim=-1).values
+    points /= max_ratio
     
-    else :
-        
-        centroid = np.mean(points, axis=0, dtype=np.float32)
-        points -= centroid
-        max_ratio = np.max(np.sqrt(np.sum(abs(points)**2,axis=-1)))
-        points /= max_ratio
-    
-        return points, centroid, max_ratio
+    return points, centroid, max_ratio
 
 # def normalize_pc_copy(points : np.ndarray):
 #     points_copy = copy.deepcopy(points)

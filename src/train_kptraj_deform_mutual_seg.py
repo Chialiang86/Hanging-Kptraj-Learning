@@ -19,7 +19,8 @@ from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
 from scipy.spatial.transform import Rotation as R
-from utils.bullet_utils import draw_coordinate
+from utils.bullet_utils import draw_coordinate, get_matrix_from_pose, get_pos_rot_from_matrix, \
+                                get_projmat_and_intrinsic, get_viewmat_and_extrinsic
 from utils.testing_utils import refine_waypoint_rotation, robot_kptraj_hanging, recover_trajectory
 
 def train_val_dataset(dataset, val_split=0.25):
@@ -896,13 +897,28 @@ def test(args):
             all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
-        p.removeAllUserDebugItems()
-               
         if visualize:
+
+            obj_urdf = obj_urdfs[1]
+            obj_id = p.loadURDF(obj_urdf)
+            obj_contact_pose = obj_contact_poses[1]
+
+            width, height = 640, 480
+            fx = fy = 605
+            far = 1000.
+            near = 0.01
+            projection_matrix, intrinsic = get_projmat_and_intrinsic(width, height, fx, fy, far, near)
+            pcd_view_matrix, pcd_extrinsic = get_viewmat_and_extrinsic(cameraEyePosition=[0.8, 0.0, 1.3], cameraTargetPosition=[0.5, 0.0, 1.3], cameraUpVector=[0., 0., 1.])
+
             wpt_ids = []
+            gif_frames = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
-                for wpt_i, wpt in enumerate(recovered_traj):
+                for wpt_i, wpt in enumerate(recovered_traj[::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
@@ -910,63 +926,21 @@ def test(args):
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
-            
-            cameraYaw = 90
-            p.resetDebugVisualizerCamera(
-                cameraDistance=0.08,
-                cameraYaw=cameraYaw,
-                cameraPitch=0,
-                cameraTargetPosition=[0.5, -0.1, 1.3]
-            )
-            cam_info = p.getDebugVisualizerCamera()
-            width = cam_info[0]
-            height = cam_info[1]
-            view_mat = cam_info[2]
-            proj_mat = cam_info[3]
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = np.asarray(img_info[2])[:,:,:3]
-            Image.fromarray(rgb).save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-noise.jpg")
+
+                    if wpt_i % 2 == 0:
+                        img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)
+                        rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
+                        gif_frames.append(rgb)
+
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:
                 p.removeBody(wpt_id)
-
-            # # capture a list of images and save as gif
-            # delta = 10
-            # delta_sum = 0
-            # cameraYaw = 90
-            # rgbs = []
-            # while True:
-            #     keys = p.getKeyboardEvents()
-            #     p.resetDebugVisualizerCamera(
-            #         cameraDistance=0.08,
-            #         cameraYaw=cameraYaw,
-            #         cameraPitch=0,
-            #         cameraTargetPosition=[0.5, -0.1, 1.3]
-            #     )
-
-            #     cam_info = p.getDebugVisualizerCamera()
-            #     width = cam_info[0]
-            #     height = cam_info[1]
-            #     view_mat = cam_info[2]
-            #     proj_mat = cam_info[3]
-            #     img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            #     rgb = img_info[2]
-            #     rgbs.append(Image.fromarray(rgb))
-
-            #     cameraYaw += delta 
-            #     delta_sum += delta 
-            #     cameraYaw = cameraYaw % 360
-            #     if ord('q') in keys and keys[ord('q')] & p.KEY_WAS_TRIGGERED:
-            #         break
-            #     if delta_sum >= 360:
-            #         break
-
-            # for wpt_id in wpt_ids:
-            #     p.removeBody(wpt_id)
-
-            # rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+            p.removeBody(obj_id)
 
         p.removeBody(hook_id)
+        p.removeAllUserDebugItems()
 
     if evaluate:
         print("=========================")

@@ -262,7 +262,6 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     elif type(traj_src) == np.ndarray:
         traj = np.copy(traj_src)
 
-    # base_trans = get_matrix_from_pose(hook_pose)
 
     waypoints = []
 
@@ -270,7 +269,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
 
         for traj_id in range(traj.shape[0]):
             traj[traj_id, :, :3] = traj[traj_id, :, :3] * scales[traj_id] + centers[traj_id]
-
+        
         for traj_id in range(traj.shape[0]): # batches
             waypoints.append([])
             for wpt_id in range(0, traj[traj_id].shape[0]): # waypoints

@@ -1,0 +1,1524 @@
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1801
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1227
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1484
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1170
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2278
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2191
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1610
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1230
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:847
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4812
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1259
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1854
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1569
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1061
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1776
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2101
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:919
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2239
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:780
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:788
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:960
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1238
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1962
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1984
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:711
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2106
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:2309
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:940
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:369
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:852
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:753
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:647
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:361
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1393
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1176
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1928
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1695
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:795
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1344
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1749
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1069
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:754
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:3228
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1744
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3119
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2588
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1531
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1269
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1854
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:2135
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:677
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2674
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1348
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1285
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1424
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1309
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:758
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:685
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:561
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2581
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-600.pth
+mean distance: 0.0208
+within 5mm rate: 0.1500 (9/60)
+within 10mm rate: 0.3000 (18/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1785
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1318
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1456
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1159
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2256
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2100
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1614
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1148
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:864
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4776
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1240
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1829
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1587
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1017
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1825
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2160
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:930
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2306
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:787
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:824
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:919
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1292
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1887
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1989
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:709
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2086
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:2336
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:957
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:408
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:920
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:778
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:674
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:360
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1289
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1273
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:2070
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1651
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:817
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1342
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1739
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1054
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:764
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:3175
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1676
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3128
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2637
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1589
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1275
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1906
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:2101
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:633
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2633
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1345
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1306
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1443
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1168
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:769
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:695
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:555
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2620
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-800.pth
+mean distance: 0.0207
+within 5mm rate: 0.1500 (9/60)
+within 10mm rate: 0.2833 (17/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1742
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1253
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1481
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1157
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2235
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2012
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1610
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1176
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:805
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4713
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1237
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1814
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1594
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1057
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1828
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2092
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:893
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2224
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:755
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:809
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:919
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1279
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1884
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:2021
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:704
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2107
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:2273
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:957
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:363
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:887
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:740
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:648
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:358
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1291
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1210
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1951
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1637
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:859
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1299
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1726
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1058
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:773
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:3221
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1627
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3066
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2536
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1534
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1222
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1805
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:2114
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:645
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2638
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1384
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1299
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1417
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1095
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:753
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:693
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:568
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2628
+inference/inference_affordances/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-1000.pth
+mean distance: 0.0198
+within 5mm rate: 0.1833 (11/60)
+within 10mm rate: 0.2833 (17/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1857
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1661
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1743
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1060
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2774
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2046
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1867
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1327
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:744
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:3440
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1047
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1973
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1495
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1021
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:2281
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1745
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:927
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:1974
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:863
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:902
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1015
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1279
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1869
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:2048
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:643
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1720
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:2039
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:682
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:361
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:1030
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:954
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:746
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:319
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1557
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1196
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:2437
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1483
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:886
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1223
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1787
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1224
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:806
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2778
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1571
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3074
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2478
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1506
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1392
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1136
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1867
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:629
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:3104
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1477
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1194
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1586
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1103
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:952
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:689
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:574
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2389
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-600.pth
+mean distance: 0.0195
+within 5mm rate: 0.0500 (3/60)
+within 10mm rate: 0.2667 (16/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1817
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1764
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1700
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1037
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:3032
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2047
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1773
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1294
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:703
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:3939
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1079
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1887
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1477
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:918
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:2214
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1790
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:927
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:1929
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:862
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:914
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1012
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1276
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1952
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:2006
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:645
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1645
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1954
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:674
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:356
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:986
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:990
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:753
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:334
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1522
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1181
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:2390
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1474
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:879
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1259
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1728
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1168
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:794
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2793
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1541
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3065
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2465
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1494
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1441
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1136
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1979
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:629
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2960
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1521
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1069
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1552
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1052
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:913
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:671
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:564
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2349
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-800.pth
+mean distance: 0.0191
+within 5mm rate: 0.0500 (3/60)
+within 10mm rate: 0.2667 (16/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1809
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1775
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1676
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1029
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:3024
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:2176
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1867
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1290
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:716
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:3687
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1120
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1807
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1472
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:909
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:2194
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1764
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:926
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:1883
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:862
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:929
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1010
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1280
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1959
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:2011
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:628
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1590
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1982
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:685
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:342
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:973
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:984
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:755
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:329
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1516
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1146
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:2345
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1440
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:908
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1346
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1700
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1156
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:786
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2771
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1579
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3043
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2424
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1493
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1381
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1094
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:2009
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:614
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2874
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1502
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1053
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1491
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1053
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:954
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:669
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:520
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2315
+inference/inference_affordances/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-1000.pth
+mean distance: 0.0195
+within 5mm rate: 0.0500 (3/60)
+within 10mm rate: 0.2333 (14/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1875
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1792
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1557
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1113
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2257
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1745
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1788
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1169
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:771
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4807
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1070
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:2001
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1764
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:986
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1808
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2255
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:888
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2237
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:960
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:889
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:910
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1130
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1702
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1749
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:774
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2485
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1570
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:825
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:313
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:981
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:906
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:753
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:341
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1503
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1095
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1588
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1139
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:934
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1452
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1712
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1088
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:788
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2544
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1576
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:3007
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2839
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1387
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1175
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1181
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1760
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:678
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:3002
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1302
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:956
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1497
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1295
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:868
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:689
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:667
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2112
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-600.pth
+mean distance: 0.0144
+within 5mm rate: 0.1167 (7/60)
+within 10mm rate: 0.4500 (27/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1885
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1857
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1539
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1061
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2265
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1637
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1846
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1118
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:782
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4853
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1081
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1830
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1729
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1010
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1768
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2247
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:949
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2198
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:1041
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:920
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:899
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1069
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1654
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1615
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:694
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2369
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1463
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:778
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:327
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:913
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:915
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:730
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:344
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1537
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1082
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1622
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1103
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:922
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1449
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1632
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1163
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:766
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2503
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1648
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:2951
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2817
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1305
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1118
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1200
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1813
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:653
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2890
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1241
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:944
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1484
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1256
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:842
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:683
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:624
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:1986
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-800.pth
+mean distance: 0.0125
+within 5mm rate: 0.1500 (9/60)
+within 10mm rate: 0.4667 (28/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1928
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1870
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1487
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1064
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2117
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1606
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1930
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1145
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:773
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:4804
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1060
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1775
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1748
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:980
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1706
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:2293
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:938
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2266
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:924
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:942
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:883
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1082
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1627
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1623
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:714
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:2263
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1545
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:774
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:289
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:951
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:951
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:704
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:317
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1594
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1050
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1555
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1093
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:903
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1465
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1614
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:1126
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:771
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2486
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1582
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:2902
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2764
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1419
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1182
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1219
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1746
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:649
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2814
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1262
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:870
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1437
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1186
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:826
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:667
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:627
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2022
+inference/inference_affordances/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-1000.pth
+mean distance: 0.0139
+within 5mm rate: 0.1667 (10/60)
+within 10mm rate: 0.4667 (28/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1654
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1409
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1648
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1100
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2183
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1849
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1751
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1158
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:920
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:5419
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1276
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1891
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1703
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1170
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1799
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1593
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:885
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2237
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:954
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:965
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1090
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1255
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1411
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1887
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:758
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1574
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1654
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:866
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:343
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:1083
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:732
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:749
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:279
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1169
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1499
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1838
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1674
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:915
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1359
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1510
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:976
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:740
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2673
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1413
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:2385
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2895
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1620
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1087
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1424
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1916
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:654
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2568
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1460
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1069
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1291
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1548
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:989
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:677
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:692
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2141
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-600-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-600.pth
+mean distance: 0.0152
+within 5mm rate: 0.1667 (10/60)
+within 10mm rate: 0.4000 (24/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1690
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1235
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1715
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1169
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2092
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1807
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1749
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1107
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:876
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:5381
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1240
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1868
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1649
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1298
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1819
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1609
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:897
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2150
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:868
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:913
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1077
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1231
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1422
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1805
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:841
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1535
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1579
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:940
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:328
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:1040
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:731
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:772
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:297
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1137
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1503
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1663
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1654
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:1004
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1319
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1505
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:943
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:742
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2647
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1392
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:2323
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2694
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1598
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1042
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1351
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1861
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:653
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2577
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1493
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1026
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1236
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1495
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:995
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:711
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:693
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2012
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-800-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-800.pth
+mean distance: 0.0146
+within 5mm rate: 0.2000 (12/60)
+within 10mm rate: 0.4500 (27/60)
+======================================
+hook_name:Hook_hcu_390_easy, sid:0, partsize:1729
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-0.gif saved
+hook_name:Hook_hcu_3_hard, sid:1, partsize:1175
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-1.gif saved
+hook_name:Hook_hs_229_normal, sid:2, partsize:1665
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-2.gif saved
+hook_name:Hook_hsr_312_devil, sid:3, partsize:1159
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-3.gif saved
+hook_name:Hook_hs_70_easy, sid:4, partsize:2039
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-4.gif saved
+hook_name:Hook_hsr_371_devil, sid:5, partsize:1829
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-5.gif saved
+hook_name:Hook_hsr_15_normal, sid:6, partsize:1805
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-6.gif saved
+hook_name:Hook_hs_105_hard, sid:7, partsize:1237
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-7.gif saved
+hook_name:Hook_hs_190_easy, sid:8, partsize:895
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-8.gif saved
+hook_name:Hook_hs_117_hard, sid:9, partsize:5384
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-9.gif saved
+hook_name:Hook_hs_94_hard, sid:10, partsize:1264
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-10.gif saved
+hook_name:Hook_hcu_380_hard, sid:11, partsize:1908
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-11.gif saved
+hook_name:Hook_hcu_104_devil, sid:12, partsize:1678
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-12.gif saved
+hook_name:Hook_hcu_134_normal, sid:13, partsize:1321
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-13.gif saved
+hook_name:Hook_hcu_296_normal, sid:14, partsize:1829
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-14.gif saved
+hook_name:Hook_hs_95_devil, sid:15, partsize:1557
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-15.gif saved
+hook_name:Hook_hs_339_devil, sid:16, partsize:913
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-16.gif saved
+hook_name:Hook_hsr_5_normal, sid:17, partsize:2208
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-17.gif saved
+hook_name:Hook_hcu_364_normal, sid:18, partsize:881
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-18.gif saved
+hook_name:Hook_hsr_118_hard, sid:19, partsize:909
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-19.gif saved
+hook_name:Hook_hs_317_easy, sid:20, partsize:1065
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-20.gif saved
+hook_name:Hook_hsr_56_normal, sid:21, partsize:1232
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-21.gif saved
+hook_name:Hook_hsr_304_hard, sid:22, partsize:1416
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-22.gif saved
+hook_name:Hook_hsr_298_normal, sid:23, partsize:1796
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-23.gif saved
+hook_name:Hook_hcu_190_easy, sid:24, partsize:811
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-24.gif saved
+hook_name:Hook_hs_154_hard, sid:25, partsize:1531
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-25.gif saved
+hook_name:Hook_hcu_243_normal, sid:26, partsize:1618
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-26.gif saved
+hook_name:Hook_hsr_22_normal, sid:27, partsize:988
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-27.gif saved
+hook_name:Hook_hsr_321_devil, sid:28, partsize:346
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-28.gif saved
+hook_name:Hook_hcu_359_easy, sid:29, partsize:1046
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-29.gif saved
+hook_name:Hook_hs_275_devil, sid:30, partsize:706
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-30.gif saved
+hook_name:Hook_hcu_335_normal, sid:31, partsize:797
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-31.gif saved
+hook_name:Hook_hcu_279_devil, sid:32, partsize:298
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-32.gif saved
+hook_name:Hook_hsr_263_hard, sid:33, partsize:1142
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-33.gif saved
+hook_name:Hook_hsr_123_normal, sid:34, partsize:1510
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-34.gif saved
+hook_name:Hook_hcu_362_easy, sid:35, partsize:1681
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-35.gif saved
+hook_name:Hook_hsr_335_hard, sid:36, partsize:1631
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-36.gif saved
+hook_name:Hook_hsr_381_easy, sid:37, partsize:943
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-37.gif saved
+hook_name:Hook_hs_42_hard, sid:38, partsize:1368
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-38.gif saved
+hook_name:Hook_hcu_75_easy, sid:39, partsize:1490
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-39.gif saved
+hook_name:Hook_hs_216_easy, sid:40, partsize:881
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-40.gif saved
+hook_name:Hook_hsr_13_devil, sid:41, partsize:690
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-41.gif saved
+hook_name:Hook_omni_124_devil, sid:42, partsize:2664
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-42.gif saved
+hook_name:Hook_hcu_138_hard, sid:43, partsize:1347
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-43.gif saved
+hook_name:Hook_hcu_306_normal, sid:44, partsize:2236
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-44.gif saved
+hook_name:Hook_hcu_89_devil, sid:45, partsize:2702
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-45.gif saved
+hook_name:Hook_hcu_376_devil, sid:46, partsize:1648
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-46.gif saved
+hook_name:Hook_hcu_181_hard, sid:47, partsize:1086
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-47.gif saved
+hook_name:Hook_hcu_293_easy, sid:48, partsize:1378
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-48.gif saved
+hook_name:Hook_hsr_391_hard, sid:49, partsize:1871
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-49.gif saved
+hook_name:Hook_hsr_125_easy, sid:50, partsize:655
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-50.gif saved
+hook_name:Hook_hs_370_easy, sid:51, partsize:2552
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-51.gif saved
+hook_name:Hook_hsr_218_devil, sid:52, partsize:1502
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-52.gif saved
+hook_name:Hook_hsr_71_easy, sid:53, partsize:1039
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-53.gif saved
+hook_name:Hook_hs_314_easy, sid:54, partsize:1241
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-54.gif saved
+hook_name:Hook_hcu_303_normal, sid:55, partsize:1410
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-55.gif saved
+hook_name:Hook_hs_293_normal, sid:56, partsize:996
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-56.gif saved
+hook_name:Hook_hs_363_devil, sid:57, partsize:700
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-57.gif saved
+hook_name:Hook_hs_156_hard, sid:58, partsize:621
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-58.gif saved
+hook_name:Hook_hs_393_devil, sid:59, partsize:2065
+inference/inference_affordances/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/val/3000_points-network_epoch-1000-59.gif saved
+======================================
+inference_dir: ../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val
+weight_path: checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/3000_points-network_epoch-1000.pth
+mean distance: 0.0141
+within 5mm rate: 0.2000 (12/60)
+within 10mm rate: 0.4500 (27/60)
+======================================

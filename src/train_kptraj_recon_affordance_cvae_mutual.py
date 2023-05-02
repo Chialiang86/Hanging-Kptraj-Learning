@@ -19,7 +19,9 @@ from torch.utils.data import DataLoader, Subset
 from torchsummary import summary
 
 from scipy.spatial.transform import Rotation as R
-from utils.bullet_utils import draw_coordinate
+from utils.bullet_utils import draw_coordinate, get_matrix_from_pose, get_pos_rot_from_matrix, \
+                                get_projmat_and_intrinsic, get_viewmat_and_extrinsic
+
 from utils.testing_utils import refine_waypoint_rotation, robot_kptraj_hanging, recover_trajectory
 
 def train_val_dataset(dataset, val_split=0.25):
@@ -48,24 +50,6 @@ def train(args):
     config = None
     with open(config_file, 'r') as f:
         config = yaml.load(f, Loader=yaml.Loader) # dictionary
-    
-    # ================== load trained affordance network ==================
-
-    weight_path = "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000/1000_points-network_epoch-2000.pth"
-
-    # params for training
-    module_name = 'af.affordance' 
-    model_name = 'Affordance'
-    model_inputs = {
-        'model.use_xyz': 1
-    }
-
-    # load model
-    afford_network = get_model_module(module_name, model_name)
-    afford_network = afford_network({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
-    afford_network.load_state_dict(torch.load(weight_path))
-
-    # =====================================================================
 
     # params for training
     dataset_name = config['dataset_module']
@@ -224,6 +208,7 @@ def train(args):
             network.eval()
 
             with torch.no_grad():
+                sample_cp = sample_pcds[:, 0]
                 losses = network.get_loss(epoch, sample_pcds, sample_trajs, sample_cp, sample_affords, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
                 
                 if 'afford' in losses.keys():
@@ -435,7 +420,6 @@ def val(args):
 
 def test(args):
 
-    from PIL import Image
     import pybullet as p
     import pybullet_data
     from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
@@ -657,6 +641,8 @@ def test(args):
         # sample trajectories
         centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point = centroid_pcd[0]
+
+        # If you want to see noise point cloud
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
@@ -702,7 +688,7 @@ def test(args):
                 img = capture_from_viewer(geometries)
                 img_list.append(img)
             
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}-noise.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
             imageio.mimsave(save_path, img_list, fps=10)
 
         ##############################################################
@@ -716,7 +702,6 @@ def test(args):
 
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
-        p.removeBody(hook_id)
         # conting inference score using object and object contact information
         if evaluate:
             max_obj_success_cnt = 0
@@ -748,10 +733,27 @@ def test(args):
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
         if visualize:
+
+            obj_urdf = obj_urdfs[1]
+            obj_id = p.loadURDF(obj_urdf)
+            obj_contact_pose = obj_contact_poses[1]
+
+            width, height = 640, 480
+            fx = fy = 605
+            far = 1000.
+            near = 0.01
+            projection_matrix, intrinsic = get_projmat_and_intrinsic(width, height, fx, fy, far, near)
+            pcd_view_matrix, pcd_extrinsic = get_viewmat_and_extrinsic(cameraEyePosition=[0.8, 0.0, 1.3], cameraTargetPosition=[0.5, 0.0, 1.3], cameraUpVector=[0., 0., 1.])
+
             wpt_ids = []
+            gif_frames = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
-                for wpt_i, wpt in enumerate(recovered_traj):
+                for wpt_i, wpt in enumerate(recovered_traj[::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
@@ -759,27 +761,47 @@ def test(args):
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
-            
-            cameraYaw = 90
-            p.resetDebugVisualizerCamera(
-                cameraDistance=0.08,
-                cameraYaw=cameraYaw,
-                cameraPitch=0,
-                cameraTargetPosition=[0.5, -0.1, 1.3]
-            )
-            cam_info = p.getDebugVisualizerCamera()
-            width = cam_info[0]
-            height = cam_info[1]
-            view_mat = cam_info[2]
-            proj_mat = cam_info[3]
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = np.asarray(img_info[2])[:,:,:3]
-            Image.fromarray(rgb).save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-noise.jpg")
+
+                    if wpt_i % 2 == 0:
+                        img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)
+                        rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
+                        gif_frames.append(rgb)
+
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:
                 p.removeBody(wpt_id)
+            p.removeBody(obj_id)
 
+        p.removeBody(hook_id)
         p.removeAllUserDebugItems()
+
+
+    if evaluate:
+        
+        print("===============================================================================================")  # don't modify this
+        print("success rate of all objects")
+        for obj_name in obj_sucrate.keys():
+            for difficulty in ['easy', 'normal', 'hard', 'devil']:
+                assert difficulty in obj_sucrate[obj_name].keys() and f'{difficulty}_all' in obj_sucrate[obj_name].keys()
+                print('[{}] {}: {:00.03f}%'.format(obj_name, difficulty, obj_sucrate[obj_name][difficulty] / obj_sucrate[obj_name][f'{difficulty}_all'] * 100))
+        print("===============================================================================================")  # don't modify this
+
+        easy_mean = np.asarray(all_scores['easy'])
+        normal_mean = np.asarray(all_scores['normal'])
+        hard_mean = np.asarray(all_scores['hard'])
+        devil_mean = np.asarray(all_scores['devil'])
+        all_mean = np.asarray(all_scores['all'])
+        print("===============================================================================================")  # don't modify this
+        print('checkpoint: {}'.format(weight_path))
+        print('inference_dir: {}'.format(args.inference_dir))
+        print('[easy] success rate: {:00.03f}%'.format(np.mean(easy_mean) * 100))
+        print('[normal] success rate: {:00.03f}%'.format(np.mean(normal_mean) * 100))
+        print('[hard] success rate: {:00.03f}%'.format(np.mean(hard_mean) * 100))
+        print('[devil] success rate: {:00.03f}%'.format(np.mean(devil_mean) * 100))
+        print('[all] success rate: {:00.03f}%'.format(np.mean(all_mean) * 100))
+        print("===============================================================================================")  # don't modify this
 
 def analysis(args):
 

@@ -2,7 +2,7 @@ import os, glob, json, sys
 sys.path.append('../')
 
 import numpy as np
-import open3d as o3d
+from tqdm import tqdm
 
 from scipy.spatial.transform import Rotation as R
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
@@ -34,6 +34,11 @@ class KptrajDeformAffordanceDataset(Dataset):
             'Hook_my_90_devil',
         ]
 
+        for template_hook in template_hooks:
+            item = f'{dataset_dir}/{template_hook}'
+            old_index = dataset_subdirs.index(item)
+            dataset_subdirs.insert(0, dataset_subdirs.pop(old_index))
+        
         self.template_dict = {
             0: {},
             1: {},
@@ -54,7 +59,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         self.traj_list = []
         self.difficulty_list = []
 
-        for dataset_subdir in dataset_subdirs:
+        for dataset_subdir in tqdm(dataset_subdirs):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
@@ -186,10 +191,10 @@ class KptrajDeformAffordanceDataset(Dataset):
         # noise to waypoints
         if self.with_noise:
             pos_noises = torch.randn(temp_wpts[:, :3].shape).to(self.device) * self.noise_pos_scale 
-            temp_wpts[:, :3] += pos_noises
+            temp_wpts[:, :3] += pos_noises * 0.1
             if self.wpt_dim > 3:
                 rot_noises = torch.randn(temp_wpts[:, 3:].shape).to(self.device) * self.noise_rot_scale 
-                temp_wpts[:, 3:] += rot_noises
+                temp_wpts[:, 3:] += rot_noises * 0.1
 
         if self.type == "absolute":
             temp_wpts[:, :3] = (temp_wpts[:, :3] - temp_center) / temp_scale
@@ -219,10 +224,11 @@ class KptrajDeformAffordanceDataset(Dataset):
         fusion = self.fusion_list[index][shape_id]
 
         # for waypoint preprocessing
-        # num_traj = len(self.traj_list[index])
-        # traj_id = np.random.randint(0, num_traj)
+        num_traj = len(self.traj_list[index])
+        start = np.random.randint(0, num_traj)
+        end = start + self.gt_trajs
             
-        wpts_src = self.traj_list[index][:self.gt_trajs]
+        wpts_src = self.traj_list[index][start:end]
         wpts = torch.stack(wpts_src).clone()
 
         if self.type == "absolute":
@@ -259,6 +265,11 @@ class KptrajDeformAffordanceSegDataset(Dataset):
             'Hook_my_90_devil',
         ]
 
+        for template_hook in template_hooks:
+            item = f'{dataset_dir}/{template_hook}'
+            old_index = dataset_subdirs.index(item)
+            dataset_subdirs.insert(0, dataset_subdirs.pop(old_index))
+
         self.template_dict = {
             0: {},
             1: {},
@@ -277,7 +288,7 @@ class KptrajDeformAffordanceSegDataset(Dataset):
         self.traj_list = []
         self.difficulty_list = []
 
-        for dataset_subdir in dataset_subdirs:
+        for dataset_subdir in tqdm(dataset_subdirs):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
@@ -399,10 +410,10 @@ class KptrajDeformAffordanceSegDataset(Dataset):
         # noise to waypoints
         if self.with_noise:
             pos_noises = torch.randn(temp_wpts[:, :3].shape).to(self.device) * self.noise_pos_scale 
-            temp_wpts[:, :3] += pos_noises
+            temp_wpts[:, :3] += pos_noises * 0.1
             if self.wpt_dim > 3:
                 rot_noises = torch.randn(temp_wpts[:, 3:].shape).to(self.device) * self.noise_rot_scale 
-                temp_wpts[:, 3:] += rot_noises
+                temp_wpts[:, 3:] += rot_noises * 0.1
 
         if self.type == "absolute":
             temp_wpts[:, :3] = (temp_wpts[:, :3] - temp_center) / temp_scale
@@ -429,10 +440,11 @@ class KptrajDeformAffordanceSegDataset(Dataset):
             points += point_noises
 
         # for waypoint preprocessing
-        # num_traj = len(self.traj_list[index])
-        # traj_id = np.random.randint(0, num_traj)
+        num_traj = len(self.traj_list[index])
+        start = np.random.randint(0, num_traj)
+        end = start + self.gt_trajs
             
-        wpts_src = self.traj_list[index][:self.gt_trajs]
+        wpts_src = self.traj_list[index][start:end]
         wpts = torch.stack(wpts_src).clone()
 
         if self.type == "absolute":

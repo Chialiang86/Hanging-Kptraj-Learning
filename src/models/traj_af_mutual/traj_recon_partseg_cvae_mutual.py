@@ -313,6 +313,7 @@ class TrajReconPartSegMutual(nn.Module):
         f_cp = self.mlp_cp(contact_point)
         f_traj = self.mlp_traj(traj)
 
+        print(f_s.shape, f_traj.shape, f_cp.shape)
         z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         return affordance, recon_traj, mu, logvar

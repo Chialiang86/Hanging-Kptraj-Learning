@@ -341,7 +341,7 @@ def test(args):
         # pcd_feat, affords = network.inference(points_batch)
         affords = network.inference_sigmoid(points_batch)
         affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
-        part_cond = torch.where(affords > 0.3) # only high response region selected
+        part_cond = torch.where(affords > 0.25) # only high response region selected
         print(f'hook_name:{hook_names[sid]}, sid:{sid}, partsize:{len(part_cond[0])}')
         affords = affords.squeeze().cpu().detach().numpy()
 

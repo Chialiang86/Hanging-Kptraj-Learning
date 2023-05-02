@@ -102,11 +102,67 @@ def get_matrix_from_pos_rot(pos : list or tuple or np.ndarray,
     ret_m[:3, 3] = pos_m
     return ret_m
 
+
+def cross(a:np.ndarray,b:np.ndarray)->np.ndarray:
+    return np.cross(a,b)
+
 def get_pos_rot_from_matrix(pose : np.ndarray) -> np.ndarray:
     assert pose.shape == (4, 4)
     pos = pose[:3, 3]
     rot = R.from_matrix(pose[:3, :3]).as_quat()
     return pos, rot
+
+def get_projmat_and_intrinsic(width, height, fx, fy, far, near):
+
+  cx = width / 2
+  cy = height / 2
+  fov = 2 * np.arctan(height / (2 * fy)) * 180.0 / np.pi
+
+  project_matrix = p.computeProjectionMatrixFOV(
+                      fov=fov,
+                      aspect=width/height,
+                      nearVal=near,
+                      farVal=far
+                    )
+  
+  intrinsic = np.array([
+                [ fx, 0.0,  cx],
+                [0.0,  fy,  cy],
+                [0.0, 0.0, 1.0],
+              ])
+  
+  return project_matrix, intrinsic
+
+def get_viewmat_and_extrinsic(cameraEyePosition, cameraTargetPosition, cameraUpVector):
+
+    view_matrix = p.computeViewMatrix(
+                    cameraEyePosition=cameraEyePosition,
+                    cameraTargetPosition=cameraTargetPosition,
+                    cameraUpVector=cameraUpVector
+                  )
+
+    # rotation vector extrinsic
+    z = np.asarray(cameraTargetPosition) - np.asarray(cameraEyePosition)
+    norm = np.linalg.norm(z, ord=2)
+    assert norm > 0, f'cameraTargetPosition and cameraEyePosition is at same location'
+    z /= norm
+   
+    y = -np.asarray(cameraUpVector)
+    y -= (np.dot(z, y)) * z
+    norm = np.linalg.norm(y, ord=2)
+    assert norm > 0, f'cameraUpVector is parallel to z axis'
+    y /= norm
+    
+    x = cross(y, z)
+
+    # extrinsic
+    extrinsic = np.identity(4)
+    extrinsic[:3, 0] = x
+    extrinsic[:3, 1] = y
+    extrinsic[:3, 2] = z
+    extrinsic[:3, 3] = np.asarray(cameraEyePosition)
+
+    return view_matrix, extrinsic
 
 def draw_coordinate(pose : np.ndarray or tuple or list, size : float = 0.1, color : np.ndarray=np.asarray([[1, 0, 0], [0, 1, 0], [0, 0, 1]])):
     assert (type(pose) == np.ndarray and pose.shape == (4, 4)) or (len(pose) == 7) or (len(pose) == 6)

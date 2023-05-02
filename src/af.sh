@@ -10,7 +10,9 @@ if [ $1 = 'train' ]; then
     model_configs=(
         # "af" 
         # "af_msg"
-        # "fusion" 
+        "part" 
+        "part_msg" 
+        "fusion" 
         "fusion_msg"
     )
 
@@ -118,16 +120,30 @@ if [ $1 = 'train' ]; then
 elif [ $1 = 'test' ]; then 
 
     iters=(
-        # '200' '400' '600' '800' '1000'
-        # '8200' '8400' '8600' '8800' '9000'
-        '600' '800' '1000' '2000'
+        '600' '800' '1000'
     )
+
+    points='3000'
 
     model_configs=(
         # "fusion_msg" 
         # "fusion_msg" 
-        "af"
-        "af_msg"
+        # "fusion_msg" 
+        # "fusion_msg" 
+
+        # "af_msg"
+        # "af_msg"
+
+        # "af"
+        # "af"
+
+        # "fusion_msg" 
+        # "fusion_msg" 
+
+        "part" 
+        "part_msg" 
+        "fusion" 
+        "fusion_msg" 
     )
 
     # element number should be the same as model_configs
@@ -139,6 +155,16 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/03.24.19.24-1000/val"
 
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
     )
@@ -150,9 +176,20 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/fusion_msg_04.19.13.45/kptraj_all_smooth-absolute-10-k0_03.24.19.24-1000"
         # "checkpoints/fusion_msg_04.25.20.30/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
         # "checkpoints/fusion_msg_04.25.20.30/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+
         # "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
-        "checkpoints/af_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
-        "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/af_msg_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+
+        # "checkpoints/af_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/af_04.26.10.59/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+
+        # "checkpoints/fusion_msg_05.01.14.27-3000/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        # "checkpoints/fusion_msg_05.01.14.27-3000/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        
+        "checkpoints/part_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        "checkpoints/part_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        "checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
+        "checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
 
     )
 
@@ -167,7 +204,7 @@ elif [ $1 = 'test' ]; then
                                         --inference_dir ${inference_directories[$i]} \
                                         --checkpoint_dir ${affordance_checkpoints[$i]} \
                                         --config "../config/af/${model_configs[$i]}.yaml" \
-                                        --weight_subpath "1000_points-network_epoch-${iter}.pth" \
+                                        --weight_subpath "${points}_points-network_epoch-${iter}.pth" \
                                         -v \
                                         --evaluate
     

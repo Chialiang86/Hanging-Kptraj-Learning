@@ -6,7 +6,7 @@ def main(root_name : str):
 
     fnames = [root_name]
     if os.path.isdir(root_name):
-        fnames = glob.glob(f'{root_name}/af*/*.txt')
+        fnames = glob.glob(f'{root_name}/fusion*/*.txt')
         print(fnames)
 
     for fname in fnames:

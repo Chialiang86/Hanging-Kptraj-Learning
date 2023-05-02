@@ -447,8 +447,11 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for rotation head =========== #
         #############################################
 
-        input_dir = traj[:, 0, 3:] # 9d
-        dir_loss = self.get_6d_rot_loss(rotation_pred, input_dir).mean()
+        dir_loss = torch.tensor(1000000)
+        for i in range(self.gt_trajs):
+            input_dir = traj[:, i, 0, 3:] # 9d
+            dir_loss_tmp = self.get_6d_rot_loss(rotation_pred, input_dir).mean()
+            dir_loss = torch.min(dir_loss_tmp)
 
         ###########################################################
         # =========== for trajectory deformation head =========== #

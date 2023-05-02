@@ -153,7 +153,7 @@ elif [ $1 = 'test' ]; then
 
         # # 40
         # "traj_deform_fusion_mutual_lstm_v2"
-        "traj_deform_fusion_mutual_lstm_v2"
+        # "traj_deform_fusion_mutual_lstm_v2"
         # "traj_deform_fusion_mutual_lstm_v2"
         # "traj_deform_fusion_mutual_lstm_v2"
 
@@ -162,6 +162,12 @@ elif [ $1 = 'test' ]; then
         # "traj3d_deform_fusion_mutual_lstm_v2"
         # "traj3d_deform_fusion_mutual_lstm_v2"
         # "traj3d_deform_fusion_mutual_lstm_v2"
+
+        # 40
+        # "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
+        # "traj_deform_fusion_mutual_lstm_v2"
+        "traj_deform_fusion_mutual_lstm_v2"
     )
 
     dataset_dirs=(
@@ -192,10 +198,16 @@ elif [ $1 = 'test' ]; then
 
         # 40
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
+        # 40 
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+ 
     )
 
     inference_dirs=(
@@ -226,10 +238,16 @@ elif [ $1 = 'test' ]; then
     
         # 40
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
     
+        # 40 
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val_deform"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val_deform"
+
     )
 
     traj_recon_shape_checkpoints=(
@@ -252,13 +270,23 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
         # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2-04.25.00.39/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
-        # 40
-        "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # # 40
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-04.25.14.47_multitraj/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
+        # 40
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-05.01.16.33_3000/kptraj_all_smooth-absolute-40-k0-04.25.19.37-1000"
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-05.01.16.33_3000/kptraj_all_smooth-absolute-40-k0-04.25.19.37-1000"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2-05.01.16.33_3000/kptraj_all_smooth-residual-40-k0-04.25.19.37-1000"
+        "checkpoints/traj_deform_fusion_mutual_lstm_v2-05.01.16.33_3000/kptraj_all_smooth-residual-40-k0-04.25.19.37-1000"
     )
 
+    points='5000'
+
     iters=(
-        "5000" "10000" "15000" "20000"
+        '6000' '8000' '10000'
     )
 
     length=${#model_configs[@]}
@@ -274,7 +302,7 @@ elif [ $1 = 'test' ]; then
                                                         --inference_dir ${inference_dirs[$i]} \
                                                         --checkpoint_dir ${traj_recon_shape_checkpoints[$i]} \
                                                         --config "../config/traj_deform_mutual/${model_configs[$i]}.yaml" \
-                                                        --weight_subpath "1000_points-network_epoch-${iter}.pth" \
+                                                        --weight_subpath "${points}_points-network_epoch-${iter}.pth" \
                                                         --obj_shape_root ${obj_shape_root} \
                                                         --hook_shape_root ${hook_shape_root} \
                                                         --visualize \

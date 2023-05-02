@@ -2,7 +2,7 @@ import os, glob, json, sys
 sys.path.append('../')
 
 import numpy as np
-import open3d as o3d
+from tqdm import tqdm
 
 from scipy.spatial.transform import Rotation as R
 from pointnet2_ops.pointnet2_utils import furthest_point_sample
@@ -211,9 +211,7 @@ class KptrajReconAffordanceDataset(Dataset):
         self.partseg_list = []
         self.fusion_list = []
         self.traj_list = []
-        for dataset_subdir in dataset_subdirs:
-
-            hook_name = dataset_subdir.split('/')[-1]
+        for i, dataset_subdir in enumerate(tqdm(dataset_subdirs)):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
@@ -378,9 +376,9 @@ class KptrajReconAffordanceDataset(Dataset):
             
             # noise to waypoints
             if self.with_noise:
-                pos_noises = torch.randn(waypoints[:, :3].shape).to(self.device) * self.noise_pos_scale 
+                pos_noises = torch.randn(waypoints[:, :3].shape).to(self.device) * self.noise_pos_scale * 0.1
                 waypoints[:, :3] += pos_noises
-                rot_noises = torch.randn(waypoints[:, 3:].shape).to(self.device) * self.noise_rot_scale 
+                rot_noises = torch.randn(waypoints[:, 3:].shape).to(self.device) * self.noise_rot_scale * 0.1
                 waypoints[:, 3:] += rot_noises
 
             if self.type == "absolute":
