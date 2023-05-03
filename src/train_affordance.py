@@ -169,67 +169,67 @@ def train(args):
                 f'''---------------------------------------------\n'''
             )
 
-def val(args):
+# def val(args):
 
-    dataset_dir = args.dataset_dir
-    checkpoint_dir = args.checkpoint_dir
-    config_file = args.config
-    device = args.device
-    weight_subpath = args.weight_subpath
-    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+#     dataset_dir = args.dataset_dir
+#     checkpoint_dir = args.checkpoint_dir
+#     config_file = args.config
+#     device = args.device
+#     weight_subpath = args.weight_subpath
+#     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
-    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+#     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
-    config = None
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+#     config = None
+#     with open(config_file, 'r') as f:
+#         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # params for training
-    dataset_name = config['dataset_module']
-    dataset_class_name = config['dataset_class']
-    module_name = config['module']
-    model_name = config['model']
-    model_inputs = config['model_inputs']
-    dataset_inputs = config['dataset_inputs']
+#     # params for training
+#     dataset_name = config['dataset_module']
+#     dataset_class_name = config['dataset_class']
+#     module_name = config['module']
+#     model_name = config['model']
+#     model_inputs = config['model_inputs']
+#     dataset_inputs = config['dataset_inputs']
     
-    # training batch and iters
-    batch_size = config['batch_size']
+#     # training batch and iters
+#     batch_size = config['batch_size']
 
-    dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
-    val_batches = enumerate(val_loader, 0)
+#     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
+#     val_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_inputs)
+#     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+#     val_batches = enumerate(val_loader, 0)
 
-    # ================== Model ==================
+#     # ================== Model ==================
 
-    # load model
-    network_class = get_model_module(module_name, model_name)
-    network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
-    network.load_state_dict(torch.load(weight_path))
+#     # load model
+#     network_class = get_model_module(module_name, model_name)
+#     network = network_class({'model.use_xyz': model_inputs['model.use_xyz']}).to(device)
+#     network.load_state_dict(torch.load(weight_path))
 
-    # ================ Validation ===============
+#     # ================ Validation ===============
 
-    val_total_losses = []
-    # set models to evaluation mode
-    network.eval()
-    # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-    for i_batch, (sample_pcds, sample_affords) in tqdm(val_batches, total=len(val_loader)):
+#     val_total_losses = []
+#     # set models to evaluation mode
+#     network.eval()
+#     # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
+#     for i_batch, (sample_pcds, sample_affords) in tqdm(val_batches, total=len(val_loader)):
 
 
-        sample_pcds = sample_pcds.to(device).contiguous() 
-        sample_affords = sample_affords.to(device).contiguous()
+#         sample_pcds = sample_pcds.to(device).contiguous() 
+#         sample_affords = sample_affords.to(device).contiguous()
 
-        with torch.no_grad():
-            losses = network.get_loss(sample_pcds, sample_affords)  # B x 2, B x F x N
-            val_total_losses.append(losses.item())
+#         with torch.no_grad():
+#             losses = network.get_loss(sample_pcds, sample_affords)  # B x 2, B x F x N
+#             val_total_losses.append(losses.item())
 
-    val_total_avg_loss = np.mean(np.asarray(val_total_losses))
-    print(
-            f'''---------------------------------------------\n'''
-            f'''[ validation stage ]\n'''
-            f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
-            f'''---------------------------------------------\n'''
-        )
+#     val_total_avg_loss = np.mean(np.asarray(val_total_losses))
+#     print(
+#             f'''---------------------------------------------\n'''
+#             f'''[ validation stage ]\n'''
+#             f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
+#             f'''---------------------------------------------\n'''
+#         )
 
 def capture_from_viewer(geometries):
     vis = o3d.visualization.Visualizer()
@@ -719,8 +719,8 @@ def main(args):
     if args.training_mode == "train":
         train(args)
 
-    if args.training_mode == "val":
-        val(args)
+    # if args.training_mode == "val":
+    #     val(args)
 
     if args.training_mode == "test":
         test(args)

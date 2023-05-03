@@ -266,151 +266,151 @@ def capture_from_viewer(geometries):
 
     return o3d_screenshot_mat
 
-def val(args):
+# def val(args):
 
-    import pybullet as p
-    import pybullet_data
-    from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
-    import matplotlib.pyplot as plt
-    from sklearn.decomposition import PCA
-    # ================== config ==================
+#     import pybullet as p
+#     import pybullet_data
+#     from pybullet_robot_envs.envs.panda_envs.panda_env import pandaEnv
+#     import matplotlib.pyplot as plt
+#     from sklearn.decomposition import PCA
+#     # ================== config ==================
 
-    checkpoint_dir = f'{args.checkpoint_dir}'
-    config_file = args.config
-    device = args.device
-    dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
-    weight_subpath = args.weight_subpath
-    weight_path = f'{checkpoint_dir}/{weight_subpath}'
+#     checkpoint_dir = f'{args.checkpoint_dir}'
+#     config_file = args.config
+#     device = args.device
+#     dataset_mode = 0 if 'absolute' in checkpoint_dir else 1 # 0: absolute, 1: residual
+#     weight_subpath = args.weight_subpath
+#     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
-    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+#     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
-    config = None
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+#     config = None
+#     with open(config_file, 'r') as f:
+#         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # sample_num_points = int(weight_subpath.split('_')[0])
+#     # sample_num_points = int(weight_subpath.split('_')[0])
 
-    assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
+#     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
-    config = None
-    with open(config_file, 'r') as f:
-        config = yaml.load(f, Loader=yaml.Loader) # dictionary
+#     config = None
+#     with open(config_file, 'r') as f:
+#         config = yaml.load(f, Loader=yaml.Loader) # dictionary
 
-    # params for network
-    module_name = config['module']
-    model_name = config['model']
-    model_inputs = config['model_inputs']
-    dataset_inputs = config['dataset_inputs']
-    batch_size = config['batch_size']
+#     # params for network
+#     module_name = config['module']
+#     model_name = config['model']
+#     model_inputs = config['model_inputs']
+#     dataset_inputs = config['dataset_inputs']
+#     batch_size = config['batch_size']
 
-    # params for training
-    dataset_name = config['dataset_module']
-    dataset_class_name = config['dataset_class']
-    module_name = config['module']
-    model_name = config['model']
-    model_inputs = config['model_inputs']
+#     # params for training
+#     dataset_name = config['dataset_module']
+#     dataset_class_name = config['dataset_class']
+#     module_name = config['module']
+#     model_name = config['model']
+#     model_inputs = config['model_inputs']
 
-    dataset_dir = args.dataset_dir
+#     dataset_dir = args.dataset_dir
     
-    network_class = get_model_module(module_name, model_name)
-    network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
-    network.load_state_dict(torch.load(weight_path))
+#     network_class = get_model_module(module_name, model_name)
+#     network = network_class(**model_inputs, dataset_type=dataset_mode).to(device)
+#     network.load_state_dict(torch.load(weight_path))
 
-    dataset_class = get_dataset_module(dataset_name, dataset_class_name)
-    val_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
-    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
+#     dataset_class = get_dataset_module(dataset_name, dataset_class_name)
+#     val_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_inputs)
+#     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=True)
 
-     # validation
-    val_dir_losses = []
-    val_kl_losses = []
-    val_recon_losses = []
-    val_total_losses = []
-    val_afford_losses = []
-    val_dist_losses = []
-    val_nn_losses = []
+#      # validation
+#     val_dir_losses = []
+#     val_kl_losses = []
+#     val_recon_losses = []
+#     val_total_losses = []
+#     val_afford_losses = []
+#     val_dist_losses = []
+#     val_nn_losses = []
 
-    # # Create pybullet GUI
-    # p.connect(p.GUI)
-    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # p.resetDebugVisualizerCamera(
-    #     cameraDistance=0.1,
-    #     cameraYaw=80,
-    #     cameraPitch=-10,
-    #     cameraTargetPosition=[0.0, 0.0, 0.0]
-    # )
-    # p.resetSimulation()
-    # p.setPhysicsEngineParameter(numSolverIterations=150)
-    # sim_timestep = 1.0 / 240
-    # p.setTimeStep(sim_timestep)
-    # p.setGravity(0, 0, 0)
+#     # # Create pybullet GUI
+#     # p.connect(p.GUI)
+#     # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+#     # p.resetDebugVisualizerCamera(
+#     #     cameraDistance=0.1,
+#     #     cameraYaw=80,
+#     #     cameraPitch=-10,
+#     #     cameraTargetPosition=[0.0, 0.0, 0.0]
+#     # )
+#     # p.resetSimulation()
+#     # p.setPhysicsEngineParameter(numSolverIterations=150)
+#     # sim_timestep = 1.0 / 240
+#     # p.setTimeStep(sim_timestep)
+#     # p.setGravity(0, 0, 0)
 
-    whole_fs = None
-    val_batches = enumerate(val_loader, 0)
-    # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
-    for i_batch, (sample_pcds, sample_affords, sample_trajs)  in tqdm(val_batches, total=len(val_loader)):
+#     whole_fs = None
+#     val_batches = enumerate(val_loader, 0)
+#     # total_loss, total_precision, total_recall, total_Fscore, total_accu = 0, 0, 0, 0, 0
+#     for i_batch, (sample_pcds, sample_affords, sample_trajs)  in tqdm(val_batches, total=len(val_loader)):
 
-        # set models to evaluation mode
-        network.eval()
+#         # set models to evaluation mode
+#         network.eval()
 
-        sample_pcds = sample_pcds.to(device).contiguous() 
-        sample_trajs = sample_trajs.to(device).contiguous()
-        sample_cp = sample_pcds[:, 0]
+#         sample_pcds = sample_pcds.to(device).contiguous() 
+#         sample_trajs = sample_trajs.to(device).contiguous()
+#         sample_cp = sample_pcds[:, 0]
 
-        with torch.no_grad():
+#         with torch.no_grad():
 
-            # f_s, losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
-            losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
+#             # f_s, losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
+#             losses = network.get_loss(30000, sample_pcds, sample_trajs, sample_cp, sample_affords)  # B x 2, B x F x N
 
-            # whole_fs = f_s if whole_fs is None else torch.vstack((whole_fs, f_s))
+#             # whole_fs = f_s if whole_fs is None else torch.vstack((whole_fs, f_s))
 
-            if 'afford' in losses.keys():
-                val_afford_losses.append(losses['afford'].item())
-            if 'dist' in losses.keys():
-                val_dist_losses.append(losses['dist'].item())
-            if 'nn' in losses.keys():
-                val_nn_losses.append(losses['nn'].item())
-            if 'dir' in losses.keys():
-                val_dir_losses.append(losses['dir'].item())
-            val_kl_losses.append(losses['kl'].item())
-            val_recon_losses.append(losses['recon'].item())
-            val_total_losses.append(losses['total'].item())
+#             if 'afford' in losses.keys():
+#                 val_afford_losses.append(losses['afford'].item())
+#             if 'dist' in losses.keys():
+#                 val_dist_losses.append(losses['dist'].item())
+#             if 'nn' in losses.keys():
+#                 val_nn_losses.append(losses['nn'].item())
+#             if 'dir' in losses.keys():
+#                 val_dir_losses.append(losses['dir'].item())
+#             val_kl_losses.append(losses['kl'].item())
+#             val_recon_losses.append(losses['recon'].item())
+#             val_total_losses.append(losses['total'].item())
     
-    # whole_fs = whole_fs.detach().cpu().numpy()
-    # pca = PCA(n_components=3)
-    # pca.fit(whole_fs)
-    # X_pca = pca.transform(whole_fs)
+#     # whole_fs = whole_fs.detach().cpu().numpy()
+#     # pca = PCA(n_components=3)
+#     # pca.fit(whole_fs)
+#     # X_pca = pca.transform(whole_fs)
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], marker='o')
-    # ax.set_xlabel('X Label')
-    # ax.set_ylabel('Y Label')
-    # ax.set_zlabel('Z Label')
-    # plt.show()
+#     # fig = plt.figure()
+#     # ax = fig.add_subplot(projection='3d')
+#     # ax.scatter(X_pca[:, 0], X_pca[:, 1], X_pca[:, 2], marker='o')
+#     # ax.set_xlabel('X Label')
+#     # ax.set_ylabel('Y Label')
+#     # ax.set_zlabel('Z Label')
+#     # plt.show()
 
-    if 'afford' in losses.keys():
-        val_afford_avg_loss = np.mean(np.asarray(val_afford_losses))
-    if 'dist' in losses.keys():
-        val_dist_avg_loss = np.mean(np.asarray(val_dist_losses))
-    if 'nn' in losses.keys():
-        val_nn_avg_loss = np.mean(np.asarray(val_nn_losses))
-    if 'dir' in losses.keys():
-        val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
-    val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
-    val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
-    val_total_avg_loss = np.mean(np.asarray(val_total_losses))
-    print(
-            f'''---------------------------------------------\n'''
-            f'''[ validation stage ]\n'''
-            f''' - val_afford_avg_loss : {val_afford_avg_loss if 'afford' in losses.keys() else 0.0:>10.5f}\n'''
-            f''' - val_dist_avg_loss : {val_dist_avg_loss if 'dist' in losses.keys() else 0.0:>10.5f}\n'''
-            f''' - val_nn_avg_loss : {val_nn_avg_loss if 'nn' in losses.keys() else 0.0:>10.5f}\n'''
-            f''' - val_dir_avg_loss : {val_dir_avg_loss if 'dir' in losses.keys() else 0.0:>10.5f}\n'''
-            f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
-            f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
-            f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
-            f'''---------------------------------------------\n'''
-        )
+#     if 'afford' in losses.keys():
+#         val_afford_avg_loss = np.mean(np.asarray(val_afford_losses))
+#     if 'dist' in losses.keys():
+#         val_dist_avg_loss = np.mean(np.asarray(val_dist_losses))
+#     if 'nn' in losses.keys():
+#         val_nn_avg_loss = np.mean(np.asarray(val_nn_losses))
+#     if 'dir' in losses.keys():
+#         val_dir_avg_loss = np.mean(np.asarray(val_dir_losses))
+#     val_kl_avg_loss = np.mean(np.asarray(val_kl_losses))
+#     val_recon_avg_loss = np.mean(np.asarray(val_recon_losses))
+#     val_total_avg_loss = np.mean(np.asarray(val_total_losses))
+#     print(
+#             f'''---------------------------------------------\n'''
+#             f'''[ validation stage ]\n'''
+#             f''' - val_afford_avg_loss : {val_afford_avg_loss if 'afford' in losses.keys() else 0.0:>10.5f}\n'''
+#             f''' - val_dist_avg_loss : {val_dist_avg_loss if 'dist' in losses.keys() else 0.0:>10.5f}\n'''
+#             f''' - val_nn_avg_loss : {val_nn_avg_loss if 'nn' in losses.keys() else 0.0:>10.5f}\n'''
+#             f''' - val_dir_avg_loss : {val_dir_avg_loss if 'dir' in losses.keys() else 0.0:>10.5f}\n'''
+#             f''' - val_kl_avg_loss : {val_kl_avg_loss:>10.5f}\n'''
+#             f''' - val_recon_avg_loss : {val_recon_avg_loss:>10.5f}\n'''
+#             f''' - val_total_avg_loss : {val_total_avg_loss:>10.5f}\n'''
+#             f'''---------------------------------------------\n'''
+#         )
 
 def test(args):
 
@@ -1257,8 +1257,8 @@ def main(args):
     if args.training_mode == "train":
         train(args)
 
-    if args.training_mode == "val":
-        val(args)
+    # if args.training_mode == "val":
+    #     val(args)
 
     if args.training_mode == "test":
         test(args)

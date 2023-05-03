@@ -1042,8 +1042,8 @@ def main(args):
     if args.training_mode == "train":
         train(args)
 
-    if args.training_mode == "val":
-        val(args)
+    # if args.training_mode == "val":
+    #     val(args)
 
     if args.training_mode == "test":
         test(args)
