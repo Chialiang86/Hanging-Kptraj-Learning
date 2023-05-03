@@ -8,8 +8,8 @@ dataset_inputs:
   num_steps: 40 # not used
   wpt_dim: 3 # not used
   sample_num_points: 3000
-  enable_traj: 0 
-  affordance_type: 4
+  enable_traj: 0
+  affordance_type: 2
   with_noise: 1
 
 model_inputs:

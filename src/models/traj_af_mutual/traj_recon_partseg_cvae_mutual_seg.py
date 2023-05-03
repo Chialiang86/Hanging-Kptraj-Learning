@@ -25,13 +25,15 @@ def KL(mu, logvar):
 
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
+        c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]
+        c_out = 512 if 'feat_dim' not in self.hparams.keys() else self.hparams['feat_dim']
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
-                npoint=256,
+                npoint=512,
                 radius=0.2,
                 nsample=64,
-                mlp=[3, 32, 64, 128],
+                mlp=[c_in, 32, 64, 128],
                 use_xyz=True,
             )
         )
@@ -46,7 +48,7 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
         )
         self.SA_modules.append(
             PointnetSAModule(
-                mlp=[256, 256, 256, 512], use_xyz=True
+                mlp=[256, 256, 256, c_out], use_xyz=True
             )
         )
     
@@ -78,6 +80,7 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
 class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]
+        c_out = 512 if 'feat_dim' not in self.hparams.keys() else self.hparams['feat_dim']
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
@@ -111,7 +114,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
                 npoint=16,
                 radius=0.8,
                 nsample=32,
-                mlp=[256, 256, 256, 512],
+                mlp=[256, 256, 256, c_out],
                 use_xyz=True,
             )
         )
@@ -120,7 +123,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
         self.FP_modules.append(PointnetFPModule(mlp=[128 + c_in, 128, 128, 128]))
         self.FP_modules.append(PointnetFPModule(mlp=[256 + 64, 256, 128]))
         self.FP_modules.append(PointnetFPModule(mlp=[256 + 128, 256, 256]))
-        self.FP_modules.append(PointnetFPModule(mlp=[512 + 256, 256, 256]))
+        self.FP_modules.append(PointnetFPModule(mlp=[c_out + 256, 256, 256]))
 
         self.fc_layer = nn.Sequential(
             nn.Conv1d(128, self.hparams['feat_dim'], kernel_size=1, bias=False),
@@ -254,13 +257,14 @@ class TrajReconPartSegMutual(nn.Module):
                         hidden_dim=128, z_feat_dim=64, 
                         num_steps=30, wpt_dim=6,
                         lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, 
-                        train_traj_start=10000, dataset_type=0, segmented=0):
+                        dataset_type=0, with_afford_score=0):
         super(TrajReconPartSegMutual, self).__init__()
 
         self.z_dim = z_feat_dim
 
-        pcd_input_feat_dim = 3 if segmented == 0 else 4
-        self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        pcd_input_feat_dim = 3 if with_afford_score == 0 else 4
+        # self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
@@ -279,8 +283,6 @@ class TrajReconPartSegMutual(nn.Module):
                             ) # CVAE decoder
         self.MSELoss = nn.MSELoss(reduction='mean')
 
-        self.train_traj_start = train_traj_start
-
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
 
@@ -290,7 +292,7 @@ class TrajReconPartSegMutual(nn.Module):
         self.kl_annealing = kl_annealing
 
         self.dataset_type = dataset_type # 0 for absolute, 1 for residule
-        self.segmented = segmented
+        self.with_afford_score = with_afford_score
 
     # input sz bszx3x2
     def rot6d_to_rotmat(self, d6s):
@@ -319,15 +321,16 @@ class TrajReconPartSegMutual(nn.Module):
 
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
-    def forward(self, iter, pcs, traj, contact_point):
+    def forward(self, pcs, traj, contact_point):
         
-        if self.segmented:
+        if self.with_afford_score:
             pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
         else :
             pcs_repeat = pcs.repeat(1, 1, 2)
 
-        whole_feats = self.pointnet2(pcs_repeat)
-        whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pcs_repeat)
+        # whole_feats = self.pointnet2(pcs_repeat)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
 
         f_s = whole_feats
         f_cp = self.mlp_cp(contact_point)
@@ -341,13 +344,14 @@ class TrajReconPartSegMutual(nn.Module):
         batch_size = pcs.shape[0]
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        if self.segmented:
+        if self.with_afford_score:
             pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
         else :
             pcs_repeat = pcs.repeat(1, 1, 2)
 
-        whole_feats = self.pointnet2(pcs_repeat)
-        whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pcs_repeat)
+        # whole_feats = self.pointnet2(pcs_repeat)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
@@ -375,10 +379,10 @@ class TrajReconPartSegMutual(nn.Module):
             return ret_traj, whole_feats
         return ret_traj
 
-    def get_loss(self, iter, pcs, traj, contact_point, lbd_kl=1.0):
+    def get_loss(self, pcs, traj, contact_point, lbd_kl=1.0):
         batch_size = traj.shape[0]
 
-        recon_traj, mu, logvar = self.forward(iter, pcs, traj, contact_point)
+        recon_traj, mu, logvar = self.forward(pcs, traj, contact_point)
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #

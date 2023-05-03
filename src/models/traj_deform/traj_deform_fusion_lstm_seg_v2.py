@@ -24,13 +24,15 @@ def KL(mu, logvar):
 
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
+        c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]
+        c_out = 512 if 'feat_dim' not in self.hparams.keys() else self.hparams['feat_dim']
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
                 npoint=256,
                 radius=0.2,
                 nsample=64,
-                mlp=[3, 32, 64, 128],
+                mlp=[c_in, 32, 64, 128],
                 use_xyz=True,
             )
         )
@@ -45,16 +47,8 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
         )
         self.SA_modules.append(
             PointnetSAModule(
-                mlp=[256, 256, 256, 512], use_xyz=True
+                mlp=[256, 256, 256, c_out], use_xyz=True
             )
-        )
-
-        self.fc_layer = nn.Sequential(
-            nn.Linear(512, 256, bias=False),
-            nn.BatchNorm1d(256),
-            nn.ReLU(True),
-            nn.Dropout(0.5),
-            nn.Linear(256, 4), # class num = 4
         )
     
     def _break_up_pc(self, pc):
@@ -80,7 +74,7 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
         for module in self.SA_modules:
             xyz, features = module(xyz, features)
 
-        return self.fc_layer(features.squeeze(-1))
+        return features.squeeze(-1)
 
 class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
@@ -221,7 +215,7 @@ class TrajDeformFusionLSTM(nn.Module):
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
                         lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
-                        train_traj_start=1000, dataset_type=0, gt_trajs=1, segmented=0):
+                        train_traj_start=1000, dataset_type=0, gt_trajs=1, with_afford_score=0):
         
         super(TrajDeformFusionLSTM, self).__init__()
 
@@ -233,21 +227,22 @@ class TrajDeformFusionLSTM(nn.Module):
         self.wpt_dim = wpt_dim
         self.decoder_layers = decoder_layers
         self.gt_trajs = gt_trajs
-        self.segmented = segmented
+        self.with_afford_score = with_afford_score
 
-        pcd_input_feat_dim = 3 if segmented == 0 else 4
-        self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        pcd_input_feat_dim = 3 if with_afford_score == 0 else 4
+        # self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
 
         ###################################################
         # =========== for classification head =========== #
         ###################################################
 
         self.classification_head = nn.Sequential(
-            nn.Linear(pcd_feat_dim, 32),
-            nn.LeakyReLU(),
-            nn.Linear(32, 32),
-            nn.LeakyReLU(),
-            nn.Linear(32, 4)
+            nn.Linear(pcd_feat_dim, 64, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(True),
+            nn.Dropout(0.5),
+            nn.Linear(64, 4), # class num = 4
         )
 
         #############################################
@@ -324,9 +319,9 @@ class TrajDeformFusionLSTM(nn.Module):
 
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
-    def forward(self, iter, pcs, contact_point, temp_traj):
+    def forward(self, pcs, contact_point, temp_traj):
 
-        if self.segmented:
+        if self.with_afford_score:
             pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
         else :
             pcs_repeat = pcs.repeat(1, 1, 2)
@@ -338,8 +333,9 @@ class TrajDeformFusionLSTM(nn.Module):
         elif self.dataset_type == 1: # residual
             temp_traj_clone[:, 0, :3] -= temp_traj_align_offset
 
-        whole_feats = self.pointnet2seg(pcs_repeat)
-        whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        # whole_feats = self.pointnet2seg(pcs_repeat)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pcs_repeat)
 
         ###################################################
         # =========== for classification head =========== #
@@ -377,10 +373,10 @@ class TrajDeformFusionLSTM(nn.Module):
     # ===================================== #
     #########################################
 
-    def get_loss(self, iter, pcs, difficulty, sample_cp, temp_traj, traj):
+    def get_loss(self, pcs, difficulty, sample_cp, temp_traj, traj):
         batch_size = traj.shape[0]
 
-        difficulty_pred, rotation_pred, traj_deform_offset_pred = self.forward(iter, pcs, sample_cp, temp_traj) 
+        difficulty_pred, rotation_pred, traj_deform_offset_pred = self.forward(pcs, sample_cp, temp_traj) 
 
         cls_loss = torch.Tensor([0]).to(pcs.device)
         affordance_loss = torch.Tensor([0]).to(pcs.device)
@@ -464,16 +460,17 @@ class TrajDeformFusionLSTM(nn.Module):
 
         return losses
     
-    def sample(self, pcs, contact_point, template_info, difficulty=None, use_gt_cp=False, return_feat=False):
-        batch_size = pcs.shape[0]
+    def sample(self, pcs, contact_point, template_info, difficulty=None, return_feat=False):
 
-        if self.segmented:
+        batch_size = pcs.shape[0]
+        if self.with_afford_score:
             pn_input = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
         else :
             pn_input = pcs.repeat(1, 1, 2)
 
-        whole_feats = self.pointnet2seg(pn_input)
-        whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        # whole_feats = self.pointnet2seg(pn_input)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pn_input)
 
         ###################################################
         # =========== for classification head =========== #

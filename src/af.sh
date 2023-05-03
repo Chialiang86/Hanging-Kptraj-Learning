@@ -8,8 +8,8 @@ fi
 if [ $1 = 'train' ]; then 
 
     model_configs=(
-        # "af" 
-        # "af_msg"
+        "af" 
+        "af_msg"
         "part" 
         "part_msg" 
         "fusion" 
@@ -19,7 +19,8 @@ if [ $1 = 'train' ]; then
     affordance_datasets=(
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.15.51-1000-fullview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.18.59-1000-fullview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.18.59-1000-fullview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
     )
 
     training_tag='' # $1
@@ -122,7 +123,7 @@ if [ $1 = 'train' ]; then
 elif [ $1 = 'test' ]; then 
 
     iters=(
-        '600' '800' '1000'
+        '400' '1000' '2000'
     )
 
     points='3000'
@@ -142,7 +143,9 @@ elif [ $1 = 'test' ]; then
         # "fusion_msg" 
         # "fusion_msg" 
 
-        # "part" 
+        "af" 
+        "af_msg"
+        "part" 
         "part_msg" 
         "fusion" 
         "fusion_msg" 
@@ -165,10 +168,12 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/04.25.19.37-1000/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
     )
 
     # element number should be the same as model_configs
@@ -193,10 +198,18 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/fusion_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
         # "checkpoints/fusion_msg_05.01.23.19-3000_noise/kptraj_all_smooth-absolute-40-k0_04.25.19.37-1000"
 
-        # "checkpoints/part_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
-        "checkpoints/part_msg_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
-        "checkpoints/fusion_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
-        "checkpoints/fusion_msg_05.02.16.22-3000_fullview/kptraj_all_smooth-absolute-40-k0_05.02.15.51-1000-fullview"
+        # "checkpoints/part_05.02.21.00-3000_fullview_0502/kptraj_all_smooth-absolute-40-k0_05.02.18.59-1000-fullview"
+        # "checkpoints/part_msg_05.02.21.00-3000_fullview_0502/kptraj_all_smooth-absolute-40-k0_05.02.18.59-1000-fullview"
+        # "checkpoints/fusion_05.02.21.00-3000_fullview_0502/kptraj_all_smooth-absolute-40-k0_05.02.18.59-1000-fullview"
+        # "checkpoints/fusion_msg_05.02.21.00-3000_fullview_0502/kptraj_all_smooth-absolute-40-k0_05.02.18.59-1000-fullview"
+
+
+        "checkpoints/af_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
+        "checkpoints/af_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
+        "checkpoints/part_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
+        "checkpoints/part_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
+        "checkpoints/fusion_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
+        "checkpoints/fusion_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview"
 
     )
 

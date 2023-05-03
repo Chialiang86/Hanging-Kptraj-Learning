@@ -13,12 +13,18 @@ if [ $1 = 'train' ]; then
         # "traj_fusion_mutual_nn_dist_mr"
 
         # "traj_fusion_mutual_noise_10"
+        # "traj_fusion_mutual_noise_10"
+        # "traj_fusion_mutual_noise_20"
         # "traj_fusion_mutual_noise_20"
         # "traj_fusion_mutual_noise"
+        # "traj_fusion_mutual_noise"
  
-        # "traj_fusion_mutual_10"
+        "traj_fusion_mutual_10"
+        "traj_fusion_mutual_10"
         # "traj_fusion_mutual_20"
-        # "traj_fusion_mutual"
+        # "traj_fusion_mutual_20"
+        "traj_fusion_mutual"
+        "traj_fusion_mutual"
     )
 
     traj_recon_affordance_datasets=(
@@ -30,12 +36,12 @@ if [ $1 = 'train' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.18.59-1000-fullview"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.18.59-1000-fullview"
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
     )
 
     training_tag='' # $1
@@ -61,35 +67,35 @@ if [ $1 = 'train' ]; then
     echo "training_tag : ${training_tag}"
     echo "log : ${log}"
 
-    for model_config in "${model_configs[@]}"
+    length=${#model_configs[@]}
+
+    for (( i=0; i<$length; i++ )) 
     do
 
-        for traj_recon_affordance_dataset in "${traj_recon_affordance_datasets[@]}"
-        do 
+        model_config=${model_configs[$i]}
+        traj_recon_affordance_dataset=${traj_recon_affordance_datasets[$i]}
+        dataset_name=($(echo $traj_recon_affordance_dataset | tr "/" "\n"))
+        
+        echo "=============================================="
+        echo "model_config=${model_config}" 
+        echo "dataset=${dataset_name[-1]}"
+        echo "=============================================="
+        
+        mkdir "training_logs/${model_config}-${training_tag}"
 
-            dataset_name=($(echo $traj_recon_affordance_dataset | tr "/" "\n"))
-            echo "=============================================="
-            echo "model_config=${model_config}" 
-            echo "dataset=${dataset_name[-1]}"
-            echo "=============================================="
-            
-            mkdir "training_logs/${model_config}-${training_tag}"
+        if [ $log = 'save' ]; then 
 
-            if [ $log = 'save' ]; then 
+            # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
+            output_log="training_logs/${model_config}-${training_tag}/${dataset_name[-2]}-${dataset_name[-1]}.txt"
+            python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml" > $output_log
+            # python3 plot_history.py $output_log
 
-                # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
-                output_log="training_logs/${model_config}-${training_tag}/${dataset_name[-2]}-${dataset_name[-1]}.txt"
-                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml" > $output_log
-                # python3 plot_history.py $output_log
+        else 
 
-            else 
+            python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml"
 
-                python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml"
+        fi 
 
-            fi 
-
-        done 
-            
     done
 
 elif [ $1 = 'val' ]; then 

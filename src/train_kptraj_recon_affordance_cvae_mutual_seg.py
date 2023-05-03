@@ -75,7 +75,6 @@ def train(args):
     model_name = config['model']
     model_inputs = config['model_inputs']
     dataset_inputs = config['dataset_inputs']
-    train_traj_start = config['model_inputs']['train_traj_start']
     
     # training batch and iters
     batch_size = config['batch_size']
@@ -149,23 +148,10 @@ def train(args):
             # get segmented point cloud
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()
-            sample_cp = sample_pcds[:, 0]
-
-            affords = afford_network.inference_sigmoid(sample_pcds)
-            affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
-            part_cond = torch.where(affords > 0.3) # only high response region selected
-            part_cond0 = part_cond[0]
-            part_cond2 = part_cond[2]
-
-            batch_size = sample_pcds.shape[0]
-            point_size = sample_pcds.shape[1]
-            input_pcd_size = sample_pcds.shape[2] + 1
-            segmented_pcds = torch.zeros((batch_size, point_size, input_pcd_size)).to(device)
-            segmented_pcds[part_cond0, part_cond2, :3] = sample_pcds[part_cond0, part_cond2]
-            segmented_pcds[part_cond0, part_cond2, 3] = 1.0
+            sample_cp = sample_pcds[:, 0, :3]
 
             # forward pass
-            losses = network.get_loss(epoch, segmented_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
+            losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
             total_loss = losses['total']
 
             if 'afford' in losses.keys():
@@ -215,13 +201,13 @@ def train(args):
             )
         
         # save checkpoint
-        if (epoch - start_epoch) % save_freq == 0 and (epoch - start_epoch) > 0 and epoch > train_traj_start:
+        if (epoch - start_epoch) % save_freq == 0 and (epoch - start_epoch) > 0:
             with torch.no_grad():
                 print('Saving checkpoint ...... ')
                 # torch.save(network, os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
                 torch.save(network.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
-                # torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
-                # torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
+                torch.save(network_opt.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-optimizer_epoch-{epoch}.pth'))
+                torch.save(network_lr_scheduler.state_dict(), os.path.join(checkpoint_dir, f'{sample_num_points}_points-scheduler_epoch-{epoch}.pth'))
 
         # validation
         val_dist_losses = []
@@ -239,23 +225,10 @@ def train(args):
 
             sample_pcds = sample_pcds.to(device).contiguous() 
             sample_trajs = sample_trajs.to(device).contiguous()
-            sample_cp = sample_pcds[:, 0]
-
-            affords = afford_network.inference_sigmoid(sample_pcds)
-            affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
-            part_cond = torch.where(affords > 0.3) # only high response region selected
-            part_cond0 = part_cond[0]
-            part_cond2 = part_cond[2]
-
-            batch_size = sample_pcds.shape[0]
-            point_size = sample_pcds.shape[1]
-            input_pcd_size = sample_pcds.shape[2] + 1
-            segmented_pcds = torch.zeros((batch_size, point_size, input_pcd_size)).to(device)
-            segmented_pcds[part_cond0, part_cond2, :3] = sample_pcds[part_cond0, part_cond2]
-            segmented_pcds[part_cond0, part_cond2, 3] = 1.0
+            sample_cp = sample_pcds[:, 0, :3]
 
             with torch.no_grad():
-                losses = network.get_loss(epoch, segmented_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
+                losses = network.get_loss(sample_pcds, sample_trajs, sample_cp, lbd_kl=kl_weight.get_beta())  # B x 2, B x F x N
                 
                 if 'afford' in losses.keys():
                     val_afford_losses.append(losses['afford'].item())

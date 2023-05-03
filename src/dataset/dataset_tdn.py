@@ -49,8 +49,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         self.type = "residual" if "residual" in dataset_dir else "absolute"
         self.traj_len = num_steps
         self.wpt_dim = wpt_dim
-        # self.sample_num_points = sample_num_points
-        self.sample_num_points = 5000
+        self.sample_num_points = sample_num_points
         
         self.shape_list = [] 
         self.center_list = []
@@ -85,9 +84,12 @@ class KptrajDeformAffordanceDataset(Dataset):
                     'traj': [],
                 }
             
+            pcd_cps = None
             for shape_file in shape_files:
                 pcd = np.load(shape_file).astype(np.float32)
                 points = pcd[:,:3]
+                pcd_cp = pcd[0, :3]
+                pcd_cps = pcd_cp.reshape(1, 3) if pcd_cps is None else np.vstack((pcd_cps, pcd_cp)) 
 
                 centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
                 centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
@@ -130,6 +132,7 @@ class KptrajDeformAffordanceDataset(Dataset):
             traj_list_tmp = []
             traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
                 
+            pcd_mean_cp = np.mean(pcd_cps, axis=0)
             for traj_file in traj_files:
                 
                 f_traj = open(traj_file, 'r')
@@ -137,6 +140,15 @@ class KptrajDeformAffordanceDataset(Dataset):
 
                 waypoints = np.asarray(traj_dict['trajectory'])
                 
+                first_wpt = None
+                if self.wpt_dim > 3:
+                    first_wpt = np.hstack((pcd_mean_cp, waypoints[0, 3:])) # use the second rot as the first rot
+                else :
+                    first_wpt = pcd_mean_cp
+                if np.sum(np.abs(first_wpt - waypoints[0])) > 1e-6:
+                    waypoints = np.vstack((first_wpt, waypoints))
+                    waypoints = waypoints[:self.traj_len]
+
                 if self.wpt_dim == 3:
                     waypoints = waypoints[:, :3]
 
@@ -227,7 +239,7 @@ class KptrajDeformAffordanceDataset(Dataset):
 
         # for waypoint preprocessing
         num_traj = len(self.traj_list[index])
-        start = np.random.randint(0, num_traj)
+        start = np.random.randint(0, num_traj - self.gt_trajs)
         end = start + self.gt_trajs
             
         wpts_src = self.traj_list[index][start:end]
@@ -246,7 +258,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         return points, fusion, difficulty, temp_wpts, wpts
     
 class KptrajDeformAffordanceSegDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=40, wpt_dim=6, sample_num_points=1000, device='cuda', with_noise=False, gt_trajs=1):
+    def __init__(self, dataset_dir, num_steps=40, wpt_dim=6, sample_num_points=1000, device='cuda', with_noise=False, gt_trajs=1, with_afford_score=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
         assert wpt_dim == 9  or wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6 or 9'
@@ -255,6 +267,7 @@ class KptrajDeformAffordanceSegDataset(Dataset):
         self.gt_trajs = gt_trajs
         self.noise_pos_scale = 0.0005 # unit: meter
         self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
+        self.with_afford_score = with_afford_score
 
         self.device = device
 
@@ -314,11 +327,21 @@ class KptrajDeformAffordanceSegDataset(Dataset):
                     'traj': [],
                 }
             
+            pcd_cps = None
             for shape_file in shape_files:
                 pcd = np.load(shape_file).astype(np.float32)
-                points = pcd[:,:3]
+                assert  pcd.shape[1] > 4, f''
+                pcd_cp = pcd[0, :3]
+                pcd_cps = pcd_cp.reshape(1, 3) if pcd_cps is None else np.vstack((pcd_cps, pcd_cp)) 
 
-                centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
+                fusion = (pcd[:,3] + pcd[:,4]) / 2 # just average it
+                fusion_norm = (fusion - np.min(fusion)) / (np.max(fusion) - np.min(fusion))
+                segmented_ind = np.where(fusion_norm > 0.2)[0] # only high response region selected
+                segmented_pcd = pcd[segmented_ind]
+
+                segmented_points = segmented_pcd[:,:3]
+                segmented_fusion = ((segmented_pcd[:,3] + segmented_pcd[:,4]) / 2).reshape((segmented_points.shape[0], 1))
+                centroid_points, center, scale = normalize_pc(segmented_points, copy_pts=True) # points will be in a unit sphere
                 centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
 
                 input_pcid = None
@@ -333,6 +356,11 @@ class KptrajDeformAffordanceSegDataset(Dataset):
                     centroid_points = torch.cat([centroid_points.repeat(1, repeat_num, 1), centroid_points[:, input_pcid]], dim=1).squeeze()
                     input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(self.device), input_pcid])
                 
+                if self.with_afford_score:
+                    segmented_fusion = torch.from_numpy(segmented_fusion).to(device)
+                    segmented_fusion_input = segmented_fusion[input_pcid]
+                    centroid_points = torch.cat([centroid_points, segmented_fusion_input], dim=1)
+
                 center = torch.from_numpy(center).to(device)
 
                 shape_list_tmp.append(centroid_points)
@@ -350,13 +378,23 @@ class KptrajDeformAffordanceSegDataset(Dataset):
 
             traj_list_tmp = []
             traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
-                
+              
+            pcd_mean_cp = np.mean(pcd_cps, axis=0)  
             for traj_file in traj_files:
                 
                 f_traj = open(traj_file, 'r')
                 traj_dict = json.load(f_traj)
 
                 waypoints = np.asarray(traj_dict['trajectory'])
+                    
+                first_wpt = None
+                if self.wpt_dim > 3:
+                    first_wpt = np.hstack((pcd_mean_cp, waypoints[0, 3:])) # use the second rot as the first rot
+                else :
+                    first_wpt = pcd_mean_cp
+                if np.sum(np.abs(first_wpt - waypoints[0])) > 1e-6:
+                    waypoints = np.vstack((first_wpt, waypoints))
+                    waypoints = waypoints[:self.traj_len]
                 
                 if self.wpt_dim == 3:
                     waypoints = waypoints[:, :3]
@@ -439,13 +477,13 @@ class KptrajDeformAffordanceSegDataset(Dataset):
         # noise to point cloud
         if self.with_noise:
             points_cp = points[0].clone()
-            point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
-            points += point_noises
+            point_noises = torch.randn(points[:, :3].shape).to(self.device) * self.noise_pos_scale / scale
+            points[:, :3] += point_noises
             points[0] = points_cp
 
         # for waypoint preprocessing
         num_traj = len(self.traj_list[index])
-        start = np.random.randint(0, num_traj)
+        start = np.random.randint(0, num_traj - self.gt_trajs)
         end = start + self.gt_trajs
             
         wpts_src = self.traj_list[index][start:end]

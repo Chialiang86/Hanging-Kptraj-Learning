@@ -220,9 +220,12 @@ class KptrajReconAffordanceDataset(Dataset):
             partseg_list_tmp = []
             center_list_tmp = []
             scale_list_tmp = [] 
+            pcd_cps = None
             for shape_file in shape_files:
                 pcd = np.load(shape_file).astype(np.float32)
                 points = pcd[:,:3]
+                pcd_cp = pcd[0, :3]
+                pcd_cps = pcd_cp.reshape(1, 3) if pcd_cps is None else np.vstack((pcd_cps, pcd_cp)) 
 
                 centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
                 centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
@@ -278,6 +281,7 @@ class KptrajReconAffordanceDataset(Dataset):
                 self.fusion_list.append(fusion_list_tmp)
 
             traj_list_tmp = []
+            pcd_mean_cp = np.mean(pcd_cps, axis=0)
             if enable_traj: 
                 traj_files = glob.glob(f'{dataset_subdir}/*.json')[:1] # trajectory in 7d format
                     
@@ -287,6 +291,16 @@ class KptrajReconAffordanceDataset(Dataset):
                     traj_dict = json.load(f_traj)
 
                     waypoints = np.asarray(traj_dict['trajectory'])
+                    
+                    first_wpt = None
+                    if self.wpt_dim > 3:
+                        first_wpt = np.hstack((pcd_mean_cp, waypoints[0, 3:])) # use the second rot as the first rot
+                    else :
+                        first_wpt = pcd_mean_cp
+                    if np.sum(np.abs(first_wpt - waypoints[0])) > 1e-6:
+                        waypoints = np.vstack((first_wpt, waypoints))
+                        waypoints = waypoints[:self.traj_len]
+                        
                     if self.type == "residual":
                         
                         if self.wpt_dim == 6:
