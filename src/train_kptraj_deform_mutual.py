@@ -683,7 +683,7 @@ def test(args):
 
     network.eval()
         
-    for sid, pcd in enumerate(hook_pcds):
+    for sid, pcd in enumerate(tqdm(hook_pcds)):
 
         # urdf file
         hook_urdf = hook_urdfs[sid]
@@ -790,6 +790,7 @@ def test(args):
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
         # conting inference score using object and object contact information
+        ignore_wpt_num = int(np.ceil(len(recovered_trajs[0]) * 0.1))
         if evaluate:
             max_obj_success_cnt = 0
             wpt_ids = []
@@ -797,7 +798,7 @@ def test(args):
 
                 obj_success_cnt = 0
                 for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
-                    reversed_recovered_traj = recovered_traj[::-1]
+                    reversed_recovered_traj = recovered_traj[ignore_wpt_num:][::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
@@ -837,17 +838,20 @@ def test(args):
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj[::-1]):
-                    
-                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
-                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
-                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
-
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
+
+            for i, recovered_traj in enumerate(recovered_trajs):
+                colors = list(np.random.rand(3)) + [1]
+                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     if wpt_i % 2 == 0:
                         img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)
@@ -1023,8 +1027,8 @@ def analysis(args):
                     rot_matrix = R.from_rotvec(waypoints_raw[:, 3:]).as_matrix() # omit absolute position of the first waypoint
                     rot_matrix_xy = np.transpose(rot_matrix, (0, 2, 1)).reshape((waypoints_raw.shape[0], -1))[:, :6] # the first, second column of the rotation matrix
                     waypoints[:, 3:] = rot_matrix_xy # rotation only (6d rotation representation)
-                    waypoints = torch.FloatTensor(waypoints).to(device)
                 
+                waypoints = torch.FloatTensor(waypoints).to(device)
                 if dataset_mode == 0:
                     waypoints[:, :3] = (waypoints[:, :3] - center) / scale
                 elif dataset_mode == 1:

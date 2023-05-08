@@ -6,8 +6,7 @@ def main(root_name : str):
 
     fnames = [root_name]
     if os.path.isdir(root_name):
-        fnames = glob.glob(f'{root_name}/traj_fusion_mutual-05.01.15.45_3000/*.txt')
-        print(fnames)
+        fnames = glob.glob(f'{root_name}/*deform*/*.txt')
 
     for fname in fnames:
 
@@ -54,18 +53,18 @@ def main(root_name : str):
                 }
             if training_model_type == 'deform':
                 training_res = {
-                    'cls_loss': [],
-                    'afford_loss': [],
-                    'dist_loss': [],
-                    'dir_loss': [],
+                    # 'cls_loss': [],
+                    # 'afford_loss': [],
+                    # 'dist_loss': [],
+                    # 'dir_loss': [],
                     'deform_loss': [],
                     'total_loss': [],
                 }
                 validation_res = {
-                    'cls_loss': [],
-                    'afford_loss': [],
-                    'dist_loss': [],
-                    'dir_loss': [],
+                    # 'cls_loss': [],
+                    # 'afford_loss': [],
+                    # 'dist_loss': [],
+                    # 'dir_loss': [],
                     'deform_loss': [],
                     'total_loss': [],
                 }
@@ -136,7 +135,7 @@ def main(root_name : str):
                         time_line = lines[i + 1]
                         epoch_line = lines[i + 2]
                         lr_line = lines[i + 3]
-                        cls_loss_line = lines[i + 4]
+                        # cls_loss_line = lines[i + 4]
                         afford_loss_line = lines[i + 5]
                         dist_loss_line = lines[i + 6]
                         dir_loss_line = lines[i + 7]
@@ -144,12 +143,13 @@ def main(root_name : str):
                         total_loss_line = lines[i + 9]
 
                         training_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
-                        training_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
-                        training_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
-                        training_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
-                        training_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
+                        # training_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
+                        # training_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        # training_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
+                        # training_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                         training_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
-                        training_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
+                        training_res['total_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
+                        # training_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
                 
                 else :
                     if training_model_type == 'cvae':
@@ -217,7 +217,7 @@ def main(root_name : str):
                         time_line = lines[i + 1]
                         epoch_line = lines[i + 2]
                         lr_line = lines[i + 3]
-                        cls_loss_line = lines[i + 4]
+                        # cls_loss_line = lines[i + 4]
                         afford_loss_line = lines[i + 5]
                         dist_loss_line = lines[i + 6]
                         dir_loss_line = lines[i + 7]
@@ -225,12 +225,13 @@ def main(root_name : str):
                         total_loss_line = lines[i + 9]
 
                         validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
-                        validation_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
-                        validation_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
-                        validation_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
-                        validation_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
+                        # validation_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
+                        # validation_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        # validation_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
+                        # validation_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                         validation_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
-                        validation_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
+                        validation_res['total_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
+                        # validation_res['total_loss'].append(float(total_loss_line.split(':')[-1].strip()))
                 
                 else :
                     if training_model_type == 'cvae':

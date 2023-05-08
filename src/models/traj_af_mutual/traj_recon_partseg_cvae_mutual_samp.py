@@ -290,7 +290,7 @@ class TrajReconPartSegMutual(nn.Module):
         affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
         affordance_norm = (affordance_sigmoid - affordance_min) / (affordance_max - affordance_min)
-        part_cond = torch.where(affordance_norm > 0.3) # only high response region selected
+        part_cond = torch.where(affordance_norm > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()
@@ -340,7 +340,7 @@ class TrajReconPartSegMutual(nn.Module):
         ##############################################################
 
         # choose 10 features from segmented point cloud
-        part_cond = torch.where(affordance > 0.3) # only high response region selected
+        part_cond = torch.where(affordance > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()

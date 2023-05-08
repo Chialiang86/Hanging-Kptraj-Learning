@@ -499,6 +499,7 @@ def test(args):
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
     sample_num_points = config['dataset_inputs']['sample_num_points']
+    with_afford_score = config['dataset_inputs']['with_afford_score']
     print(f'num of points = {sample_num_points}')
 
     # inference
@@ -542,19 +543,21 @@ def test(args):
         obj_names.append(obj_name)
 
     hook_pcds = []
-    hook_affords = []
+    hook_fusions = []
     hook_urdfs = []
 
     class_num = 15 if '/val' in inference_hook_dir else 200
-    easy_cnt = 15
-    normal_cnt = 15
-    hard_cnt = 15
+    easy_cnt = 0
+    normal_cnt = 0
+    hard_cnt = 0
     devil_cnt = 0
     cnt = 0
     for inference_hook_path in inference_hook_paths:
         hook_name = inference_hook_path.split('/')[-2]
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
         affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+        segmentations = np.load(inference_hook_path)[:, 4].astype(np.float32)
+        fusions = (affords + segmentations) / 2
         
         easy_cnt += 1 if 'easy' in hook_name else 0
         normal_cnt += 1 if 'normal' in hook_name else 0
@@ -570,13 +573,14 @@ def test(args):
         if 'devil' in hook_name and devil_cnt > class_num:
             continue
     
-        print(cnt, hook_name)
+        # print(cnt, hook_name)
         cnt += 1
         
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
         assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
         hook_urdfs.append(hook_urdf) 
         hook_pcds.append(points)
+        hook_fusions.append(fusions)
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
@@ -660,7 +664,7 @@ def test(args):
             'devil_all': 0,
         }
 
-    for sid, pcd in enumerate(hook_pcds):
+    for sid, pcd in enumerate(tqdm(hook_pcds)):
 
         # urdf file
         hook_urdf = hook_urdfs[sid]
@@ -674,36 +678,47 @@ def test(args):
                      'devil'
         
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        centroid_pcd, _, _ = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
         affords = afford_network.inference_sigmoid(points_batch)
-        affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+        # affords = torch.from_numpy(hook_fusions[sid]).reshape((1, -1)).unsqueeze(0).to(device=device)
+        affords_norm = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+
+        points_batch = torch.from_numpy(pcd).unsqueeze(0).to(device=device).contiguous()
 
         # segmented point cloud extraction
-        part_cond = torch.where(affords > 0.2) # only high response region selected
+        part_cond = torch.where(affords_norm > 0.1) # only high response region selected
         part_cond0 = part_cond[0]
         part_cond2 = part_cond[2]
         segmented_pcds = points_batch[part_cond0, part_cond2]
+        segmented_affords = affords[part_cond0, :, part_cond2]
+
+        segmented_pcds, centroid, scale = normalize_pc(segmented_pcds, copy_pts=True) # points will be in a unit sphere
 
         # contact point extraction
-        contact_cond = torch.where(affords == torch.max(affords)) # only high response region selected
+        contact_cond = torch.where(affords_norm == torch.max(affords_norm)) # only high response region selected
         contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
         contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
         contact_point = points_batch[contact_cond0, contact_cond2]
 
         input_pcid = None
-        point_num = segmented_pcds.shape[1]
+        point_num = segmented_pcds.shape[0]
         if point_num >= sample_num_points:
-            input_pcid = furthest_point_sample(segmented_pcds, sample_num_points).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), sample_num_points).long().reshape(-1)  # BN
         else :
             mod_num = sample_num_points % point_num
             repeat_num = int(sample_num_points // point_num)
-            input_pcid = furthest_point_sample(segmented_pcds, mod_num).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), mod_num).long().reshape(-1)  # BN
             input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(device), input_pcid])
-        segmented_pcds = segmented_pcds[0, input_pcid, :].squeeze()
+        segmented_pcds = segmented_pcds[input_pcid, :]
+
+        if with_afford_score:
+            segmented_fusion_input = segmented_affords[input_pcid]
+            segmented_pcds = torch.cat([segmented_pcds, segmented_fusion_input], dim=1)
+        segmented_pcds = segmented_pcds.unsqueeze(0)
 
         # generate trajectory using predicted contact points
         recon_trajs = network.sample(segmented_pcds, contact_point, return_feat=False)
@@ -714,12 +729,13 @@ def test(args):
 
         hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
         scales = torch.Tensor([scale]).repeat(batch_size).to(device)
-        centroids = torch.from_numpy(centroid).repeat(batch_size, 1).to(device)
+        centroids = centroid.repeat(batch_size, 1).to(device)
         recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
 
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
         # conting inference score using object and object contact information
+        ignore_wpt_num = int(np.ceil(len(recovered_trajs[0]) * 0.1))
         if evaluate:
             max_obj_success_cnt = 0
             wpt_ids = []
@@ -727,7 +743,7 @@ def test(args):
 
                 obj_success_cnt = 0
                 for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
-                    reversed_recovered_traj = recovered_traj[::-1]
+                    reversed_recovered_traj = recovered_traj[ignore_wpt_num:][::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
@@ -767,17 +783,20 @@ def test(args):
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj[::-1]):
-                    
-                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
-                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
-                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
-
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
+
+            for i, recovered_traj in enumerate(recovered_trajs):
+                colors = list(np.random.rand(3)) + [1]
+                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     if wpt_i % 2 == 0:
                         img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)
@@ -846,7 +865,7 @@ def analysis(args):
 
     # ================== load trained affordance network ==================
 
-    afford_weight_path = "checkpoints/fusion_msg_03.23.16.56/kptraj_all_smooth-absolute-10-k0_03.20.13.31-1000/1000_points-network_epoch-2000.pth"
+    afford_weight_path = "checkpoints/fusion_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview/3000_points-network_epoch-2000.pth"
 
     # params for training
     module_name = 'af.affordance' 

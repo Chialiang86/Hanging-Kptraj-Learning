@@ -342,7 +342,6 @@ class TrajReconPartSegMutual(nn.Module):
 
     def sample(self, pcs, contact_point, return_feat=False):
         batch_size = pcs.shape[0]
-        z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
         if self.with_afford_score:
             pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
@@ -359,6 +358,7 @@ class TrajReconPartSegMutual(nn.Module):
 
         f_s = whole_feats
         f_cp = self.mlp_cp(contact_point)
+        z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         ret_traj = torch.zeros(recon_traj.shape)
         if self.dataset_type == 0: # absolute 

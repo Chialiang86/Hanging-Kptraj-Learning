@@ -427,6 +427,7 @@ def test(args):
     batch_size = config['batch_size']
     wpt_dim = config['dataset_inputs']['wpt_dim']
     sample_num_points = config['dataset_inputs']['sample_num_points']
+    print(f'waypoint dimension = {wpt_dim}')
     print(f'num of points = {sample_num_points}')
 
     # inference
@@ -498,7 +499,7 @@ def test(args):
         if 'devil' in hook_name and devil_cnt > class_num:
             continue
     
-        print(cnt, hook_name)
+        # print(cnt, hook_name)
         cnt += 1
         
         hook_urdf = f'{inference_hook_shape_root}/{hook_name}/base.urdf'
@@ -588,7 +589,7 @@ def test(args):
             'devil_all': 0,
         }
 
-    for sid, pcd in enumerate(hook_pcds):
+    for sid, pcd in enumerate(tqdm(hook_pcds)):
 
         # urdf file
         hook_urdf = hook_urdfs[sid]
@@ -637,8 +638,8 @@ def test(args):
         affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
         colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
 
-        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
-        # contact_point = points[contact_point_cond][0]
+        contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        contact_point = points[contact_point_cond][0]
 
         contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
         contact_point_coor.translate(contact_point.reshape((3, 1)))
@@ -675,6 +676,7 @@ def test(args):
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
         # conting inference score using object and object contact information
+        ignore_wpt_num = int(np.ceil(len(recovered_trajs[0]) * 0.1))
         if evaluate:
             max_obj_success_cnt = 0
             wpt_ids = []
@@ -682,7 +684,7 @@ def test(args):
 
                 obj_success_cnt = 0
                 for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
-                    reversed_recovered_traj = recovered_traj[::-1]
+                    reversed_recovered_traj = recovered_traj[ignore_wpt_num:][::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
@@ -701,6 +703,7 @@ def test(args):
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
             print('[{} / {}] success rate: {:00.03f}%'.format(sid, hook_name, max_obj_success_cnt / len(obj_contact_poses) * 100))
+            sys.stdout.flush()
             all_scores[difficulty].append(max_obj_success_cnt / len(obj_contact_poses))
             all_scores['all'].append(max_obj_success_cnt / len(obj_contact_poses))
         
@@ -722,17 +725,20 @@ def test(args):
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj[::-1]):
-                    
-                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
-                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
-                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
-
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
+
+            for i, recovered_traj in enumerate(recovered_trajs):
+                colors = list(np.random.rand(3)) + [1]
+                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     if wpt_i % 2 == 0:
                         img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)

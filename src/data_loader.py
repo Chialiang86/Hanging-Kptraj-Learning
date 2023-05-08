@@ -40,12 +40,15 @@ def main(args):
 
     # ================== Simulator ==================
 
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/val', **dataset_dataset_inputs)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/val_deform', **dataset_dataset_inputs)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     train_set.print_data_shape()
     for _ in range(1):
         train_batches = enumerate(train_loader, 0)
-        for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+        # for i_batch, (sample_pcds, sample_affords, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+        # for i_batch, (sample_pcds, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+        # for i_batch, (sample_pcds, sample_affords, sample_difficulty, sample_temp_trajs, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
+        for i_batch, (sample_pcds, sample_difficulty, sample_temp_trajs, sample_trajs) in tqdm(train_batches, total=len(train_loader)):
             
             sample_affords = 1.0 - sample_pcds[:, :, 3]
             sample_affords = \
@@ -65,19 +68,20 @@ def main(args):
             point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
             geometries.append(point_cloud)
 
-            for wpt_i, wpt in enumerate(sample_trajs[0]):
+            for wpt_i, wpt in enumerate(sample_trajs[0][0]):
                 wpt_trans = get_matrix_from_pose(wpt.cpu().detach().squeeze().numpy())
                 contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1)
                 contact_point_coor.transform(wpt_trans)
                 geometries.append(contact_point_coor)
 
             o3d.visualization.draw_geometries(geometries)
-                
 
 if __name__=="__main__":
 
     default_dataset = [
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.19.28-1000-fullview",
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.19.28-1000-fullview",
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/",
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview",
     ]
 
     parser = argparse.ArgumentParser()
@@ -85,7 +89,9 @@ if __name__=="__main__":
     parser.add_argument('--dataset_dir', '-dd', type=str, default=default_dataset[0])
 
     # other info
-    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_10.yaml')
+    # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
+    # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
+    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_deform_mutual/traj_deform_fusion_mutual_lstm_seg_v2_20.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()

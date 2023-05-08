@@ -183,7 +183,7 @@ class KptrajReconAffordanceDataset(Dataset):
         assert wpt_dim == 9  or wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6'
         
         self.with_noise = with_noise
-        self.noise_pos_scale = 0.0005 # unit: meter
+        self.noise_pos_scale = 0.0002 # unit: meter
         self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
 
         self.device = device
@@ -281,7 +281,6 @@ class KptrajReconAffordanceDataset(Dataset):
                 self.fusion_list.append(fusion_list_tmp)
 
             traj_list_tmp = []
-            pcd_mean_cp = np.mean(pcd_cps, axis=0)
             if enable_traj: 
                 traj_files = glob.glob(f'{dataset_subdir}/*.json')[:1] # trajectory in 7d format
                     
@@ -291,22 +290,11 @@ class KptrajReconAffordanceDataset(Dataset):
                     traj_dict = json.load(f_traj)
 
                     waypoints = np.asarray(traj_dict['trajectory'])
-                    
-                    first_wpt = None
-                    if self.wpt_dim > 3:
-                        first_wpt = np.hstack((pcd_mean_cp, waypoints[0, 3:])) # use the second rot as the first rot
-                    else :
-                        first_wpt = pcd_mean_cp
-                    if np.sum(np.abs(first_wpt - waypoints[0])) > 1e-6:
-                        waypoints = np.vstack((first_wpt, waypoints))
-                        waypoints = waypoints[:self.traj_len]
                         
-                    if self.type == "residual":
-                        
-                        if self.wpt_dim == 6:
-                            first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
-                            first_rot_matrix_xy = (first_rot_matrix.T).reshape(-1)[:6] # the first, second column of the rotation matrix
-                            waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
+                    if self.type == "residual" and self.wpt_dim == 6:
+                        first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
+                        first_rot_matrix_xy = (first_rot_matrix.T).reshape(-1)[:6] # the first, second column of the rotation matrix
+                        waypoints[0] = first_rot_matrix_xy # rotation only (6d rotation representation)
 
                     if self.wpt_dim == 9:
                         waypoints_9d = np.zeros((waypoints.shape[0], 9))
@@ -362,10 +350,8 @@ class KptrajReconAffordanceDataset(Dataset):
 
         # noise to point cloud
         if self.with_noise:
-            points_cp = points[0].clone()
-            point_noises = torch.randn(points.shape).to(self.device) * self.noise_pos_scale / scale
-            points += point_noises
-            points[0] = points_cp
+            point_noises = torch.randn(points[1:, :3].shape).to(self.device) * self.noise_pos_scale / scale
+            points[1:, :3] += point_noises
 
         # for affordance processing if enabled
         affordance = None
@@ -392,10 +378,11 @@ class KptrajReconAffordanceDataset(Dataset):
             
             # noise to waypoints
             if self.with_noise:
-                pos_noises = torch.randn(waypoints[:, :3].shape).to(self.device) * self.noise_pos_scale * 0.1
-                waypoints[:, :3] += pos_noises
-                rot_noises = torch.randn(waypoints[:, 3:].shape).to(self.device) * self.noise_rot_scale * 0.1
-                waypoints[:, 3:] += rot_noises
+                pos_noises = torch.randn(waypoints[1:, :3].shape).to(self.device) * self.noise_pos_scale * 0.1
+                waypoints[1:, :3] += pos_noises
+                if self.wpt_dim > 3:
+                    rot_noises = torch.randn(waypoints[1:, 3:].shape).to(self.device) * self.noise_rot_scale * 0.1
+                    waypoints[1:, 3:] += rot_noises
 
             if self.type == "absolute":
                 waypoints[:, :3] = (waypoints[:, :3] - center) / scale
@@ -404,6 +391,20 @@ class KptrajReconAffordanceDataset(Dataset):
             else :
                 print(f"dataset type undefined : {self.type}")
                 exit(-1)
+
+            contact_point = points[0, :3]
+            first_wpt = None
+            if self.wpt_dim == 9 or (self.type == "absolute" and self.wpt_dim == 6):
+                first_wpt = torch.hstack((contact_point, waypoints[0, 3:])) # use the second rot as the first rot
+            elif self.wpt_dim == 3:
+                first_wpt = contact_point
+
+            if (self.wpt_dim == 9 or self.wpt_dim == 3 or (self.type == "absolute" and self.wpt_dim == 6)):
+                if torch.sum(torch.abs(first_wpt[:3] - waypoints[0, :3])) > 0.2: # magic number
+                    waypoints = torch.vstack([first_wpt, waypoints])
+                else :
+                    waypoints[0] = first_wpt
+                waypoints = waypoints[:self.traj_len]
 
         # ret value
         if self.enable_traj and self.affordance_name == 'both': 

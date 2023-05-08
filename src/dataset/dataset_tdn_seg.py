@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from utils.training_utils import get_model_module, optimizer_to_device, normalize_pc
 
 class KptrajDeformAffordanceDataset(Dataset):
-    def __init__(self, dataset_dir, num_steps=40, wpt_dim=6, sample_num_points=1000, device='cuda', with_noise=False, gt_trajs=1):
+    def __init__(self, dataset_dir, num_steps=40, wpt_dim=6, sample_num_points=1000, device='cuda', with_noise=False, gt_trajs=1, with_afford_score=False):
         
         assert os.path.exists(dataset_dir), f'{dataset_dir} not exists'
         assert wpt_dim == 9  or wpt_dim == 6 or wpt_dim == 3, f'wpt_dim should be 3 or 6 or 9'
@@ -22,6 +22,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         self.gt_trajs = gt_trajs
         self.noise_pos_scale = 0.0002 # unit: meter
         self.noise_rot_scale = 0.5 * torch.pi / 180 # unit: meter
+        self.with_afford_score = with_afford_score
 
         self.device = device
 
@@ -38,7 +39,7 @@ class KptrajDeformAffordanceDataset(Dataset):
             item = f'{dataset_dir}/{template_hook}'
             old_index = dataset_subdirs.index(item)
             dataset_subdirs.insert(0, dataset_subdirs.pop(old_index))
-        
+
         self.template_dict = {
             0: {},
             1: {},
@@ -54,7 +55,6 @@ class KptrajDeformAffordanceDataset(Dataset):
         self.shape_list = [] 
         self.center_list = []
         self.scale_list = [] 
-        self.fusion_list = []
         self.traj_list = []
         self.difficulty_list = []
 
@@ -62,7 +62,6 @@ class KptrajDeformAffordanceDataset(Dataset):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
-            fusion_list_tmp = []
             center_list_tmp = []
             scale_list_tmp = [] 
             
@@ -80,18 +79,24 @@ class KptrajDeformAffordanceDataset(Dataset):
                     'shape': [],
                     'center': [],
                     'scale': [],
-                    'fusion': [],
                     'traj': [],
                 }
             
             pcd_cps = None
             for shape_file in shape_files:
                 pcd = np.load(shape_file).astype(np.float32)
-                points = pcd[:,:3]
+                assert  pcd.shape[1] > 4, f''
                 pcd_cp = pcd[0, :3]
                 pcd_cps = pcd_cp.reshape(1, 3) if pcd_cps is None else np.vstack((pcd_cps, pcd_cp)) 
 
-                centroid_points, center, scale = normalize_pc(points, copy_pts=True) # points will be in a unit sphere
+                fusion = (pcd[:,3] + pcd[:,4]) / 2 # just average it
+                fusion_norm = (fusion - np.min(fusion)) / (np.max(fusion) - np.min(fusion))
+                segmented_ind = np.where(fusion_norm > 0.2)[0] # only high response region selected
+                segmented_pcd = pcd[segmented_ind]
+
+                segmented_points = segmented_pcd[:,:3]
+                segmented_fusion = ((segmented_pcd[:,3] + segmented_pcd[:,4]) / 2).reshape((segmented_points.shape[0], 1))
+                centroid_points, center, scale = normalize_pc(segmented_points, copy_pts=True) # points will be in a unit sphere
                 centroid_points = torch.from_numpy(centroid_points).unsqueeze(0).to(device).contiguous()
 
                 input_pcid = None
@@ -105,6 +110,11 @@ class KptrajDeformAffordanceDataset(Dataset):
                     input_pcid = furthest_point_sample(centroid_points, mod_num).long().reshape(-1)  # BN
                     centroid_points = torch.cat([centroid_points.repeat(1, repeat_num, 1), centroid_points[:, input_pcid]], dim=1).squeeze()
                     input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(self.device), input_pcid])
+                
+                if self.with_afford_score:
+                    segmented_fusion = torch.from_numpy(segmented_fusion).to(device)
+                    segmented_fusion_input = segmented_fusion[input_pcid]
+                    centroid_points = torch.cat([centroid_points, segmented_fusion_input], dim=1)
 
                 center = torch.from_numpy(center).to(device)
 
@@ -112,33 +122,25 @@ class KptrajDeformAffordanceDataset(Dataset):
                 center_list_tmp.append(center)
                 scale_list_tmp.append(scale)
 
-                assert  pcd.shape[1] > 4, f''
-                fusion = (pcd[:,3] + pcd[:,4]) / 2 # just average it
-                fusion = torch.from_numpy(fusion).to(device)
-                fusion = fusion[input_pcid]
-                fusion_list_tmp.append(fusion)
-            
             if current_type == 'normal':
                 self.shape_list.append(shape_list_tmp)
                 self.center_list.append(center_list_tmp)
                 self.scale_list.append(scale_list_tmp)
-                self.fusion_list.append(fusion_list_tmp)
             else :
                 template_info['shape'] = shape_list_tmp
                 template_info['center'] = center_list_tmp
                 template_info['scale'] = scale_list_tmp
-                template_info['fusion'] = fusion_list_tmp
 
             traj_list_tmp = []
             traj_files = glob.glob(f'{dataset_subdir}/*.json') # trajectory in 7d format
-                
+              
             for traj_file in traj_files:
                 
                 f_traj = open(traj_file, 'r')
                 traj_dict = json.load(f_traj)
 
                 waypoints = np.asarray(traj_dict['trajectory'])
-
+                
                 if self.wpt_dim == 3:
                     waypoints = waypoints[:, :3]
 
@@ -164,7 +166,7 @@ class KptrajDeformAffordanceDataset(Dataset):
                 template_info['traj'] = traj_list_tmp
                 self.template_dict[difficulty] = template_info
 
-        assert len(self.shape_list) == len(self.center_list) == len(self.scale_list) == len(self.fusion_list) == len(self.traj_list) == len(self.difficulty_list), 'inconsistent length of shapes and affordance'
+        assert len(self.shape_list) == len(self.center_list) == len(self.scale_list) == len(self.traj_list) == len(self.difficulty_list), 'inconsistent length of shapes and affordance'
         self.size = len(self.shape_list)
 
     def print_data_shape(self):
@@ -222,9 +224,6 @@ class KptrajDeformAffordanceDataset(Dataset):
             point_noises = torch.randn(points[1:, :3].shape).to(self.device) * self.noise_pos_scale / scale
             points[1:, :3] += point_noises
 
-        # for fusion processing if enabled
-        fusion = self.fusion_list[index][shape_id]
-
         # for waypoint preprocessing
         num_traj = len(self.traj_list[index])
         traj_inds = random.sample(range(num_traj), self.gt_trajs)
@@ -244,7 +243,7 @@ class KptrajDeformAffordanceDataset(Dataset):
         else :
             print(f"dataset type undefined : {self.type}")
             exit(-1)
-            
+        
         contact_point = points[0, :3].repeat(self.gt_trajs, 1)
         first_wpt = None
         if self.wpt_dim == 9 or (self.type == "absolute" and self.wpt_dim == 6):
@@ -258,9 +257,9 @@ class KptrajDeformAffordanceDataset(Dataset):
             else :
                 wpts[:, 0] = first_wpt
             wpts = wpts[:,:self.traj_len]
-        
+
         # ret value
-        return points, fusion, difficulty, temp_wpts, wpts
+        return points, difficulty, temp_wpts, wpts
 
 if __name__=="__main__":
     

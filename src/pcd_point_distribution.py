@@ -22,29 +22,29 @@ def main(args):
     for pcd_path in tqdm(pcd_paths[3:]):
         pcd = np.load(pcd_path).astype(np.float32)
 
-        if pcd.shape[0] < pn:
-            points = pcd[:,:3]
-            mod_num = pn % pcd.shape[0] 
-            centroid_points = torch.from_numpy(points).unsqueeze(0).to('cuda').contiguous()
-            input_pcid = furthest_point_sample(centroid_points, 1000).long().reshape(-1)  # BN
-            centroid_points = centroid_points[0, input_pcid, :].squeeze()
+        # if pcd.shape[0] < pn:
+        #     points = pcd[:,:3]
+        #     mod_num = pn % pcd.shape[0] 
+        #     # centroid_points = torch.from_numpy(points).unsqueeze(0).to('cuda').contiguous()
+        #     # input_pcid = furthest_point_sample(centroid_points, 1000).long().reshape(-1)  # BN
+        #     # centroid_points = centroid_points[0, input_pcid, :].squeeze()
 
 
-            # points_batch = torch.from_numpy(centroid_points).unsqueeze(0).to('cuda').contiguous()
-            # input_pcid = furthest_point_sample(centroid_points, 1000).long().reshape(-1)  # BN
-            # centroid_points = centroid_points[0, input_pcid, :].squeeze()
-            # repeat_num = int(pn // points_batch.shape[1])
-            # pcd = torch.cat([points_batch.repeat(1, repeat_num, 1), points_batch[:, input_pcid]], dim=1)
-            # for i in range(1000):
-            #     print(pcd[0, -1000+i, :3])
+        #     points_batch = torch.from_numpy(points).unsqueeze(0).to('cuda').contiguous()
+        #     input_pcid = furthest_point_sample(centroid_points, 1000).long().reshape(-1)  # BN
+        #     centroid_points = centroid_points[0, input_pcid, :].squeeze()
+        #     repeat_num = int(pn // points_batch.shape[1])
+        #     pcd = torch.cat([points_batch.repeat(1, repeat_num, 1), points_batch[:, input_pcid]], dim=1)
+        #     for i in range(1000):
+        #         print(pcd[0, -1000+i, :3])
 
-        # point_num = pcd.shape[0]
-        # point_nums[int((point_num // interval) * interval)] += 1
+        point_num = pcd.shape[0]
+        point_nums[int((point_num // interval) * interval)] += 1
 
-        # part = (pcd[:, 3] + pcd[:, 4]) / 2
-        # part_high_response = np.where(part > 0.25)
-        # part_high_response_num = len(part_high_response[-1])
-        # part_point_nums[int((part_high_response_num // part_interval) * part_interval)] += 1
+        part = (pcd[:, 3] + pcd[:, 4]) / 2
+        part_high_response = np.where(part > 0.25)
+        part_high_response_num = len(part_high_response[-1])
+        part_point_nums[int((part_high_response_num // part_interval) * part_interval)] += 1
 
     x_keys = list(point_nums.keys())
     x_labels = [f'{x_keys[i]} ~ {x_keys[i+1]}' for i in range(len(x_keys) - 1)]

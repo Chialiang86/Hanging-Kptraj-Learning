@@ -183,7 +183,7 @@ def get_dense_waypoints(start_config : list or tuple or np.ndarray, end_config :
 
     assert len(start_config) == 7 and len(end_config) == 7
 
-    d12 = np.asarray(end_config[:3]) - np.asarray(start_config[:3])
+    d12 = np.asarray(end_config) - np.asarray(start_config)
     steps = int(np.ceil(np.linalg.norm(np.divide(d12, resolution), ord=2)))
     obj_init_quat = quaternion.as_quat_array(xyzw2wxyz(start_config[3:]))
     obj_tgt_quat = quaternion.as_quat_array(xyzw2wxyz(end_config[3:]))
@@ -192,7 +192,7 @@ def get_dense_waypoints(start_config : list or tuple or np.ndarray, end_config :
     # plan trajectory in the same way in collision detection module
     for step in range(steps):
         ratio = (step + 1) / steps
-        pos = ratio * d12 + np.asarray(start_config[:3])
+        pos = ratio * d12[:3] + np.asarray(start_config[:3])
         quat = quaternion.slerp_evaluate(obj_init_quat, obj_tgt_quat, ratio)
         quat = wxyz2xyzw(quaternion.as_float_array(quat))
         position7d = tuple(pos) + tuple(quat)
@@ -262,7 +262,6 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     elif type(traj_src) == np.ndarray:
         traj = np.copy(traj_src)
 
-
     waypoints = []
 
     if dataset_mode == 0: # "absolute"
@@ -272,12 +271,15 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
         
         for traj_id in range(traj.shape[0]): # batches
             waypoints.append([])
+            hook_trans = get_matrix_from_pose(hook_poses[traj_id])
             for wpt_id in range(0, traj[traj_id].shape[0]): # waypoints
 
                 wpt = np.zeros(6)
                 if wpt_dim == 6 or wpt_dim == 9:
+
                     wpt = traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
+                    current_trans = hook_trans @ get_matrix_from_pose(wpt)
+
                 elif wpt_dim == 3:
                     # contact pose rotation
                     wpt[:3] = traj[traj_id, wpt_id]
@@ -285,16 +287,27 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                     # transform to world coordinate first
                     current_trans = np.identity(4)
                     current_trans[:3, 3] = traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
+                    current_trans = hook_trans @ current_trans
 
                     if wpt_id < traj[traj_id].shape[0] - 1:
                         # transform to world coordinate first
-                        next_trans = np.identity(4)
-                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
-                        next_trans =  get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
 
-                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
-                        x_direction /= np.linalg.norm(-x_direction, ord=2)
+                        peep_num_max = int(np.ceil(traj[traj_id].shape[0] / 4.0))
+                        peep_num = peep_num_max if wpt_id < traj[traj_id].shape[0] - peep_num_max else traj[traj_id].shape[0] - wpt_id - 1
+                        to_pos = np.ones((4, peep_num))
+                        to_pos[:3] = traj[traj_id, wpt_id:wpt_id+peep_num].T 
+                        to_pos = (hook_trans @ to_pos)[:3]
+                        
+                        from_pos = np.ones((4, peep_num))
+                        from_pos[:3] = traj[traj_id, wpt_id+1:wpt_id+peep_num+1].T 
+                        from_pos = (hook_trans @ from_pos)[:3]
+
+                        weight = np.array([1/x for x in range(3, peep_num+3)])[:peep_num]
+                        weight /= np.sum(weight)
+                        diff = (to_pos - from_pos) * weight
+                        
+                        x_direction = np.sum(diff, axis=1)
+                        x_direction /= np.linalg.norm(x_direction, ord=2)
                         y_direction = np.cross(x_direction, [0, 0, -1])
                         y_direction /= np.linalg.norm(y_direction, ord=2)
                         z_direction = np.cross(x_direction, y_direction)
@@ -302,6 +315,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                         current_trans[:3, :3] = rotation_mat
                         
                     else :
+
                         current_trans[:3, :3] = R.from_rotvec(waypoints[-1][-1][3:]).as_matrix() # use the last waypoint's rotation as current rotation
                 
                 waypoints[-1].append(get_pose_from_matrix(current_trans, pose_size=6))
@@ -316,6 +330,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
             waypoints.append([])
             tmp_pos = np.array([0.0, 0.0, 0.0])
             tmp_rot = np.array([0.0, 0.0, 0.0])
+            hook_trans = get_matrix_from_pose(hook_poses[traj_id])
             for wpt_id in range(0, traj[traj_id].shape[0]):
                 
                 wpt = np.zeros(6)
@@ -325,6 +340,8 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                         wpt_tmp = traj[traj_id, wpt_id]
                         tmp_pos = wpt_tmp[:3]
                         tmp_rot = wpt_tmp[3:] if wpt_dim == 6 else rot_6d_to_3d(wpt_tmp[3:])
+                        wpt[:3] = tmp_pos
+                        wpt[3:] = tmp_rot
 
                     else :
                         tmp_pos = tmp_pos + np.asarray(traj[traj_id, wpt_id, :3])
@@ -338,23 +355,29 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                         wpt[:3] = tmp_pos
                         wpt[3:] = tmp_rot
                         
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ get_matrix_from_pose(wpt)
+                    current_trans = hook_trans @ get_matrix_from_pose(wpt)
                 
                 elif wpt_dim == 3 :
                     
                     # transform to world coordinate first
                     current_trans = np.identity(4)
                     current_trans[:3, 3] = tmp_pos + traj[traj_id, wpt_id]
+                    current_trans = hook_trans @ current_trans
                     tmp_pos += traj[traj_id, wpt_id]
-                    current_trans = get_matrix_from_pose(hook_poses[traj_id]) @ current_trans
 
                     if wpt_id < traj[traj_id].shape[0] - 1:
                         # transform to world coordinate first
-                        next_trans = np.identity(4)
-                        next_trans[:3, 3] = traj[traj_id, wpt_id+1]
-                        next_trans = get_matrix_from_pose(hook_poses[traj_id]) @ next_trans
+                        peep_num_max = int(np.ceil(traj[traj_id].shape[0] / 4.0))
+                        peep_num = peep_num_max if wpt_id < traj[traj_id].shape[0] - peep_num_max else traj[traj_id].shape[0] - wpt_id - 1
+                        to_pos = np.ones((3, peep_num))
+                        to_pos[:3] = traj[traj_id, wpt_id+1:wpt_id+peep_num+1].T
+                        to_pos = hook_trans[:3, :3] @ to_pos
 
-                        x_direction = np.asarray(next_trans[:3, 3]) - np.asarray(current_trans[:3, 3])
+                        weight = np.array([1/x for x in range(3, peep_num+3)])[:peep_num]
+                        weight /= np.sum(weight)
+                        diff = to_pos * weight
+
+                        x_direction = np.sum(diff, axis=1)
                         x_direction /= np.linalg.norm(-x_direction, ord=2)
                         y_direction = np.cross(x_direction, [0, 0, -1])
                         y_direction /= np.linalg.norm(y_direction, ord=2)

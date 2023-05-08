@@ -149,55 +149,60 @@ elif [ $1 = 'test' ]; then
     model_configs=(
 
         # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+        # "traj_fusion_mutual_nn_dist_mr"
+
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+
+        # "traj_fusion_mutual_nn_dist_mr_10"
+        # "traj_fusion_mutual_nn_dist_mr_10"
+        # "traj_fusion_mutual_nn_dist_mr_10"
+        # "traj_fusion_mutual_nn_dist_mr_10"
+
+        # "traj_fusion_mutual_20"
+        # "traj_fusion_mutual_20"
+        # "traj_fusion_mutual_20"
+        # "traj_fusion_mutual_20"
+
+        # "traj_fusion_mutual_nn_dist_mr_20"
+        # "traj_fusion_mutual_nn_dist_mr_20"
+        # "traj_fusion_mutual_nn_dist_mr_20"
+        # "traj_fusion_mutual_nn_dist_mr_20"
+
+        # "traj_fusion_mutual_noise"
+        # "traj_fusion_mutual_noise"
+        # "traj_fusion_mutual_noise"
+        # "traj_fusion_mutual_noise"
+
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+        # "traj_fusion_mutual_10"
+
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+        # "traj_fusion_mutual"
+
+        "traj_fusion_mutual_noise"
+        "traj_fusion_mutual_noise"
+ 
         "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-
-        # "traj_fusion_mutual_nn_dist_mr"
-        # "traj_fusion_mutual_nn_dist_mr"
-        # "traj_fusion_mutual_nn_dist_mr"
-        # "traj_fusion_mutual_nn_dist_mr"
-
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-
-        # "traj_fusion_mutual_nn_dist_mr_10"
-        # "traj_fusion_mutual_nn_dist_mr_10"
-        # "traj_fusion_mutual_nn_dist_mr_10"
-        # "traj_fusion_mutual_nn_dist_mr_10"
-
-        # "traj_fusion_mutual_20"
-        # "traj_fusion_mutual_20"
-        # "traj_fusion_mutual_20"
-        # "traj_fusion_mutual_20"
-
-        # "traj_fusion_mutual_nn_dist_mr_20"
-        # "traj_fusion_mutual_nn_dist_mr_20"
-        # "traj_fusion_mutual_nn_dist_mr_20"
-        # "traj_fusion_mutual_nn_dist_mr_20"
-
-        # "traj_fusion_mutual_noise"
-        # "traj_fusion_mutual_noise"
-        # "traj_fusion_mutual_noise"
-        # "traj_fusion_mutual_noise"
-
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-        # "traj_fusion_mutual_10"
-
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-        # "traj_fusion_mutual"
-
+        "traj_fusion_mutual"
 
     )
 
@@ -205,7 +210,7 @@ elif [ $1 = 'test' ]; then
 
         # # 40
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
 
@@ -259,12 +264,20 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000"
+
+        # 40 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
+        
+        # 40 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
     )
 
     inference_dirs=(
         # # 40
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/train"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/03.20.13.31-1000/val"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
 
@@ -319,13 +332,20 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/train"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/03.20.13.31-1000/val"
 
+        # 40 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview/val"
+        
+        # 40 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview/val"
     )
 
     traj_recon_shape_checkpoints=(
 
         # # 40
         # "checkpoints/traj_fusion_mutual-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000" # sigmoid
-        "checkpoints/traj_fusion_mutual-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
+        # "checkpoints/traj_fusion_mutual-03.27.17.37/kptraj_all_smooth-absolute-40-k0-03.20.13.31-1000"
         # "checkpoints/traj_fusion_mutual-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000" # sigmoid
         # "checkpoints/traj_fusion_mutual-03.27.17.37/kptraj_all_smooth-residual-40-k0-03.20.13.31-1000"
 
@@ -380,12 +400,19 @@ elif [ $1 = 'test' ]; then
         # "checkpoints/traj_fusion_mutual-05.01.15.45_3000/kptraj_all_smooth-residual-40-k0-04.25.19.37-1000"
         # "checkpoints/traj_fusion_mutual-05.01.15.45_3000/kptraj_all_smooth-residual-40-k0-04.25.19.37-1000"
 
+        # 40
+        "checkpoints/traj_fusion_mutual_noise-05.02.22.52-3000_fullview/kptraj_all_smooth-absolute-40-k0-05.02.18.59-1000-fullview"
+        "checkpoints/traj_fusion_mutual_noise-05.02.22.52-3000_fullview/kptraj_all_smooth-residual-40-k0-05.02.18.59-1000-fullview"
+        
+        # 40
+        "checkpoints/traj_fusion_mutual-05.02.22.55-3000_singleview/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
+        "checkpoints/traj_fusion_mutual-05.02.22.55-3000_singleview/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
     )
 
-    points='1000'
+    points='3000'
 
     iters=(
-        '6000' '8000' '10000'
+        '10000' '20000'
         # '20000' 
         # '30000'  
     )

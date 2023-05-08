@@ -211,7 +211,7 @@ class LSTMDecoder(nn.Module):
         return out_traj_offset
 
 class TrajDeformFusionLSTM(nn.Module):
-    def __init__(self, pcd_feat_dim=32, cp_feat_dim=32, wpt_feat_dim=64,
+    def __init__(self, pcd_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
                         lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
@@ -221,7 +221,6 @@ class TrajDeformFusionLSTM(nn.Module):
 
         self.rot_dim = 6 if wpt_dim == 9 else 3
         self.pcd_feat_dim = pcd_feat_dim
-        self.cp_feat_dim = cp_feat_dim
         self.hidden_dim = hidden_dim
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
@@ -245,18 +244,6 @@ class TrajDeformFusionLSTM(nn.Module):
             nn.Linear(64, 4), # class num = 4
         )
 
-        #############################################
-        # =========== for rotation head =========== #
-        #############################################
-
-        self.rotation_head = nn.Sequential(
-            nn.Linear(pcd_feat_dim + cp_feat_dim, 128),
-            nn.LeakyReLU(),
-            nn.Linear(128, 32),
-            nn.LeakyReLU(),
-            nn.Linear(32, self.rot_dim)
-        )
-
         ###########################################################
         # =========== for trajectory deformation head =========== #
         ###########################################################
@@ -266,8 +253,7 @@ class TrajDeformFusionLSTM(nn.Module):
         #     nn.Conv1d(pcd_feat_dim, encode_point_feat_dim, kernel_size=1)
         # )
 
-        self.mlp_traj = WptEncoder(9, wpt_feat_dim)
-        self.mlp_cp = nn.Linear(3, cp_feat_dim)
+        self.mlp_traj = WptEncoder(self.wpt_dim, wpt_feat_dim)
         self.lstm_decoder = LSTMDecoder(
                                 num_layers=decoder_layers, 
                                 input_dim=pcd_feat_dim + wpt_feat_dim + wpt_dim, 
@@ -345,15 +331,7 @@ class TrajDeformFusionLSTM(nn.Module):
         ###################################################
 
         f_s = whole_feats
-        f_cp = self.mlp_cp(contact_point)
         f_traj = self.mlp_traj(temp_traj_clone)
-        
-        #############################################
-        # =========== for rotation head =========== #
-        #############################################
-
-        rot_input = torch.cat([f_s, f_cp], dim=-1)
-        rotation = self.rotation_head(rot_input)
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
@@ -363,7 +341,7 @@ class TrajDeformFusionLSTM(nn.Module):
         f_all = torch.cat([f_s_repeat, f_traj, temp_traj_clone], dim=-1)
         traj_deform_offset = self.lstm_decoder(f_all)
 
-        return difficulty, rotation, traj_deform_offset
+        return difficulty, traj_deform_offset
     
     #########################################
     # ===================================== #
@@ -374,7 +352,7 @@ class TrajDeformFusionLSTM(nn.Module):
     def get_loss(self, pcs, difficulty, sample_cp, temp_traj, traj):
         batch_size = traj.shape[0]
 
-        difficulty_pred, rotation_pred, traj_deform_offset_pred = self.forward(pcs, sample_cp, temp_traj) 
+        difficulty_pred, traj_deform_offset_pred = self.forward(pcs, sample_cp, temp_traj) 
 
         cls_loss = torch.Tensor([0]).to(pcs.device)
         affordance_loss = torch.Tensor([0]).to(pcs.device)
@@ -387,16 +365,6 @@ class TrajDeformFusionLSTM(nn.Module):
 
         difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
         cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
-
-        #############################################
-        # =========== for rotation head =========== #
-        #############################################
-
-        dir_loss = torch.tensor(1000000)
-        for i in range(self.gt_trajs):
-            input_dir = traj[:, i, 0, 3:] # 9d
-            dir_loss_tmp = self.get_6d_rot_loss(rotation_pred, input_dir).mean()
-            dir_loss = torch.min(dir_loss_tmp)
 
         ###########################################################
         # =========== for trajectory deformation head =========== #
@@ -413,19 +381,6 @@ class TrajDeformFusionLSTM(nn.Module):
             temp_traj_repeat[:, :, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
         pos_offset = traj[:, :, :, :3] - temp_traj_repeat[:, :, :, :3]
 
-        # for rotation offset
-        temp_rotmat_xy = temp_traj_repeat[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3)
-        temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, :, 0], temp_rotmat_xy[:, :, :, 1]).unsqueeze(3)
-        temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=3) # row vector (the inverse of the temp rotation matrix)
-        temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
-
-        rotmat_xy = traj[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3) # column vector 
-        rotmat_z = torch.cross(rotmat_xy[:, :, :, 0], rotmat_xy[:, :, :, 1]).unsqueeze(3)
-        rotmat = torch.cat([rotmat_xy, rotmat_z], dim=3).permute(0, 1, 2, 4, 3) # col vector (the inverse of the temp rotation matrix)
-        rotmat = rotmat.reshape(-1, 3, 3)
-
-        rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, self.gt_trajs, 9)[:, :, :6]
-
         # compute loss
         deform_wps_pos = traj_deform_offset_pred[:, :, :3]
         deform_pos_loss = torch.tensor(1000000)
@@ -433,17 +388,35 @@ class TrajDeformFusionLSTM(nn.Module):
             deform_pos_loss_tmp = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
                                              pos_offset[:, i].reshape(batch_size, self.num_steps * 3))
             deform_pos_loss = torch.min(deform_pos_loss, deform_pos_loss_tmp)
+
+        if self.wpt_dim == 3:
+            deform_loss = deform_pos_loss
+
+        # for rotation offset
+        if self.wpt_dim == 9:
+            temp_rotmat_xy = temp_traj_repeat[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3)
+            temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, :, 0], temp_rotmat_xy[:, :, :, 1]).unsqueeze(3)
+            temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=3) # row vector (the inverse of the temp rotation matrix)
+            temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
+
+            rotmat_xy = traj[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3) # column vector 
+            rotmat_z = torch.cross(rotmat_xy[:, :, :, 0], rotmat_xy[:, :, :, 1]).unsqueeze(3)
+            rotmat = torch.cat([rotmat_xy, rotmat_z], dim=3).permute(0, 1, 2, 4, 3) # col vector (the inverse of the temp rotation matrix)
+            rotmat = rotmat.reshape(-1, 3, 3)
+
+            rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, self.gt_trajs, 9)[:, :, :6]
         
-        deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
-        deform_wps_rot = deform_wps_rot.reshape(-1, 6)
-        deform_rot_loss = torch.tensor(1000000)
-        for i in range(self.gt_trajs):
-            deform_rot_loss_tmp = self.get_6d_rot_loss(deform_wps_rot, 
-                                                        rotmat_offset[:, i])
-            deform_rot_loss_tmp = deform_rot_loss_tmp.mean()
-            deform_rot_loss = torch.min(deform_rot_loss, deform_rot_loss_tmp)
-        
-        deform_loss = deform_pos_loss + deform_rot_loss
+            # compute loss
+            deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
+            deform_wps_rot = deform_wps_rot.reshape(-1, 6)
+            deform_rot_loss = torch.tensor(1000000)
+            for i in range(self.gt_trajs):
+                deform_rot_loss_tmp = self.get_6d_rot_loss(deform_wps_rot, 
+                                                            rotmat_offset[:, i])
+                deform_rot_loss_tmp = deform_rot_loss_tmp.mean()
+                deform_rot_loss = torch.min(deform_rot_loss, deform_rot_loss_tmp)
+            
+            deform_loss = deform_pos_loss + deform_rot_loss
 
         losses = {}
         losses['cls'] = cls_loss
@@ -505,15 +478,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         # f_s = torch.randn(whole_feats_part.shape).to(whole_feats_part.device)
         f_s = whole_feats
-        f_cp = self.mlp_cp(contact_point)
         f_traj = self.mlp_traj(temp_traj_clone)
-
-        #############################################
-        # =========== for rotation head =========== #
-        #############################################
-
-        rot_input = torch.cat([f_s, f_cp], dim=-1)
-        contact_rotation = self.rotation_head(rot_input)
 
         ###############################################################
         # =========== for trajectory deformstruction head =========== #
@@ -527,12 +492,13 @@ class TrajDeformFusionLSTM(nn.Module):
         ret_traj = torch.zeros((batch_size, self.num_steps, self.wpt_dim))
         ret_traj[:, :, :3] = temp_traj_clone[:, :, :3] + traj_deform_offset[:, :, :3]
 
-        # for rotation offset
-        temp_rotmat = self.rot6d_to_rotmat(temp_traj_clone[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
-        offset_rotmat = self.rot6d_to_rotmat(traj_deform_offset[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+        if self.wpt_dim == 9:
+            # for rotation offset
+            temp_rotmat = self.rot6d_to_rotmat(temp_traj_clone[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+            offset_rotmat = self.rot6d_to_rotmat(traj_deform_offset[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
 
-        bmm_res = torch.bmm(offset_rotmat, temp_rotmat).permute(0, 2, 1).reshape(batch_size, self.num_steps, 3, 3)
-        ret_traj[:, :, 3:] = bmm_res.reshape(batch_size, self.num_steps, 9)[:, :, :6] # only the first two column vectors in the rotation matrix used
+            bmm_res = torch.bmm(offset_rotmat, temp_rotmat).permute(0, 2, 1).reshape(batch_size, self.num_steps, 3, 3)
+            ret_traj[:, :, 3:] = bmm_res.reshape(batch_size, self.num_steps, 9)[:, :, :6] # only the first two column vectors in the rotation matrix used
 
         if return_feat:
             return target_difficulty, ret_traj, whole_feats

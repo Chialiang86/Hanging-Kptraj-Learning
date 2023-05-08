@@ -75,7 +75,6 @@ def train(args):
     model_name = config['model']
     model_inputs = config['model_inputs']
     dataset_inputs = config['dataset_inputs']
-    train_traj_start = config['model_inputs']['train_traj_start']
     
     # training batch and iters
     batch_size = config['batch_size']
@@ -145,7 +144,7 @@ def train(args):
             sample_trajs = sample_trajs.to(device).contiguous()
             sample_cp = sample_pcds[:, 0, :3]
 
-            # forward pass           
+            # forward pass
             losses = network.get_loss(sample_pcds, sample_difficulty, sample_cp, sample_temp_trajs, sample_trajs)  # B x 2, B x F x N
             total_loss = losses['total']
 
@@ -195,7 +194,7 @@ def train(args):
             )
         
         # save checkpoint
-        if (epoch - start_epoch) % save_freq == 0 and (epoch - start_epoch) > 0 and epoch > train_traj_start:
+        if (epoch - start_epoch) % save_freq == 0 and (epoch - start_epoch) > 0:
             with torch.no_grad():
                 print('Saving checkpoint ...... ')
                 # torch.save(network, os.path.join(checkpoint_dir, f'{sample_num_points}_points-network_epoch-{epoch}.pth'))
@@ -439,7 +438,6 @@ def test(args):
     weight_subpath = args.weight_subpath
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
-    use_gt_cp = args.use_gt_cp
     use_gt_cls = args.use_gt_cls
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
@@ -485,6 +483,7 @@ def test(args):
     wpt_dim = config['dataset_inputs']['wpt_dim']
 
     sample_num_points = config['dataset_inputs']['sample_num_points']
+    with_afford_score = config['dataset_inputs']['with_afford_score']
     print(f'num of points = {sample_num_points}')
 
     # inference
@@ -542,7 +541,7 @@ def test(args):
     }
 
     hook_pcds = []
-    hook_affords = []
+    hook_fusions = []
     hook_urdfs = []
 
     class_num = 15 if '/val' in inference_hook_dir else 20000
@@ -560,6 +559,8 @@ def test(args):
         
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
         affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
+        segmentations = np.load(inference_hook_path)[:, 4].astype(np.float32)
+        fusions = (affords + segmentations) / 2
         
         if hook_name in template_hook_names:
 
@@ -622,6 +623,7 @@ def test(args):
             assert os.path.exists(hook_urdf), f'{hook_urdf} not exists'
             hook_urdfs.append(hook_urdf)
             hook_pcds.append(points)
+            hook_fusions.append(fusions)
 
     inference_subdir = os.path.split(inference_hook_dir)[-1]
     output_dir = f'inference/inference_trajs/{checkpoint_subdir}/{checkpoint_subsubdir}/{inference_subdir}'
@@ -710,7 +712,7 @@ def test(args):
 
     network.eval()
         
-    for sid, pcd in enumerate(hook_pcds):
+    for sid, pcd in enumerate(tqdm(hook_pcds)):
 
         # urdf file
         hook_urdf = hook_urdfs[sid]
@@ -731,7 +733,7 @@ def test(args):
         }[difficulty]
         
         # sample trajectories
-        centroid_pcd, centroid, scale = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        centroid_pcd, _, _ = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
         contact_point_gt = centroid_pcd[0]
         # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
@@ -741,37 +743,46 @@ def test(args):
         gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
 
         affords = afford_network.inference_sigmoid(points_batch)
-        affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+        affords_norm = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+
+        points_batch = torch.from_numpy(pcd).unsqueeze(0).to(device=device).contiguous()
 
         # segmented point cloud extraction
-        part_cond = torch.where(affords > 0.2) # only high response region selected
+        part_cond = torch.where(affords_norm > 0.1) # only high response region selected
         part_cond0 = part_cond[0]
         part_cond2 = part_cond[2]
-
         segmented_pcds = points_batch[part_cond0, part_cond2]
+        segmented_affords = affords[part_cond0, :, part_cond2]
+
+        segmented_pcds, centroid, scale = normalize_pc(segmented_pcds, copy_pts=True) # points will be in a unit sphere
 
         # contact point extraction
-        contact_cond = torch.where(affords == torch.max(affords)) # only high response region selected
+        contact_cond = torch.where(affords_norm == torch.max(affords_norm)) # only high response region selected
         contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
         contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
         contact_point = points_batch[contact_cond0, contact_cond2]
 
         input_pcid = None
-        point_num = segmented_pcds.shape[1]
+        point_num = segmented_pcds.shape[0]
         if point_num >= sample_num_points:
-            input_pcid = furthest_point_sample(segmented_pcds, sample_num_points).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), sample_num_points).long().reshape(-1)  # BN
         else :
             mod_num = sample_num_points % point_num
             repeat_num = int(sample_num_points // point_num)
-            input_pcid = furthest_point_sample(segmented_pcds, mod_num).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), mod_num).long().reshape(-1)  # BN
             input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(device), input_pcid])
-        segmented_pcds = segmented_pcds[0, input_pcid, :].squeeze()
+        segmented_pcds = segmented_pcds[input_pcid, :]
+
+        if with_afford_score:
+            segmented_fusion_input = segmented_affords[input_pcid]
+            segmented_pcds = torch.cat([segmented_pcds, segmented_fusion_input], dim=1)
+        
+        segmented_pcds = segmented_pcds.unsqueeze(0)
         
         target_difficulty, recon_trajs = network.sample(segmented_pcds, 
                                                         contact_point,
                                                         template_trajs, 
                                                         difficulty=gt_difficulty if use_gt_cls else None, 
-                                                        use_gt_cp=use_gt_cp, 
                                                         return_feat=False)
         
         contact_point = contact_point.detach().cpu().numpy()
@@ -825,12 +836,13 @@ def test(args):
 
         hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
         scales = torch.Tensor([scale]).repeat(batch_size).to(device)
-        centroids = torch.from_numpy(centroid).repeat(batch_size, 1).to(device)
+        centroids = centroid.repeat(batch_size, 1).to(device)
         recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
 
         draw_coordinate(recovered_trajs[0][0], size=0.02)
 
         # conting inference score using object and object contact information
+        ignore_wpt_num = int(np.ceil(len(recovered_trajs[0]) * 0.1))
         if evaluate:
             max_obj_success_cnt = 0
             wpt_ids = []
@@ -838,7 +850,7 @@ def test(args):
 
                 obj_success_cnt = 0
                 for i, (obj_urdf, obj_contact_pose, obj_grasping_info) in enumerate(zip(obj_urdfs, obj_contact_poses, obj_grasping_infos)):
-                    reversed_recovered_traj = recovered_traj[::-1]
+                    reversed_recovered_traj = recovered_traj[ignore_wpt_num:][::-1]
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
@@ -878,17 +890,20 @@ def test(args):
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
                 for wpt_i, wpt in enumerate(recovered_traj[::-1]):
-                    
-                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
-                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
-                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
-
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
                         basePosition=wpt[:3]
                     )
                     wpt_ids.append(wpt_id)
+
+            for i, recovered_traj in enumerate(recovered_trajs):
+                colors = list(np.random.rand(3)) + [1]
+                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
+                    
+                    obj_tran = get_matrix_from_pose(wpt) @ np.linalg.inv(get_matrix_from_pose(obj_contact_pose))
+                    obj_pos, obj_rot = get_pos_rot_from_matrix(obj_tran)
+                    p.resetBasePositionAndOrientation(obj_id, obj_pos, obj_rot)
 
                     if wpt_i % 2 == 0:
                         img = p.getCameraImage(width, height, viewMatrix=pcd_view_matrix, projectionMatrix=projection_matrix)
@@ -1166,16 +1181,16 @@ def analysis(args):
         gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
 
         affords = afford_network.inference_sigmoid(points_batch)
-        affords = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
+        affords_norm = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
 
         # segmented point cloud extraction
-        part_cond = torch.where(affords > 0.1) # only high response region selected
+        part_cond = torch.where(affords_norm > 0.1) # only high response region selected
         part_cond0 = part_cond[0]
         part_cond2 = part_cond[2]
         segmented_pcds = points_batch[part_cond0, part_cond2]
 
         # contact point extraction
-        contact_cond = torch.where(affords == torch.max(affords)) # only high response region selected
+        contact_cond = torch.where(affords_norm == torch.max(affords_norm)) # only high response region selected
         contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
         contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
         contact_point = points_batch[contact_cond0, contact_cond2]
@@ -1375,7 +1390,6 @@ if __name__=="__main__":
     parser.add_argument('--hook_shape_root', '-hsr', type=str, default='../shapes/hook_all_new_0')
     
     # other info
-    parser.add_argument('--use_gt_cp', action="store_true")
     parser.add_argument('--use_gt_cls', action="store_true")
     parser.add_argument('--device', '-dv', type=str, default="cuda")
     parser.add_argument('--config', '-cfg', type=str, default='../config/traj_recon_affordance_cvae_kl_large.yaml')

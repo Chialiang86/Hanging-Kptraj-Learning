@@ -203,13 +203,12 @@ class TrajReconPartSegMutual(nn.Module):
                         hidden_dim=128, z_feat_dim=64, 
                         num_steps=30, wpt_dim=6,
                         lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, 
-                        train_traj_start=10000, dataset_type=0, segmented=0):
+                        train_traj_start=10000, dataset_type=0):
         super(TrajReconPartSegMutual, self).__init__()
 
         self.z_dim = z_feat_dim
 
-        pcd_input_feat_dim = 3 if segmented == 0 else 4
-        self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        self.pointnet2 = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
 
         ###############################################
         # =========== for affordance head =========== #
@@ -250,7 +249,6 @@ class TrajReconPartSegMutual(nn.Module):
         self.kl_annealing = kl_annealing
 
         self.dataset_type = dataset_type # 0 for absolute, 1 for residule
-        self.segmented = segmented
 
     # input sz bszx3x2
     def rot6d_to_rotmat(self, d6s):
@@ -281,10 +279,7 @@ class TrajReconPartSegMutual(nn.Module):
     # pred_result_logits: B, pcs_feat: B x F x N
     def forward(self, iter, pcs, traj, contact_point):
         
-        if self.segmented:
-            pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
-        else :
-            pcs_repeat = pcs.repeat(1, 1, 2)
+        pcs_repeat = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs_repeat)
 
         # affordance
@@ -297,7 +292,7 @@ class TrajReconPartSegMutual(nn.Module):
         affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
         affordance_norm = (affordance_sigmoid - affordance_min) / (affordance_max - affordance_min)
-        part_cond = torch.where(affordance_norm > 0.3) # only high response region selected
+        part_cond = torch.where(affordance_norm > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()
@@ -313,7 +308,6 @@ class TrajReconPartSegMutual(nn.Module):
         f_cp = self.mlp_cp(contact_point)
         f_traj = self.mlp_traj(traj)
 
-        print(f_s.shape, f_traj.shape, f_cp.shape)
         z_all, mu, logvar = self.all_encoder(f_s, f_traj, f_cp)
         recon_traj = self.all_decoder(f_s, f_cp, z_all)
         return affordance, recon_traj, mu, logvar
@@ -322,10 +316,7 @@ class TrajReconPartSegMutual(nn.Module):
         batch_size = pcs.shape[0]
         z_all = torch.Tensor(torch.randn(batch_size, self.z_dim)).cuda()
 
-        if self.segmented:
-            pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
-        else :
-            pcs_repeat = pcs.repeat(1, 1, 2)
+        pcs_repeat = pcs.repeat(1, 1, 2)
         whole_feats = self.pointnet2(pcs_repeat)
 
         ###############################################
@@ -349,7 +340,7 @@ class TrajReconPartSegMutual(nn.Module):
         ##############################################################
 
         # choose 10 features from segmented point cloud
-        part_cond = torch.where(affordance > 0.3) # only high response region selected
+        part_cond = torch.where(affordance > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()

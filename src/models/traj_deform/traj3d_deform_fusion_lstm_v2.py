@@ -220,7 +220,8 @@ class TrajDeformFusionLSTM(nn.Module):
     def __init__(self, pcd_feat_dim=32, cp_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
-                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, train_traj_start=1000, dataset_type=0):
+                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
+                        train_traj_start=1000, dataset_type=0, gt_trajs=1):
         super(TrajDeformFusionLSTM, self).__init__()
 
         self.rot_dim = 6 if wpt_dim == 9 else 3
@@ -230,6 +231,7 @@ class TrajDeformFusionLSTM(nn.Module):
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
         self.decoder_layers = decoder_layers
+        self.gt_trajs = gt_trajs
 
         self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
 
@@ -350,7 +352,7 @@ class TrajDeformFusionLSTM(nn.Module):
         affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
         affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
         affordance_norm = (affordance_sigmoid - affordance_min) / (affordance_max - affordance_min)
-        part_cond = torch.where(affordance_norm > 0.3) # only high response region selected
+        part_cond = torch.where(affordance_norm > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = torch.zeros((batch_size, pn_feat_dim)).to(pcs.device)
@@ -425,20 +427,36 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for trajectory deformation head =========== #
         ###########################################################
 
+
         # trajectory deformation loss
+        temp_traj_repeat = temp_traj.unsqueeze(1).repeat(1, self.gt_trajs, 1, 1)
 
         # for position offset
-        first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
+        first_pos_diff = traj[:, :, 0, :3] - temp_traj_repeat[:, :, 0, :3] # find the first-wpt difference
         if self.dataset_type == 0: # absolute
-            temp_traj[:, :, :3] += first_pos_diff.unsqueeze(1) # align template traj to target traj via first wpt
+            temp_traj_repeat[:, :, :, :3] += first_pos_diff.unsqueeze(2) # align template traj to target traj via first wpt
         elif self.dataset_type == 1: # residual
-            temp_traj[:, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
-        pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
+            temp_traj_repeat[:, :, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
+        pos_offset = traj[:, :, :, :3] - temp_traj_repeat[:, :, :, :3]
+
+        # # trajectory deformation loss
+        # # for position offset
+        # first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
+        # if self.dataset_type == 0: # absolute
+        #     temp_traj[:, :, :3] += first_pos_diff.unsqueeze(1) # align template traj to target traj via first wpt
+        # elif self.dataset_type == 1: # residual
+        #     temp_traj[:, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
+        # pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
 
         # compute loss
         deform_wps_pos = traj_deform_offset_pred[:, :, :3]
-        deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
-                                       pos_offset.reshape(batch_size, self.num_steps * 3))
+        deform_pos_loss = torch.tensor(1000000)
+        for i in range(self.gt_trajs):
+            deform_pos_loss_tmp = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
+                                             pos_offset[:, i].reshape(batch_size, self.num_steps * 3))
+            deform_pos_loss = torch.min(deform_pos_loss, deform_pos_loss_tmp)
+        # deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
+        #                                pos_offset.reshape(batch_size, self.num_steps * 3))
         
         deform_loss = deform_pos_loss
 
@@ -484,7 +502,7 @@ class TrajDeformFusionLSTM(nn.Module):
         #######################################################################
 
         # choose 10 features from segmented point cloud
-        part_cond = torch.where(part_score > 0.3) # only high response region selected
+        part_cond = torch.where(part_score > 0.2) # only high response region selected
         part_cond0 = part_cond[0].to(torch.long)
         part_cond2 = part_cond[2].to(torch.long)
         whole_feats_part = whole_feats[:, :, 0].clone()
