@@ -291,6 +291,9 @@ class KptrajReconAffordanceDataset(Dataset):
 
                     waypoints = np.asarray(traj_dict['trajectory'])
                         
+                    if self.wpt_dim == 3:
+                        waypoints = waypoints[:, :3]
+                        
                     if self.type == "residual" and self.wpt_dim == 6:
                         first_rot_matrix = R.from_rotvec(waypoints[0, 3:]).as_matrix() # omit absolute position of the first waypoint
                         first_rot_matrix_xy = (first_rot_matrix.T).reshape(-1)[:6] # the first, second column of the rotation matrix

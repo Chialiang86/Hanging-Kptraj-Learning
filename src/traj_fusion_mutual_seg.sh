@@ -10,12 +10,12 @@ if [ $1 = 'train' ]; then
 
     model_configs=(
 
-        "traj_3d_fusion_mutual_seg_noise"
-        "traj_3d_fusion_mutual_seg_noise"
-        "traj_3d_fusion_mutual_seg_noise_10"
-        "traj_3d_fusion_mutual_seg_noise_10"
-        "traj_3d_fusion_mutual_seg_noise_20"
-        "traj_3d_fusion_mutual_seg_noise_20"
+        "traj3d_fusion_mutual_seg_noise"
+        "traj3d_fusion_mutual_seg_noise"
+        "traj3d_fusion_mutual_seg_noise_10"
+        "traj3d_fusion_mutual_seg_noise_10"
+        "traj3d_fusion_mutual_seg_noise_20"
+        "traj3d_fusion_mutual_seg_noise_20"
 
         "traj_fusion_mutual_seg_noise"
         "traj_fusion_mutual_seg_noise"

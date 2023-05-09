@@ -9,12 +9,12 @@ if [ $1 = 'train' ]; then
 
     model_configs=(
 
-        "traj_3d_fusion_mutual_noise"
-        "traj_3d_fusion_mutual_noise"
-        "traj_3d_fusion_mutual_noise_10"
-        "traj_3d_fusion_mutual_noise_10"
-        "traj_3d_fusion_mutual_noise_20"
-        "traj_3d_fusion_mutual_noise_20"
+        "traj3d_fusion_mutual_noise"
+        "traj3d_fusion_mutual_noise"
+        "traj3d_fusion_mutual_noise_10"
+        "traj3d_fusion_mutual_noise_10"
+        "traj3d_fusion_mutual_noise_20"
+        "traj3d_fusion_mutual_noise_20"
 
         "traj_fusion_mutual_noise"
         "traj_fusion_mutual_noise"
@@ -26,19 +26,19 @@ if [ $1 = 'train' ]; then
 
     traj_recon_affordance_datasets=(
 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
 
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
     )
 
     training_tag='' # $1
@@ -84,7 +84,7 @@ if [ $1 = 'train' ]; then
 
             # output_log="logs/${model_config}/${dataset_name[-2]}/${dataset_name[-1]}_log.txt"
             output_log="training_logs/${model_config}-${training_tag}/${dataset_name[-2]}-${dataset_name[-1]}.txt"
-            python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml" > $output_log
+            CUDA_VISIBLE_DEVICES=1 python3 train_kptraj_recon_affordance_cvae_mutual.py --dataset_dir $traj_recon_affordance_dataset --training_tag $training_tag --config "../config/traj_af_mutual/${model_config}.yaml" > $output_log
             # python3 plot_history.py $output_log
 
         else 

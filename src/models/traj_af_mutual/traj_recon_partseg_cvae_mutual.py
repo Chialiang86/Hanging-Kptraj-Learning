@@ -195,7 +195,7 @@ class AllDecoder(nn.Module):
         batch_size = z_all.shape[0]
         x = torch.cat([pn_feat, cp_feat, z_all], dim=-1)
         x = self.mlp(x)
-        x = x.view(batch_size, self.num_steps, 6)
+        x = x.view(batch_size, self.num_steps, self.wpt_dim)
         return x
 
 class TrajReconPartSegMutual(nn.Module):
