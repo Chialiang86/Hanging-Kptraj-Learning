@@ -7,15 +7,14 @@ model: 'TrajDeformFusionLSTM'
 dataset_inputs:
   num_steps: 40
   wpt_dim: 9
-  sample_num_points: 3000
+  sample_num_points: 1000
   with_noise: 1
   gt_trajs: 20
   
 model_inputs:
-  pcd_feat_dim: 64
-  cp_feat_dim: 32
-  wpt_feat_dim: 64
-  hidden_dim: 128
+  pcd_feat_dim: 128
+  wpt_feat_dim: 128
+  hidden_dim: 256
   num_steps: 40
   wpt_dim: 9
   decoder_layers: 2
@@ -28,11 +27,11 @@ model_inputs:
 
 lr: 0.0001
 lr_decay_rate: 0.95
-lr_decay_epoch: 1000
+lr_decay_epoch: 100
 weight_decay: 0.0001
-save_freq: 1000
+save_freq: 100
 
 batch_size: 192
 
 start_epoch: 0
-stop_epoch: 20000
+stop_epoch: 5000

@@ -338,7 +338,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         affordance = self.affordance_head(whole_feats)
         if iter < self.train_traj_start:
-            return None, affordance, None, None  
+            return None, affordance, None
         
         #######################################################################
         # =========== extract shape feature using affordance head =========== #

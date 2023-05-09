@@ -7,7 +7,7 @@ model: 'TrajReconPartSegMutual'
 dataset_inputs:
   num_steps: 10
   wpt_dim: 6
-  sample_num_points: 3000
+  sample_num_points: 1000
   enable_traj: 1
   affordance_type: 4 # for contact point affordance
   with_noise: 1
@@ -21,6 +21,7 @@ model_inputs:
   num_steps: 10
   wpt_dim: 6
   lbd_kl: 0.01
+  lbd_affordance: 0.1
   lbd_recon: 1.0
   lbd_dir: 10.0
   kl_annealing: 0
@@ -28,7 +29,7 @@ model_inputs:
 
 lr: 0.0001
 lr_decay_rate: 0.95
-lr_decay_epoch: 1000
+lr_decay_epoch: 400
 weight_decay: 0.0001
 save_freq: 1000
 

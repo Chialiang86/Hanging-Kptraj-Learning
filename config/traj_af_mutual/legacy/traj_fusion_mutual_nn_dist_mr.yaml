@@ -1,7 +1,7 @@
 dataset_module: 'dataset'
 dataset_class: 'KptrajReconAffordanceDataset'
 enable_affordance: 1
-module: 'traj_af_mutual.traj_recon_partseg_cvae_mutual' 
+module: 'traj_af_mutual.traj_recon_partseg_cvae_mutual_nn_dist_mr' 
 model: 'TrajReconPartSegMutual'
 
 dataset_inputs:
@@ -10,7 +10,7 @@ dataset_inputs:
   sample_num_points: 1000
   enable_traj: 1
   affordance_type: 4 # for contact point affordance
-  with_noise: 1
+  with_noise: 0
   
 model_inputs:
   pcd_feat_dim: 128
@@ -25,7 +25,7 @@ model_inputs:
   lbd_recon: 1.0
   lbd_dir: 10.0
   kl_annealing: 0
-  train_traj_start: 500
+  train_traj_start: 1000
 
 lr: 0.0001
 lr_decay_rate: 0.95

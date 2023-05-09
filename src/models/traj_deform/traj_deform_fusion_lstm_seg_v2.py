@@ -214,7 +214,7 @@ class TrajDeformFusionLSTM(nn.Module):
     def __init__(self, pcd_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
-                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
+                        lbd_cls=0.1, lbd_dir=1.0, lbd_deform=1.0, 
                         dataset_type=0, gt_trajs=1, with_afford_score=0):
         
         super(TrajDeformFusionLSTM, self).__init__()
@@ -264,7 +264,6 @@ class TrajDeformFusionLSTM(nn.Module):
         self.CELoss = nn.CrossEntropyLoss(reduction='mean')
 
         self.lbd_cls = lbd_cls
-        self.lbd_affordance = lbd_affordance
         self.lbd_dir = lbd_dir
         self.lbd_deform = lbd_deform
 
@@ -425,7 +424,6 @@ class TrajDeformFusionLSTM(nn.Module):
         losses['deform'] = deform_loss
 
         losses['total'] = self.lbd_cls * cls_loss + \
-                            self.lbd_affordance * affordance_loss + \
                             self.lbd_dir * dir_loss + \
                             self.lbd_deform * deform_loss
 

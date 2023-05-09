@@ -368,10 +368,11 @@ class TrajReconPartSegMutual(nn.Module):
         if self.dataset_type == 1: # residual 
             ret_traj[:, 0, :3] = contact_point
 
-            recon_dir = recon_traj[:, 0]
-            recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
-            recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
-            ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
+            if self.wpt_dim > 3:
+                recon_dir = recon_traj[:, 0]
+                recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
+                recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
+                ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
 
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
@@ -400,16 +401,23 @@ class TrajReconPartSegMutual(nn.Module):
             recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
-            input_dir = traj[:, 0, :]
-            recon_dir = recon_traj[:, 0, :]
-            dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-            dir_loss = dir_loss.mean()
 
-            input_wps = traj[:, 1:, :]
-            recon_wps = recon_traj[:, 1:, :]
-            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
+            if self.wpt_dim == 3:
+                recon_wps = recon_traj
+                input_wps = traj
+                recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
             
-            recon_loss = self.lbd_dir * dir_loss + wpt_loss
+            elif self.wpt_dim == 6:
+                input_dir = traj[:, 0, :]
+                recon_dir = recon_traj[:, 0, :]
+                dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
+                dir_loss = dir_loss.mean()
+
+                input_wps = traj[:, 1:, :]
+                recon_wps = recon_traj[:, 1:, :]
+                wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
+                
+                recon_loss = self.lbd_dir * dir_loss + wpt_loss
 
         kl_loss = KL(mu, logvar)
         losses = {}

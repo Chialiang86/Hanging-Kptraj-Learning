@@ -5,8 +5,8 @@ module: 'traj_deform.traj_deform_fusion_lstm_seg_v2'
 model: 'TrajDeformFusionLSTM'
 
 dataset_inputs:
-  num_steps: 20
-  wpt_dim: 9
+  num_steps: 10
+  wpt_dim: 3
   sample_num_points: 1000
   with_noise: 0
   gt_trajs: 20
@@ -16,8 +16,8 @@ model_inputs:
   pcd_feat_dim: 128
   wpt_feat_dim: 128
   hidden_dim: 256
-  num_steps: 20
-  wpt_dim: 9
+  num_steps: 10
+  wpt_dim: 3
   decoder_layers: 2
   lbd_cls: 0.1
   lbd_dir: 1.0

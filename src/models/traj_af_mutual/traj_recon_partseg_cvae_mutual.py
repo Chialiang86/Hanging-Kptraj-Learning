@@ -202,7 +202,7 @@ class TrajReconPartSegMutual(nn.Module):
     def __init__(self, pcd_feat_dim=256, traj_feat_dim=128, cp_feat_dim=32,  
                         hidden_dim=128, z_feat_dim=64, 
                         num_steps=30, wpt_dim=6,
-                        lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, kl_annealing=0, 
+                        lbd_kl=1.0, lbd_recon=1.0, lbd_dir=1.0, lbd_affordance=0.1, kl_annealing=0, 
                         train_traj_start=10000, dataset_type=0):
         super(TrajReconPartSegMutual, self).__init__()
 
@@ -246,6 +246,7 @@ class TrajReconPartSegMutual(nn.Module):
         self.lbd_kl = lbd_kl
         self.lbd_recon = lbd_recon
         self.lbd_dir = lbd_dir
+        self.lbd_affordance = lbd_affordance
         self.kl_annealing = kl_annealing
 
         self.dataset_type = dataset_type # 0 for absolute, 1 for residule
@@ -363,10 +364,11 @@ class TrajReconPartSegMutual(nn.Module):
         if self.dataset_type == 1: # residual 
             ret_traj[:, 0, :3] = contact_point
 
-            recon_dir = recon_traj[:, 0]
-            recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
-            recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
-            ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
+            if self.wpt_dim > 3:
+                recon_dir = recon_traj[:, 0]
+                recon_dirmat = self.rot6d_to_rotmat(recon_dir.reshape(-1, 2, 3).permute(0, 2, 1))
+                recon_rotvec = R.from_matrix(recon_dirmat.cpu().detach().numpy()).as_rotvec()
+                ret_traj[:, 0, 3:] = torch.from_numpy(recon_rotvec)
 
             ret_traj[:, 1:] = recon_traj[:, 1:]
 
@@ -403,27 +405,29 @@ class TrajReconPartSegMutual(nn.Module):
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
-        nn_loss = torch.Tensor([0]).to('cuda')
-        recon_loss = torch.Tensor([0]).to('cuda')
-        dir_loss = torch.Tensor([0]).to('cuda')
-        kl_loss = torch.Tensor([0]).to('cuda')
-
         if self.dataset_type == 0: # absolute 
             recon_wps = recon_traj
             input_wps = traj
             recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
 
         if self.dataset_type == 1: # residualrecon_dir = recon_traj[:, 0, :]
-            input_dir = traj[:, 0, :]
-            recon_dir = recon_traj[:, 0, :]
-            dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
-            dir_loss = dir_loss.mean()
 
-            input_wps = traj[:, 1:, :]
-            recon_wps = recon_traj[:, 1:, :]
-            wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
-            
-            recon_loss = self.lbd_dir * dir_loss + wpt_loss
+            if self.wpt_dim == 3:
+                recon_wps = recon_traj
+                input_wps = traj
+                recon_loss = self.MSELoss(recon_wps.view(batch_size, self.num_steps * self.wpt_dim), input_wps.view(batch_size, self.num_steps * self.wpt_dim))
+
+            elif self.wpt_dim == 6:
+                input_dir = traj[:, 0, :]
+                recon_dir = recon_traj[:, 0, :]
+                dir_loss = self.get_6d_rot_loss(recon_dir, input_dir)
+                dir_loss = dir_loss.mean()
+
+                input_wps = traj[:, 1:, :]
+                recon_wps = recon_traj[:, 1:, :]
+                wpt_loss = self.MSELoss(recon_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim), input_wps.view(batch_size, (self.num_steps - 1) * self.wpt_dim))
+                
+                recon_loss = self.lbd_dir * dir_loss + wpt_loss
 
         kl_loss = KL(mu, logvar)
         losses = {}
@@ -434,8 +438,8 @@ class TrajReconPartSegMutual(nn.Module):
         losses['dir'] = dir_loss
 
         if self.kl_annealing == 0:
-            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + 0.1 * affordance_loss
+            losses['total'] = kl_loss * self.lbd_kl + recon_loss * self.lbd_recon + self.lbd_affordance * affordance_loss
         elif self.kl_annealing == 1:
-            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + 0.1 * affordance_loss
+            losses['total'] = kl_loss * lbd_kl + recon_loss * self.lbd_recon + self.lbd_affordance * affordance_loss
 
         return losses

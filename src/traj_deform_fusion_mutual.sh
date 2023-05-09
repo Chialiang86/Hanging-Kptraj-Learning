@@ -9,12 +9,12 @@ if [ $1 = 'train' ]; then
 
     model_configs=(
 
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise"
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise"
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
 
         "traj_deform_fusion_mutual_lstm_v2_noise"
         "traj_deform_fusion_mutual_lstm_v2_noise"
@@ -27,12 +27,12 @@ if [ $1 = 'train' ]; then
 
     traj_recon_affordance_datasets=(
 
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"

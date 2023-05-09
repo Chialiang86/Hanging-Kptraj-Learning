@@ -26,10 +26,9 @@ model_inputs:
   kl_annealing: 0
   with_afford_score: 1
 
-
 lr: 0.0001
 lr_decay_rate: 0.95
-lr_decay_epoch: 1000
+lr_decay_epoch: 400
 weight_decay: 0.0001
 save_freq: 1000
 
