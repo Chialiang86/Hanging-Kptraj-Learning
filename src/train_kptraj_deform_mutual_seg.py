@@ -439,6 +439,7 @@ def test(args):
     weight_path = f'{checkpoint_dir}/{weight_subpath}'
 
     use_gt_cls = args.use_gt_cls
+    use_temp = args.use_temp
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
@@ -564,9 +565,16 @@ def test(args):
         
         if hook_name in template_hook_names:
 
+            index = {
+                0: 15,
+                1: 18,
+                2: 0,
+                3: 9,
+            }[difficulty]
+
             traj_list_tmp = []
             shape_files = glob.glob(f'{inference_hook_dir}/{hook_name}/affordance*.npy')[:1] # point cloud with affordance score (Nx4), the first element is the contact point
-            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[:1] # trajectory in 7d format
+            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[index:index+1] # trajectory in 7d format
 
             pcd = np.load(shape_files[0]).astype(np.float32)
             points = pcd[:,:3]
@@ -641,13 +649,13 @@ def test(args):
 
     # Create pybullet GUI
     physics_client_id = None
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    # physics_client_id = p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -783,6 +791,7 @@ def test(args):
                                                         contact_point,
                                                         template_trajs, 
                                                         difficulty=gt_difficulty if use_gt_cls else None, 
+                                                        use_temp=use_temp,
                                                         return_feat=False)
         
         contact_point = contact_point.detach().cpu().numpy()
@@ -889,7 +898,7 @@ def test(args):
             gif_frames = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
-                for wpt_i, wpt in enumerate(recovered_traj[::-1]):
+                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
@@ -1018,6 +1027,7 @@ def analysis(args):
 
     wpt_dim = config['dataset_inputs']['wpt_dim']
     sample_num_points = config['dataset_inputs']['sample_num_points']
+    with_afford_score = config['dataset_inputs']['with_afford_score']
     print(f'num of points = {sample_num_points}')
 
     # inference
@@ -1037,7 +1047,7 @@ def analysis(args):
         # if 'Hook' in inference_hook_path:
         paths = glob.glob(f'{inference_hook_path}/affordance-*.npy')
         paths.sort(key=lambda x : int(x.split('/')[-1].split('-')[-1].split('.')[0])) # sort by trajectory id : [parent_dir]/traj-8.json => 8
-        paths = paths[:10]
+        # paths = paths[:10]
         inference_hook_paths.extend(paths) 
 
     template_hook_names = [
@@ -1097,8 +1107,8 @@ def analysis(args):
                     rot_matrix = R.from_rotvec(waypoints_raw[:, 3:]).as_matrix() # omit absolute position of the first waypoint
                     rot_matrix_xy = np.transpose(rot_matrix, (0, 2, 1)).reshape((waypoints_raw.shape[0], -1))[:, :6] # the first, second column of the rotation matrix
                     waypoints[:, 3:] = rot_matrix_xy # rotation only (6d rotation representation)
-                    waypoints = torch.FloatTensor(waypoints).to(device)
                 
+                waypoints = torch.FloatTensor(waypoints).to(device)
                 if dataset_mode == 0:
                     waypoints[:, :3] = (waypoints[:, :3] - center) / scale
                 elif dataset_mode == 1:
@@ -1110,6 +1120,7 @@ def analysis(args):
 
         else :
 
+            points = points[:,:3]
             hook_pcds.append(points)
             hook_names.append(hook_name)
 
@@ -1183,11 +1194,16 @@ def analysis(args):
         affords = afford_network.inference_sigmoid(points_batch)
         affords_norm = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
 
+        points_batch = torch.from_numpy(pcd).unsqueeze(0).to(device=device).contiguous()
+
         # segmented point cloud extraction
         part_cond = torch.where(affords_norm > 0.1) # only high response region selected
         part_cond0 = part_cond[0]
         part_cond2 = part_cond[2]
         segmented_pcds = points_batch[part_cond0, part_cond2]
+        segmented_affords = affords[part_cond0, :, part_cond2]
+
+        segmented_pcds, centroid, scale = normalize_pc(segmented_pcds, copy_pts=True) # points will be in a unit sphere
 
         # contact point extraction
         contact_cond = torch.where(affords_norm == torch.max(affords_norm)) # only high response region selected
@@ -1195,33 +1211,35 @@ def analysis(args):
         contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
         contact_point = points_batch[contact_cond0, contact_cond2]
 
-        gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
-
         input_pcid = None
-        point_num = segmented_pcds.shape[1]
+        point_num = segmented_pcds.shape[0]
         if point_num >= sample_num_points:
-            input_pcid = furthest_point_sample(segmented_pcds, sample_num_points).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), sample_num_points).long().reshape(-1)  # BN
         else :
             mod_num = sample_num_points % point_num
             repeat_num = int(sample_num_points // point_num)
-            input_pcid = furthest_point_sample(segmented_pcds, mod_num).long().reshape(-1)  # BN
+            input_pcid = furthest_point_sample(segmented_pcds.unsqueeze(0).contiguous(), mod_num).long().reshape(-1)  # BN
             input_pcid = torch.cat([torch.arange(0, point_num).int().repeat(repeat_num).to(device), input_pcid])
-        segmented_pcds = segmented_pcds[0, input_pcid, :].squeeze()
+        segmented_pcds = segmented_pcds[input_pcid, :]
 
+        if with_afford_score:
+            segmented_fusion_input = segmented_affords[input_pcid]
+            segmented_pcds = torch.cat([segmented_pcds, segmented_fusion_input], dim=1)
+        
+        segmented_pcds = segmented_pcds.unsqueeze(0)
+        
         # contact_point_batch = torch.from_numpy(contact_point).to(device=device).repeat(batch_size, 1)
         # affordance, recon_trajs = network.sample(points_batch, contact_point_batch)
-
-        # generate trajectory using predicted contact points
         target_difficulty, recon_trajs, whole_feat = network.sample(segmented_pcds, 
                                                         contact_point,
                                                         template_trajs, 
                                                         difficulty=gt_difficulty, 
                                                         return_feat=True)
+
         
         hook_poses = torch.Tensor(hook_pose).repeat(batch_size, 1).to(device)
         scales = torch.Tensor([scale]).repeat(batch_size).to(device)
-        centroids = torch.from_numpy(centroid).repeat(batch_size, 1).to(device)
-        recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroids, scales, dataset_mode, wpt_dim)
+        recovered_trajs = recover_trajectory(recon_trajs, hook_poses, centroid, scales, dataset_mode, wpt_dim)
         recovered_trajs = torch.Tensor(np.asarray(recovered_trajs)[:, :, :3]).reshape(batch_size, -1)
         if whole_trajs is None:
             whole_trajs = recovered_trajs
@@ -1391,6 +1409,7 @@ if __name__=="__main__":
     
     # other info
     parser.add_argument('--use_gt_cls', action="store_true")
+    parser.add_argument('--use_temp', action="store_true")
     parser.add_argument('--device', '-dv', type=str, default="cuda")
     parser.add_argument('--config', '-cfg', type=str, default='../config/traj_recon_affordance_cvae_kl_large.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)

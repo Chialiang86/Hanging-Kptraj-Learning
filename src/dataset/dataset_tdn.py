@@ -58,6 +58,8 @@ class KptrajDeformAffordanceDataset(Dataset):
         self.traj_list = []
         self.difficulty_list = []
 
+        # dataset_subdirs = dataset_subdirs[:4] + dataset_subdirs[7:8]
+
         for dataset_subdir in tqdm(dataset_subdirs):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
@@ -72,6 +74,7 @@ class KptrajDeformAffordanceDataset(Dataset):
                          1 if 'normal' in hook_name else \
                          2 if 'hard' in hook_name else \
                          3 # devil
+            
             
             if current_type == 'normal':
                 self.difficulty_list.append(difficulty)
@@ -171,6 +174,10 @@ class KptrajDeformAffordanceDataset(Dataset):
         print(f'dataset size : {self.size}')
         print(f"trajectory : {len(self.traj_list)}")
         print(f'sample_num_points : {self.sample_num_points}')
+
+    def set_index(self, val):
+        self.index = val
+        print(f'self.index = {self.index}')
         
     def __len__(self):
         return self.size
@@ -181,7 +188,9 @@ class KptrajDeformAffordanceDataset(Dataset):
         # for template information #
         ############################
 
+
         difficulty = self.difficulty_list[index]
+
         template_info = self.template_dict[difficulty]
         temp_shape_id = np.random.randint(0, len(template_info['shape']))
         temp_traj_id = np.random.randint(0, len(template_info['traj']))

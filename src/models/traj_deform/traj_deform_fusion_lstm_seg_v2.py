@@ -429,7 +429,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         return losses
     
-    def sample(self, pcs, contact_point, template_info, difficulty=None, return_feat=False):
+    def sample(self, pcs, contact_point, template_info, difficulty=None, use_temp=False, return_feat=False):
 
         batch_size = pcs.shape[0]
         if self.with_afford_score:
@@ -497,6 +497,9 @@ class TrajDeformFusionLSTM(nn.Module):
 
             bmm_res = torch.bmm(offset_rotmat, temp_rotmat).permute(0, 2, 1).reshape(batch_size, self.num_steps, 3, 3)
             ret_traj[:, :, 3:] = bmm_res.reshape(batch_size, self.num_steps, 9)[:, :, :6] # only the first two column vectors in the rotation matrix used
+
+        if use_temp:
+            ret_traj = temp_traj_clone
 
         if return_feat:
             return target_difficulty, ret_traj, whole_feats

@@ -1,7 +1,7 @@
-dataset_module: 'dataset'
+dataset_module: 'dataset_seg'
 dataset_class: 'KptrajReconAffordanceDataset'
 enable_affordance: 1
-module: 'traj_af_mutual.traj_recon_partseg_cvae_mutual' 
+module: 'traj_af_mutual.traj_recon_partseg_cvae_mutual_seg' 
 model: 'TrajReconPartSegMutual'
 
 dataset_inputs:
@@ -21,11 +21,9 @@ model_inputs:
   num_steps: 10
   wpt_dim: 3
   lbd_kl: 0.01
-  lbd_affordance: 0.1
   lbd_recon: 1.0
   lbd_dir: 10.0
   kl_annealing: 0
-  train_traj_start: 500
   with_afford_score: 1
 
 lr: 0.0001

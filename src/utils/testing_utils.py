@@ -262,6 +262,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
     elif type(traj_src) == np.ndarray:
         traj = np.copy(traj_src)
 
+
     waypoints = []
 
     if dataset_mode == 0: # "absolute"
@@ -335,6 +336,7 @@ def recover_trajectory(traj_src : torch.Tensor or np.ndarray, hook_poses : torch
                 
                 wpt = np.zeros(6)
                 if wpt_dim == 6 or wpt_dim == 9:
+
 
                     if wpt_id == 0 :
                         wpt_tmp = traj[traj_id, wpt_id]

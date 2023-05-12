@@ -4,7 +4,7 @@ import numpy as np
 def main(input_dir):
     assert os.path.exists(input_dir), f'{input_dir} not exists'
 
-    input_txts = glob.glob(f'{input_dir}/*.txt')
+    input_txts = glob.glob(f'{input_dir}/traj*.txt')
 
     for input_txt in input_txts:
 

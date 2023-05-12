@@ -433,6 +433,7 @@ def test(args):
 
     use_gt_cp = args.use_gt_cp
     use_gt_cls = args.use_gt_cls
+    use_temp = args.use_temp
 
     assert os.path.exists(weight_path), f'weight file : {weight_path} not exists'
 
@@ -536,9 +537,17 @@ def test(args):
         
         if hook_name in template_hook_names:
 
+            index = {
+                0: 15,
+                1: 18,
+                2: 0,
+                3: 9,
+            }[difficulty]
+
             traj_list_tmp = []
             shape_files = glob.glob(f'{inference_hook_dir}/{hook_name}/affordance*.npy')[:1] # point cloud with affordance score (Nx4), the first element is the contact point
-            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[:1] # trajectory in 7d format
+            traj_files = glob.glob(f'{inference_hook_dir}/{hook_name}/*.json')[index:index+1] # trajectory in 7d format
+
 
             pcd = np.load(shape_files[0]).astype(np.float32)
             pcd_3d = pcd[:,:3]
@@ -612,13 +621,13 @@ def test(args):
 
     # Create pybullet GUI
     physics_client_id = None
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    # physics_client_id = p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -732,6 +741,7 @@ def test(args):
                                                                                     template_trajs, 
                                                                                     difficulty=gt_difficulty if use_gt_cls else None, 
                                                                                     use_gt_cp=use_gt_cp, 
+                                                                                    use_temp=use_temp,
                                                                                     return_feat=False)
         contact_point = contact_point.detach().cpu().numpy()
 
@@ -967,7 +977,7 @@ def analysis(args):
         # if 'Hook' in inference_hook_path:
         paths = glob.glob(f'{inference_hook_path}/affordance-*.npy')
         paths.sort(key=lambda x : int(x.split('/')[-1].split('-')[-1].split('.')[0])) # sort by trajectory id : [parent_dir]/traj-8.json => 8
-        paths = paths[:10]
+        # paths = paths[:10]
         inference_hook_paths.extend(paths) 
 
     template_hook_names = [
@@ -1302,6 +1312,7 @@ if __name__=="__main__":
     # other info
     parser.add_argument('--use_gt_cp', action="store_true")
     parser.add_argument('--use_gt_cls', action="store_true")
+    parser.add_argument('--use_temp', action="store_true")
     parser.add_argument('--device', '-dv', type=str, default="cuda")
     parser.add_argument('--config', '-cfg', type=str, default='../config/traj_recon_affordance_cvae_kl_large.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
