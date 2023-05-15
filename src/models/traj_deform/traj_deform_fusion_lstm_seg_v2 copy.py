@@ -24,13 +24,15 @@ def KL(mu, logvar):
 
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
+        c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]
+        c_out = 512 if 'feat_dim' not in self.hparams.keys() else self.hparams['feat_dim']
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
                 npoint=256,
                 radius=0.2,
                 nsample=64,
-                mlp=[3, 32, 64, 128],
+                mlp=[c_in, 32, 64, 128],
                 use_xyz=True,
             )
         )
@@ -45,16 +47,8 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
         )
         self.SA_modules.append(
             PointnetSAModule(
-                mlp=[256, 256, 256, 512], use_xyz=True
+                mlp=[256, 256, 256, c_out], use_xyz=True
             )
-        )
-
-        self.fc_layer = nn.Sequential(
-            nn.Linear(512, 256, bias=False),
-            nn.BatchNorm1d(256),
-            nn.ReLU(True),
-            nn.Dropout(0.5),
-            nn.Linear(256, 4), # class num = 4
         )
     
     def _break_up_pc(self, pc):
@@ -80,11 +74,11 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
         for module in self.SA_modules:
             xyz, features = module(xyz, features)
 
-        return self.fc_layer(features.squeeze(-1))
+        return features.squeeze(-1)
 
 class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
-        c_in = 3
+        c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]
         self.SA_modules = nn.ModuleList()
         self.SA_modules.append(
             PointnetSAModule(
@@ -217,44 +211,37 @@ class LSTMDecoder(nn.Module):
         return out_traj_offset
 
 class TrajDeformFusionLSTM(nn.Module):
-    def __init__(self, pcd_feat_dim=32, cp_feat_dim=32, wpt_feat_dim=64,
+    def __init__(self, pcd_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
                         num_steps=30, wpt_dim=9, decoder_layers=1,
-                        lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
-                        train_traj_start=1000, dataset_type=0, gt_trajs=1):
+                        lbd_cls=0.1, lbd_dir=1.0, lbd_deform=1.0, 
+                        dataset_type=0, gt_trajs=1, with_afford_score=0):
+        
         super(TrajDeformFusionLSTM, self).__init__()
 
         self.rot_dim = 6 if wpt_dim == 9 else 3
         self.pcd_feat_dim = pcd_feat_dim
-        self.cp_feat_dim = cp_feat_dim
         self.hidden_dim = hidden_dim
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
         self.decoder_layers = decoder_layers
         self.gt_trajs = gt_trajs
+        self.with_afford_score = with_afford_score
 
-        self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim})
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        self.affordance_head = nn.Sequential(
-            nn.Dropout(0.5),
-            nn.Conv1d(pcd_feat_dim, 1, kernel_size=1)
-        )
-        self.sigmoid = torch.nn.Sigmoid()
+        pcd_input_feat_dim = 3 if with_afford_score == 0 else 4
+        # self.pointnet2seg = PointNet2SemSegSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
+        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim, 'input_feat_dim': pcd_input_feat_dim})
 
         ###################################################
         # =========== for classification head =========== #
         ###################################################
 
         self.classification_head = nn.Sequential(
-            nn.Linear(pcd_feat_dim, 32),
-            nn.LeakyReLU(),
-            nn.Linear(32, 32),
-            nn.LeakyReLU(),
-            nn.Linear(32, 4)
+            nn.Linear(pcd_feat_dim, 64, bias=False),
+            nn.BatchNorm1d(64),
+            nn.ReLU(True),
+            nn.Dropout(0.5),
+            nn.Linear(64, 4), # class num = 4
         )
 
         ###########################################################
@@ -266,7 +253,7 @@ class TrajDeformFusionLSTM(nn.Module):
         #     nn.Conv1d(pcd_feat_dim, encode_point_feat_dim, kernel_size=1)
         # )
 
-        self.mlp_traj = WptEncoder(3, wpt_feat_dim)
+        self.mlp_traj = WptEncoder(self.wpt_dim, wpt_feat_dim)
         self.lstm_decoder = LSTMDecoder(
                                 num_layers=decoder_layers, 
                                 input_dim=pcd_feat_dim + wpt_feat_dim + wpt_dim, 
@@ -276,10 +263,7 @@ class TrajDeformFusionLSTM(nn.Module):
         self.MSELoss = nn.MSELoss(reduction='mean')
         self.CELoss = nn.CrossEntropyLoss(reduction='mean')
 
-        self.train_traj_start = train_traj_start
-        
         self.lbd_cls = lbd_cls
-        self.lbd_affordance = lbd_affordance
         self.lbd_dir = lbd_dir
         self.lbd_deform = lbd_deform
 
@@ -318,12 +302,12 @@ class TrajDeformFusionLSTM(nn.Module):
 
     # pcs: B x N x 3 (float), with the 0th point to be the query point
     # pred_result_logits: B, pcs_feat: B x F x N
-    def forward(self, iter, pcs, temp_traj, traj):
+    def forward(self, pcs, contact_point, temp_traj):
 
-        batch_size = pcs.shape[0]
-
-        pcs_repeat = pcs.repeat(1, 1, 2)
-        contact_point = traj[:, 0, :3]
+        if self.with_afford_score:
+            pcs_repeat = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
+        else :
+            pcs_repeat = pcs.repeat(1, 1, 2)
 
         temp_traj_align_offset = temp_traj[:, 0, :3] - contact_point
         temp_traj_clone = temp_traj.clone()
@@ -332,47 +316,20 @@ class TrajDeformFusionLSTM(nn.Module):
         elif self.dataset_type == 1: # residual
             temp_traj_clone[:, 0, :3] -= temp_traj_align_offset
 
-        whole_feats = self.pointnet2seg(pcs_repeat)
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        affordance = self.affordance_head(whole_feats)
-        if iter < self.train_traj_start:
-            return None, affordance, None
-        
-        #######################################################################
-        # =========== extract shape feature using affordance head =========== #
-        #######################################################################
-        
-        # TODO: may need to encode whole_feats to lower dimensional features
-        pn_feat_dim = whole_feats.shape[1]
-        affordance_sigmoid = self.sigmoid(affordance)
-        affordance_min = torch.unsqueeze(torch.min(affordance_sigmoid, dim=2).values, 1)
-        affordance_max = torch.unsqueeze(torch.max(affordance_sigmoid, dim=2).values, 1)
-        affordance_norm = (affordance_sigmoid - affordance_min) / (affordance_max - affordance_min)
-        part_cond = torch.where(affordance_norm > 0.2) # only high response region selected
-        part_cond0 = part_cond[0].to(torch.long)
-        part_cond2 = part_cond[2].to(torch.long)
-        whole_feats_part = torch.zeros((batch_size, pn_feat_dim)).to(pcs.device)
-        max_iter = torch.max(part_cond0) + 1
-        for i in range(max_iter):
-
-            cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            whole_feats_part[i] = tmp_max
+        # whole_feats = self.pointnet2seg(pcs_repeat)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pcs_repeat)
 
         ###################################################
         # =========== for classification head =========== #
         ###################################################
 
-        classification_out = self.classification_head(whole_feats_part)
+        classification_out = self.classification_head(whole_feats)
         difficulty = F.log_softmax(classification_out, -1)
 
         ###################################################
 
-        f_s = whole_feats_part
+        f_s = whole_feats
         f_traj = self.mlp_traj(temp_traj_clone)
 
         ##############################################################
@@ -383,7 +340,7 @@ class TrajDeformFusionLSTM(nn.Module):
         f_all = torch.cat([f_s_repeat, f_traj, temp_traj_clone], dim=-1)
         traj_deform_offset = self.lstm_decoder(f_all)
 
-        return difficulty, affordance, traj_deform_offset
+        return difficulty, traj_deform_offset
     
     #########################################
     # ===================================== #
@@ -391,30 +348,15 @@ class TrajDeformFusionLSTM(nn.Module):
     # ===================================== #
     #########################################
 
-    def get_loss(self, iter, pcs, affordance, difficulty, temp_traj, traj):
+    def get_loss(self, pcs, difficulty, sample_cp, temp_traj, traj):
         batch_size = traj.shape[0]
 
-        difficulty_pred, affordance_pred, traj_deform_offset_pred = self.forward(iter, pcs, temp_traj, traj) 
+        difficulty_pred, traj_deform_offset_pred = self.forward(pcs, sample_cp, temp_traj) 
 
         cls_loss = torch.Tensor([0]).to(pcs.device)
+        affordance_loss = torch.Tensor([0]).to(pcs.device)
         deform_loss = torch.Tensor([0]).to(pcs.device)
         dir_loss = torch.Tensor([0]).to(pcs.device)
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
-
-        if iter < self.train_traj_start:
-            losses = {}
-            losses['cls'] = cls_loss
-            losses['afford'] = affordance_loss
-            losses['deform'] = deform_loss
-            losses['dir'] = dir_loss
-
-            losses['total'] = affordance_loss
-            return losses
 
         ###################################################
         # =========== for classification head =========== #
@@ -427,7 +369,6 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for trajectory deformation head =========== #
         ###########################################################
 
-
         # trajectory deformation loss
         temp_traj_repeat = temp_traj.unsqueeze(1).repeat(1, self.gt_trajs, 1, 1)
 
@@ -439,15 +380,6 @@ class TrajDeformFusionLSTM(nn.Module):
             temp_traj_repeat[:, :, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
         pos_offset = traj[:, :, :, :3] - temp_traj_repeat[:, :, :, :3]
 
-        # # trajectory deformation loss
-        # # for position offset
-        # first_pos_diff = traj[:, 0, :3] - temp_traj[:, 0, :3] # find the first-wpt difference
-        # if self.dataset_type == 0: # absolute
-        #     temp_traj[:, :, :3] += first_pos_diff.unsqueeze(1) # align template traj to target traj via first wpt
-        # elif self.dataset_type == 1: # residual
-        #     temp_traj[:, 0, :3] += first_pos_diff # align template traj to target traj via first wpt
-        # pos_offset = traj[:, :, :3] - temp_traj[:, :, :3]
-
         # compute loss
         deform_wps_pos = traj_deform_offset_pred[:, :, :3]
         deform_pos_loss = torch.tensor(1000000)
@@ -455,10 +387,35 @@ class TrajDeformFusionLSTM(nn.Module):
             deform_pos_loss_tmp = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
                                              pos_offset[:, i].reshape(batch_size, self.num_steps * 3))
             deform_pos_loss = torch.min(deform_pos_loss, deform_pos_loss_tmp)
-        # deform_pos_loss = self.MSELoss(deform_wps_pos.reshape(batch_size, self.num_steps * 3), 
-        #                                pos_offset.reshape(batch_size, self.num_steps * 3))
+
+        if self.wpt_dim == 3:
+            deform_loss = deform_pos_loss
+
+        # for rotation offset
+        if self.wpt_dim == 9:
+            temp_rotmat_xy = temp_traj_repeat[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3)
+            temp_rotmat_z = torch.cross(temp_rotmat_xy[:, :, :, 0], temp_rotmat_xy[:, :, :, 1]).unsqueeze(3)
+            temp_rotmat = torch.cat([temp_rotmat_xy, temp_rotmat_z], dim=3) # row vector (the inverse of the temp rotation matrix)
+            temp_rotmat = temp_rotmat.reshape(-1, 3, 3)
+
+            rotmat_xy = traj[:, :, :, 3:].reshape(batch_size, self.gt_trajs, self.num_steps, 2, 3) # column vector 
+            rotmat_z = torch.cross(rotmat_xy[:, :, :, 0], rotmat_xy[:, :, :, 1]).unsqueeze(3)
+            rotmat = torch.cat([rotmat_xy, rotmat_z], dim=3).permute(0, 1, 2, 4, 3) # col vector (the inverse of the temp rotation matrix)
+            rotmat = rotmat.reshape(-1, 3, 3)
+
+            rotmat_offset = torch.bmm(rotmat, temp_rotmat).permute(0, 2, 1).reshape(-1, self.gt_trajs, 9)[:, :, :6]
         
-        deform_loss = deform_pos_loss
+            # compute loss
+            deform_wps_rot = traj_deform_offset_pred[:, :, 3:]
+            deform_wps_rot = deform_wps_rot.reshape(-1, 6)
+            deform_rot_loss = torch.tensor(1000000)
+            for i in range(self.gt_trajs):
+                deform_rot_loss_tmp = self.get_6d_rot_loss(deform_wps_rot, 
+                                                            rotmat_offset[:, i])
+                deform_rot_loss_tmp = deform_rot_loss_tmp.mean()
+                deform_rot_loss = torch.min(deform_rot_loss, deform_rot_loss_tmp)
+            
+            deform_loss = deform_pos_loss + deform_rot_loss
 
         losses = {}
         losses['cls'] = cls_loss
@@ -467,51 +424,22 @@ class TrajDeformFusionLSTM(nn.Module):
         losses['deform'] = deform_loss
 
         losses['total'] = self.lbd_cls * cls_loss + \
-                            self.lbd_affordance * affordance_loss + \
                             self.lbd_dir * dir_loss + \
                             self.lbd_deform * deform_loss
 
         return losses
     
-    def sample(self, pcs, template_info, difficulty=None, use_gt_cp=False, return_feat=False):
+    def sample(self, pcs, contact_point, template_info, difficulty=None, use_temp=False, return_feat=False):
+
         batch_size = pcs.shape[0]
-
-        pn_input = pcs.repeat(1, 1, 2)
-        whole_feats = self.pointnet2seg(pn_input)
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        part_score = self.affordance_head(whole_feats)
-        part_score = self.sigmoid(part_score)
-
-        part_score_min = torch.unsqueeze(torch.min(part_score, dim=2).values, 1)
-        part_score_max = torch.unsqueeze(torch.max(part_score, dim=2).values, 1)
-        part_score = (part_score - part_score_min) / (part_score_max - part_score_min)
-        if use_gt_cp == True:
-            contact_point = pcs[:, 0]
+        if self.with_afford_score:
+            pn_input = torch.cat([pcs[:,:,:3].repeat(1, 1, 2), pcs[:,:,3].unsqueeze(-1)], dim=2)
         else :
-            contact_cond = torch.where(part_score == torch.max(part_score)) # only high response region selected
-            contact_cond0 = contact_cond[0].to(torch.long) # point cloud id
-            contact_cond2 = contact_cond[2].to(torch.long) # contact point ind for the point cloud
-            contact_point = pcs[contact_cond0, contact_cond2]
+            pn_input = pcs.repeat(1, 1, 2)
 
-        #######################################################################
-        # =========== extract shape feature using affordance head =========== #
-        #######################################################################
-
-        # choose 10 features from segmented point cloud
-        part_cond = torch.where(part_score > 0.2) # only high response region selected
-        part_cond0 = part_cond[0].to(torch.long)
-        part_cond2 = part_cond[2].to(torch.long)
-        whole_feats_part = whole_feats[:, :, 0].clone()
-        max_iter = torch.max(part_cond0) + 1
-        for i in range(max_iter):
-            
-            cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
-            tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
-            whole_feats_part[i] = tmp_max
+        # whole_feats = self.pointnet2seg(pn_input)
+        # whole_feats = torch.max(whole_feats, dim=2).values # get max pooling feature using that 10 point features from the sub point cloud 
+        whole_feats = self.pointnet2cls(pn_input)
 
         ###################################################
         # =========== for classification head =========== #
@@ -520,7 +448,7 @@ class TrajDeformFusionLSTM(nn.Module):
         if difficulty is not None:
             target_difficulty = difficulty
         else :
-            classification_out = self.classification_head(whole_feats_part)
+            classification_out = self.classification_head(whole_feats)
             difficulty = F.log_softmax(classification_out, -1)
             target_difficulty = torch.argmax(difficulty, dim=-1)
 
@@ -547,7 +475,7 @@ class TrajDeformFusionLSTM(nn.Module):
         ###################################################
 
         # f_s = torch.randn(whole_feats_part.shape).to(whole_feats_part.device)
-        f_s = whole_feats_part
+        f_s = whole_feats
         f_traj = self.mlp_traj(temp_traj_clone)
 
         ###############################################################
@@ -562,6 +490,17 @@ class TrajDeformFusionLSTM(nn.Module):
         ret_traj = torch.zeros((batch_size, self.num_steps, self.wpt_dim))
         ret_traj[:, :, :3] = temp_traj_clone[:, :, :3] + traj_deform_offset[:, :, :3]
 
+        if self.wpt_dim == 9:
+            # for rotation offset
+            temp_rotmat = self.rot6d_to_rotmat(temp_traj_clone[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+            offset_rotmat = self.rot6d_to_rotmat(traj_deform_offset[:, :, 3:].reshape(-1, 2, 3).permute(0, 2, 1))
+
+            bmm_res = torch.bmm(offset_rotmat, temp_rotmat).permute(0, 2, 1).reshape(batch_size, self.num_steps, 3, 3)
+            ret_traj[:, :, 3:] = bmm_res.reshape(batch_size, self.num_steps, 9)[:, :, :6] # only the first two column vectors in the rotation matrix used
+
+        if use_temp:
+            ret_traj = temp_traj_clone
+
         if return_feat:
-            return target_difficulty, contact_point, part_score, ret_traj, whole_feats_part
-        return target_difficulty, contact_point, part_score, ret_traj
+            return target_difficulty, ret_traj, whole_feats
+        return target_difficulty, ret_traj

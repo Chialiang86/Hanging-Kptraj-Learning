@@ -1,0 +1,83 @@
+everyday_objects_bag_5.json    bad pose
+everyday_objects_bag_6.json    ok, too large
+everyday_objects_bag_70.json    ok
+everyday_objects_cooking_127.json    bad pose
+everyday_objects_cooking_132.json    ok
+everyday_objects_cooking_169.json    ok, bad pose
+everyday_objects_cooking_310.json    bad pose
+everyday_objects_cooking_32.json    ok
+everyday_objects_cooking_415.json    ok
+everyday_objects_cooking_74.json    ok, bad object
+everyday_objects_cooking_77.json    ok, bad object
+everyday_objects_cooking_78.json    ok, bad object
+everyday_objects_daily_106.json    scissor too small
+everyday_objects_daily_114.json    ok, too large
+everyday_objects_daily_115.json    ok
+everyday_objects_daily_11.json    ok
+everyday_objects_daily_23.json    ok
+everyday_objects_daily_2.json    ok
+everyday_objects_daily_34.json    ok, bad obj
+everyday_objects_daily_41.json    ok
+everyday_objects_daily_42.json    ok
+everyday_objects_daily_57.json    ok
+everyday_objects_daily_5.json    ok
+everyday_objects_daily_63.json    bad pose
+everyday_objects_daily_71.json    ok
+everyday_objects_daily_72.json    ok
+everyday_objects_daily_7.json    bag, ok
+everyday_objects_daily_84.json    ok
+everyday_objects_daily_85.json    ok, bad object
+everyday_objects_daily_8.json    too large, ok
+everyday_objects_daily_97.json    ok
+everyday_objects_mug_100.json    ol, too large
+everyday_objects_mug_112.json    ok
+everyday_objects_mug_113.json    ok
+everyday_objects_mug_115.json    ok
+everyday_objects_mug_118.json    ok
+everyday_objects_mug_11.json    bad pose
+everyday_objects_mug_123.json    ok
+everyday_objects_mug_126.json    ok
+everyday_objects_mug_128.json    bad pose, too large
+everyday_objects_mug_129.json    bad pose
+everyday_objects_mug_132.json    ok
+everyday_objects_mug_135.json    ok
+everyday_objects_mug_142.json    bad posem too large
+everyday_objects_mug_145.json    ok
+everyday_objects_mug_146.json    bad pose too large
+everyday_objects_mug_147.json    ok
+everyday_objects_mug_149.json    ok, too large
+everyday_objects_mug_150.json    ok, too large
+everyday_objects_mug_159.json    ok, too large
+everyday_objects_mug_166.json    ok
+everyday_objects_mug_173.json    ok
+everyday_objects_mug_181.json    ok
+everyday_objects_mug_184.json    ok
+everyday_objects_mug_193.json    ok
+everyday_objects_mug_199.json    too large
+everyday_objects_mug_19.json    ok, too large
+everyday_objects_mug_204.json    bad pose too large
+everyday_objects_mug_205.json    bad pose too large 
+everyday_objects_mug_43.json    ok
+everyday_objects_mug_64.json    ok, too large
+everyday_objects_mug_67.json    ok good
+everyday_objects_mug_80.json    bad pose bad obj
+everyday_objects_mug_82.json    ok too large
+everyday_objects_mug_90.json    ok
+everyday_objects_scissor_101.json    bad pose
+everyday_objects_scissor_12.json    bad pose, bad obj
+everyday_objects_scissor_14.json    ok
+everyday_objects_scissor_19.json    bad pose
+everyday_objects_scissor_22.json    ok
+everyday_objects_scissor_27.json    bad pose
+everyday_objects_scissor_31.json    ok
+everyday_objects_scissor_39.json    ok
+everyday_objects_scissor_48.json    ok
+everyday_objects_scissor_4.json    bad pose
+everyday_objects_scissor_62.json    ok
+everyday_objects_scissor_74.json    bad pose
+everyday_objects_scissor_79.json    bad pose
+everyday_objects_scissor_8.json    ok good
+everyday_objects_scissor_92.json    too large bad pose
+everyday_objects_scissor_95.json    bad pose
+everyday_objects_wrench_27.json    ok, too small
+everyday_objects_wrench_35.json    ok good

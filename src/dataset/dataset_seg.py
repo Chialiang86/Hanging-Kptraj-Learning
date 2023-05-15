@@ -47,6 +47,7 @@ class KptrajReconAffordanceDataset(Dataset):
             pcd_cps = None
             for shape_file in shape_files:
                 pcd = np.load(shape_file).astype(np.float32)
+                assert  pcd.shape[1] > 4, f''
                 pcd_cp = pcd[0, :3]
                 pcd_cps = pcd_cp.reshape(1, 3) if pcd_cps is None else np.vstack((pcd_cps, pcd_cp)) 
                 

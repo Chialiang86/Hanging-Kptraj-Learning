@@ -22,11 +22,13 @@ class pandaEnv:
         'panda_joint7': 1.0, 'panda_finger_joint1': 0.04, 'panda_finger_joint2': 0.04,
     }
 
-    # def __init__(self, physicsClientId, use_IK=0, base_position=(-0.13, 0.13, 0.45), control_orientation=1, control_eu_or_quat=0,
+
     def __init__(self, physicsClientId, use_IK=0, base_position=(-0.13, 0.13, 0.475), control_orientation=1, control_eu_or_quat=0,
-    # def __init__(self, physicsClientId, use_IK=0, base_position=(-0.13, 0.13, 0.525), control_orientation=1, control_eu_or_quat=0,
-    # def __init__(self, physicsClientId, use_IK=0, base_position=(-0.1, 0.25, 0.5), control_orientation=1, control_eu_or_quat=0,
                  joint_action_space=9, includeVelObs=True):
+    # def __init__(self, physicsClientId, use_IK=0, base_position=(-0.13, 0.13, 0.525), control_orientation=1, control_eu_or_quat=0,
+                #  joint_action_space=9, includeVelObs=True):
+    # def __init__(self, physicsClientId, use_IK=0, base_position=(-0.1, 0.25, 0.5), control_orientation=1, control_eu_or_quat=0,
+                #  joint_action_space=9, includeVelObs=True):
 
         self._physics_client_id = physicsClientId
         self._use_IK = use_IK

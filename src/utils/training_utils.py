@@ -34,13 +34,15 @@ class kl_annealing():
     def get_beta(self):
         return self.L[self.index]
 
-def normalize_pc(points : np.ndarray or torch.Tensor, copy_pts=False):
+def normalize_pc(points_raw : np.ndarray or torch.Tensor, copy_pts=False):
 
-    assert len(points.shape) == 2 or len(points.shape) == 3 
-    is_ndarray = True if type(points) == np.ndarray else False
+    assert len(points_raw.shape) == 2 or len(points_raw.shape) == 3 
+    is_ndarray = True if type(points_raw) == np.ndarray else False
 
     if copy_pts:
-        points = copy.deepcopy(points)
+        points = copy.deepcopy(points_raw)
+    else :
+        points = points_raw
 
     centroid = np.mean(points, axis=0 if (len(points.shape) == 2) else 1, dtype=np.float32) if is_ndarray else \
                torch.mean(points, dim=0 if (len(points.shape) == 2) else 1, ).float()

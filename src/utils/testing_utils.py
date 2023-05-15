@@ -399,18 +399,40 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
     obj_contact_relative_transform = get_matrix_from_pose(contact_pose)
 
     obj_pose = grasping_info['obj_pose']
+    obj_pose = np.asarray(obj_pose) + np.asarray([0, 0, 0.05, 0, 0, 0, 0])
     obj_transform = get_matrix_from_pose(obj_pose)
     
     robot_pose = grasping_info['robot_pose']
+    robot_pose = np.asarray(robot_pose) + np.asarray([0, 0, 0.05, 0, 0, 0, 0])
     robot_transform = get_matrix_from_pose(robot_pose)
 
     robot.reset()
+
+    # rendering
+    width=320
+    height=240
+    far = 1.
+    near = 0.01
+    fov = 90.
+    aspect_ratio = 1.
+    cameraEyePosition=[0.75, 0.1, 1.3]
+    cameraTargetPosition=[0.5, 0.1, 1.3]
+    cameraUpVector=[0.0, 0.0, 1.0]
+    view_mat = p.computeViewMatrix(
+        cameraEyePosition=cameraEyePosition,
+        cameraTargetPosition=cameraTargetPosition,
+        cameraUpVector=cameraUpVector,
+    )
+    proj_mat = p.computeProjectionMatrixFOV(
+        fov, aspect_ratio, near, far
+    )
 
     # grasp the objct
     robot.apply_action(robot_pose, max_vel=-1)
     for _ in range(int(1.0 / sim_timestep * 0.5)): 
         p.stepSimulation()
         time.sleep(sim_timestep)
+    p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
     robot.grasp(obj_id=obj_id)
     for _ in range(int(1.0 / sim_timestep * 0.25)): 
         p.resetBasePositionAndOrientation(obj_id, obj_pose[:3], obj_pose[3:])
@@ -428,23 +450,22 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
     kpt_to_gripper = np.linalg.inv(first_obj_kpt_transform_world) @ robot_transform
     first_gripper_pose = get_pose_from_matrix(first_kpt_transform_world @ kpt_to_gripper)
 
-
     # move to the first waypoint
-    trajectory_start = get_dense_waypoints(robot_pose, first_gripper_pose, resolution=0.005)
+    trajectory_start = get_dense_waypoints(robot_pose, first_gripper_pose, resolution=0.002 )
     for waypoint in trajectory_start:
         robot.apply_action(waypoint)
         p.stepSimulation()
         robot.grasp()
-        for _ in range(10): # 1 sec
+        for _ in range(3): 
             p.stepSimulation()
             time.sleep(sim_timestep)
 
     rgbs = []
-    cam_info = p.getDebugVisualizerCamera()
-    width, height, view_mat, proj_mat = cam_info[0], cam_info[1], cam_info[2], cam_info[3]
+    # cam_info = p.getDebugVisualizerCamera()
+    # width, height, view_mat, proj_mat = cam_info[0], cam_info[1], cam_info[2], cam_info[3]
 
-    colors = list(np.random.rand(3)) + [1]
-    wpt_ids = []
+    # colors = list(np.random.rand(3)) + [1]
+    # wpt_ids = []
     old_gripper_pose = first_gripper_pose
     for i, waypoint in enumerate(recovered_traj):
 
@@ -457,24 +478,24 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
             p.stepSimulation()
             
             robot.grasp()
-            for _ in range(5): # 1 sec
+            for _ in range(3): 
                 p.stepSimulation()
                 time.sleep(sim_timestep)
         old_gripper_pose = gripper_pose
 
         if visualize:
-            wpt_id = p.createMultiBody(
-                baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.002), 
-                baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.002, rgbaColor=colors), 
-                basePosition=waypoint[:3]
-            )
-            wpt_ids.append(wpt_id)
-            # img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            # rgb = img_info[2]
-            # rgbs.append(rgb)
+            # wpt_id = p.createMultiBody(
+            #     baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.002), 
+            #     baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.002, rgbaColor=colors), 
+            #     basePosition=waypoint[:3]
+            # )
+            # wpt_ids.append(wpt_id)
+            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+            rgb = img_info[2]
+            rgbs.append(rgb)
     
-    for wpt_id in wpt_ids:
-        p.removeBody(wpt_id)
+    # for wpt_id in wpt_ids:
+    #     p.removeBody(wpt_id)
 
     # release gripper
     robot.pre_grasp()

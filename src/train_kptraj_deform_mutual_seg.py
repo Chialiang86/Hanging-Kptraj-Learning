@@ -459,7 +459,7 @@ def test(args):
 
     # ================== load trained affordance network ==================
 
-    afford_weight_path = "checkpoints/fusion_msg_03.23.16.56/kptraj_all_smooth-absolute-10-k0_03.20.13.31-1000/1000_points-network_epoch-2000.pth"
+    afford_weight_path = "checkpoints/fusion_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview/3000_points-network_epoch-2000.pth"
 
     # params for training
     module_name = 'af.affordance' 
@@ -763,6 +763,8 @@ def test(args):
         segmented_affords = affords[part_cond0, :, part_cond2]
 
         segmented_pcds, centroid, scale = normalize_pc(segmented_pcds, copy_pts=True) # points will be in a unit sphere
+        # segmented_pcds = 2.0 * (np.random.rand(segmented_pcds.shape[0], segmented_pcds.shape[1]) - 0.5).astype(np.float32) # random noise
+        # segmented_pcds = torch.from_numpy(segmented_pcds).to(device)
 
         # contact point extraction
         contact_cond = torch.where(affords_norm == torch.max(affords_norm)) # only high response region selected
@@ -784,7 +786,6 @@ def test(args):
         if with_afford_score:
             segmented_fusion_input = segmented_affords[input_pcid]
             segmented_pcds = torch.cat([segmented_pcds, segmented_fusion_input], dim=1)
-        
         segmented_pcds = segmented_pcds.unsqueeze(0)
         
         target_difficulty, recon_trajs = network.sample(segmented_pcds, 
@@ -803,41 +804,6 @@ def test(args):
         # recon_trajs = torch.Tensor(template_trajs[d][0]).unsqueeze(0).to(device)
         # offset = recon_trajs[:, 0, :3] - torch.from_numpy(contact_point_gt).unsqueeze(0).to(device)
         # recon_trajs[:, :, :3] -= offset.unsqueeze(0)
-
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
-
-        points = points_batch[0].cpu().detach().squeeze().numpy()
-        affords = affords[0].cpu().detach().squeeze().numpy()
-        affords = (affords - np.min(affords)) / (np.max(affords) - np.min(affords))
-        colors = cv2.applyColorMap((255 * affords).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
-
-        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
-        # contact_point = points[contact_point_cond][0]
-
-        contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
-        contact_point_coor.translate(contact_point.reshape((3, 1)))
-
-        point_cloud = o3d.geometry.PointCloud()
-        point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
-
-        if visualize:
-            img_list = []
-            frames = 9
-            rotate_per_frame = np.pi * 2 / frames
-            for _ in range(frames):
-                r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
-                point_cloud.rotate(r, center=(0, 0, 0))
-                contact_point_coor.rotate(r, center=(0, 0, 0))
-                geometries = [point_cloud, contact_point_coor]
-
-                img = capture_from_viewer(geometries)
-                img_list.append(img)
-            
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
-            imageio.mimsave(save_path, img_list, fps=10)
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #
@@ -865,7 +831,7 @@ def test(args):
                     obj_name = obj_urdf.split('/')[-2]
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)
                     res = 'success' if success else 'failed'
                     obj_sucrate[obj_name][difficulty] += 1 if success else 0
                     obj_sucrate[obj_name][f'{difficulty}_all'] += 1
@@ -873,7 +839,7 @@ def test(args):
                     p.removeBody(obj_id)
 
                     if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
-                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}-noise.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
@@ -898,7 +864,7 @@ def test(args):
             gif_frames = []
             for i, recovered_traj in enumerate(recovered_trajs):
                 colors = list(np.random.rand(3)) + [1]
-                for wpt_i, wpt in enumerate(recovered_traj[ignore_wpt_num:][::-1]):
+                for wpt_i, wpt in enumerate(recovered_traj[::-1]):
                     wpt_id = p.createMultiBody(
                         baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.001), 
                         baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.001, rgbaColor=colors), 
@@ -919,7 +885,7 @@ def test(args):
                         rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
                         gif_frames.append(rgb)
 
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{max_obj_success_cnt}.gif"
             imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:
@@ -1009,7 +975,7 @@ def analysis(args):
 
     # ================== load trained affordance network ==================
 
-    afford_weight_path = "checkpoints/fusion_msg_03.23.16.56/kptraj_all_smooth-absolute-10-k0_03.20.13.31-1000/1000_points-network_epoch-2000.pth"
+    afford_weight_path = "checkpoints/fusion_msg_05.03.09.31-3000_singleview_0503/kptraj_all_smooth-absolute-40-k0_05.02.20.23-1000-singleview/3000_points-network_epoch-2000.pth"
 
     # params for training
     module_name = 'af.affordance' 

@@ -547,9 +547,9 @@ def test(args):
     hook_urdfs = []
 
     class_num = 15 if '/val' in inference_hook_dir else 200
-    easy_cnt = 0
-    normal_cnt = 0
-    hard_cnt = 0
+    easy_cnt = 15
+    normal_cnt = 15
+    hard_cnt = 15
     devil_cnt = 0
     cnt = 0
     for inference_hook_path in inference_hook_paths:
@@ -676,15 +676,24 @@ def test(args):
                      'normal' if 'normal' in hook_name else \
                      'hard' if 'hard' in hook_name else  \
                      'devil'
+        d = {
+            'easy': 0,
+            'normal': 1,
+            'hard': 2,
+            'devil': 3,
+        }[difficulty]
         
         # sample trajectories
         centroid_pcd, _, _ = normalize_pc(pcd, copy_pts=True) # points will be in a unit sphere
+        contact_point_gt = centroid_pcd[0]
+        # centroid_pcd = 1.0 * (np.random.rand(pcd.shape[0], pcd.shape[1]) - 0.5).astype(np.float32) # random noise
 
         points_batch = torch.from_numpy(centroid_pcd).unsqueeze(0).to(device=device).contiguous()
         points_batch = points_batch.repeat(batch_size, 1, 1)
 
+        gt_difficulty = torch.Tensor([d]).repeat(batch_size).to(device=device).int()
+
         affords = afford_network.inference_sigmoid(points_batch)
-        # affords = torch.from_numpy(hook_fusions[sid]).reshape((1, -1)).unsqueeze(0).to(device=device)
         affords_norm = (affords - torch.min(affords)) / (torch.max(affords) - torch.min(affords))
 
         points_batch = torch.from_numpy(pcd).unsqueeze(0).to(device=device).contiguous()
@@ -749,7 +758,7 @@ def test(args):
                     obj_name = obj_urdf.split('/')[-2]
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)
                     res = 'success' if success else 'failed'
                     obj_sucrate[obj_name][difficulty] += 1 if success else 0
                     obj_sucrate[obj_name][f'{difficulty}_all'] += 1
@@ -757,7 +766,7 @@ def test(args):
                     p.removeBody(obj_id)
 
                     if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
-                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}-noise.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
@@ -803,7 +812,7 @@ def test(args):
                         rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
                         gif_frames.append(rgb)
 
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{max_obj_success_cnt}.gif"
             imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:

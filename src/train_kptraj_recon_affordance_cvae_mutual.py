@@ -541,6 +541,9 @@ def test(args):
     p.setTimeStep(sim_timestep)
     p.setGravity(0, 0, 0)
 
+    cam_info = p.getDebugVisualizerCamera()
+    width, height, view_mat, proj_mat = cam_info[0], cam_info[1], cam_info[2], cam_info[3]
+    
     # ------------------- #
     # --- Setup robot --- #
     # ------------------- #
@@ -690,7 +693,7 @@ def test(args):
                     obj_name = obj_urdf.split('/')[-2]
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)
                     res = 'success' if success else 'failed'
                     obj_sucrate[obj_name][difficulty] += 1 if success else 0
                     obj_sucrate[obj_name][f'{difficulty}_all'] += 1
@@ -698,7 +701,7 @@ def test(args):
                     p.removeBody(obj_id)
 
                     if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
-                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}-noise.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
@@ -745,7 +748,7 @@ def test(args):
                         rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
                         gif_frames.append(rgb)
 
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{max_obj_success_cnt}.gif"
             imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:

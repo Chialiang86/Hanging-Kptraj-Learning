@@ -476,6 +476,9 @@ def test(args):
     inference_hook_paths = []
 
     for inference_obj_path in inference_obj_whole_dirs:
+
+        if 'scissor_4' not in inference_obj_path:
+            continue
         paths = glob.glob(f'{inference_obj_path}/*.json')
         assert len(paths) == 1, f'multiple object contact informations : {paths}'
         inference_obj_paths.extend(paths) 
@@ -492,7 +495,7 @@ def test(args):
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
-        obj_grasping_infos.append(obj_contact_info['initial_pose'][8]) # bottom position
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][0]) # bottom position
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -787,8 +790,9 @@ def test(args):
             
         #     save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
         #     imageio.mimsave(save_path, img_list, fps=10)
+        # daily_23 cooking_415 cooking_132short scissor_8 mug_112 bag_70 bag7
 
-        ##############################################################
+        ############################################################## 
         # =========== for trajectory reconstruction head =========== #
         ##############################################################
 
@@ -812,9 +816,10 @@ def test(args):
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
+                    print(obj_name)
 
                     obj_id = p.loadURDF(obj_urdf)
-                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=False)
+                    rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)
                     res = 'success' if success else 'failed'
                     obj_sucrate[obj_name][difficulty] += 1 if success else 0
                     obj_sucrate[obj_name][f'{difficulty}_all'] += 1
@@ -822,7 +827,7 @@ def test(args):
                     p.removeBody(obj_id)
 
                     if len(rgbs) > 0 and traj_id == 0: # only when visualize=True
-                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{i}-{res}-noise.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
+                        rgbs[0].save(f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{res}.gif", save_all=True, append_images=rgbs, duration=80, loop=0)
 
                 max_obj_success_cnt = max(obj_success_cnt, max_obj_success_cnt)
 
@@ -868,7 +873,7 @@ def test(args):
                         rgb = np.reshape(img[2], (height, width, 4))[:,:,:3]
                         gif_frames.append(rgb)
 
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}.gif"
+            save_path = f"{output_dir}/{weight_subpath[:-4]}-{sid}-{hook_name}-{max_obj_success_cnt}.gif"
             imageio.mimsave(save_path, gif_frames, fps=10)
 
             for wpt_id in wpt_ids:

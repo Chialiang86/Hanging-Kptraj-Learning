@@ -11,23 +11,35 @@ if [ $1 = 'train' ]; then
     model_configs=(
 
         "traj3d_fusion_mutual_seg_noise"
+        "traj3d_fusion_mutual_seg_noise"
         "traj3d_fusion_mutual_seg_noise_10"
+        "traj3d_fusion_mutual_seg_noise_10"
+        "traj3d_fusion_mutual_seg_noise_20"
         "traj3d_fusion_mutual_seg_noise_20"
 
         "traj_fusion_mutual_seg_noise"
+        "traj_fusion_mutual_seg_noise"
         "traj_fusion_mutual_seg_noise_10"
+        "traj_fusion_mutual_seg_noise_10"
+        "traj_fusion_mutual_seg_noise_20"
         "traj_fusion_mutual_seg_noise_20"
     )
 
     traj_recon_affordance_datasets=(
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
     )
 
     training_tag='' # $1
@@ -133,23 +145,15 @@ elif [ $1 = 'test' ]; then
 
     model_configs=(
 
-        "traj3d_fusion_mutual_seg_noise"
-        "traj3d_fusion_mutual_seg_noise"
-        
-        "traj3d_fusion_mutual_seg_noise_10"
-        "traj3d_fusion_mutual_seg_noise_10"
-        
-        "traj3d_fusion_mutual_seg_noise_20"
-        "traj3d_fusion_mutual_seg_noise_20"
+        "traj_fusion_mutual_seg_noise"
+        "traj_fusion_mutual_seg_noise"
+        # "traj_fusion_mutual_seg_noise_10"
+        # "traj_fusion_mutual_seg_noise_10"
 
-        "traj_fusion_mutual_seg_noise"
-        "traj_fusion_mutual_seg_noise"
-        
-        "traj_fusion_mutual_seg_noise_10"
-        "traj_fusion_mutual_seg_noise_10"
-        
-        "traj_fusion_mutual_seg_noise_20"
-        "traj_fusion_mutual_seg_noise_20"
+        "traj_fusion_mutual_seg"
+        "traj_fusion_mutual_seg"
+        # "traj_fusion_mutual_seg_10"
+        # "traj_fusion_mutual_seg_10"
 
     )
 
@@ -157,70 +161,47 @@ elif [ $1 = 'test' ]; then
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
     )
 
     inference_dirs=(
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview/val"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview/val"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val"
-        
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/val"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview/val"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val"
 
     )
 
     traj_recon_shape_checkpoints=(
 
         # 40
-        "checkpoints/traj3d_fusion_mutual_seg_noise-05.09.15.04-formal_0/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
-        "checkpoints/traj3d_fusion_mutual_seg_noise-05.09.15.04-formal_0/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
-        # 10
-        "checkpoints/traj3d_fusion_mutual_seg_noise_10-05.09.15.04-formal_0/kptraj_all_smooth-absolute-10-k0-05.02.20.53-1000-singleview"
-        "checkpoints/traj3d_fusion_mutual_seg_noise_10-05.09.15.04-formal_0/kptraj_all_smooth-residual-10-k0-05.02.20.53-1000-singleview"
-        # 20
-        "checkpoints/traj3d_fusion_mutual_seg_noise_20-05.11.10.32-formal_0/kptraj_all_smooth-absolute-20-k0-05.02.20.39-1000-singleview"
-        "checkpoints/traj3d_fusion_mutual_seg_noise_20-05.11.10.32-formal_0/kptraj_all_smooth-residual-20-k0-05.02.20.39-1000-singleview"
-        
-        # 40
-        "checkpoints/traj_fusion_mutual_seg_noise-05.09.15.04-formal_0/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
-        "checkpoints/traj_fusion_mutual_seg_noise-05.09.15.04-formal_0/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
-        # 10
-        "checkpoints/traj_fusion_mutual_seg_noise_10-05.09.15.04-formal_0/kptraj_all_smooth-absolute-10-k0-05.02.20.53-1000-singleview"
-        "checkpoints/traj_fusion_mutual_seg_noise_10-05.09.15.04-formal_0/kptraj_all_smooth-residual-10-k0-05.02.20.53-1000-singleview"
-        # 20
-        "checkpoints/traj_fusion_mutual_seg_noise_20-05.11.10.32-formal_0/kptraj_all_smooth-absolute-20-k0-05.02.20.39-1000-singleview"
-        "checkpoints/traj_fusion_mutual_seg_noise_20-05.11.10.32-formal_0/kptraj_all_smooth-residual-20-k0-05.02.20.39-1000-singleview"
-     )
+        "checkpoints/traj_fusion_mutual_seg_noise-05.03.23.06-extended_5000ep/kptraj_all_smooth-absolute-40-k0-05.02.18.59-1000-fullview" # sigmoid
+        "checkpoints/traj_fusion_mutual_seg_noise-05.03.23.06-extended_5000ep/kptraj_all_smooth-residual-40-k0-05.02.18.59-1000-fullview" # sigmoid
+        # "checkpoints/traj_fusion_mutual_seg_noise_10-05.03.23.06-extended_5000ep/kptraj_all_smooth-absolute-10-k0-05.02.19.28-1000-fullview" # sigmoid
+        # "checkpoints/traj_fusion_mutual_seg_noise_10-05.03.23.06-extended_5000ep/kptraj_all_smooth-residual-10-k0-05.02.19.28-1000-fullview" # sigmoid
+ 
+        "checkpoints/traj_fusion_mutual_seg-05.03.23.06-extended_5000ep/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview" # sigmoid
+        "checkpoints/traj_fusion_mutual_seg-05.03.23.06-extended_5000ep/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview" # sigmoid
+        # "checkpoints/traj_fusion_mutual_seg_10-05.03.23.06-extended_5000ep/kptraj_all_smooth-absolute-10-k0-05.02.20.53-1000-singleview" # sigmoid
+        # "checkpoints/traj_fusion_mutual_seg_10-05.03.23.06-extended_5000ep/kptraj_all_smooth-residual-10-k0-05.02.20.53-1000-singleview" # sigmoid
+    )
 
     iters=(
-        '20000'
+        '5000'
+        # '20000' 
+        # '30000'  
     )
 
     length=${#model_configs[@]}

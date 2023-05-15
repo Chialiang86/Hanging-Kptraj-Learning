@@ -10,17 +10,11 @@ if [ $1 = 'train' ]; then
     model_configs=(
 
         "traj3d_deform_fusion_mutual_lstm_v2_noise"
-        "traj3d_deform_fusion_mutual_lstm_v2_noise"
         "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
-        "traj3d_deform_fusion_mutual_lstm_v2_noise_10"
-        "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
         "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
 
         "traj_deform_fusion_mutual_lstm_v2_noise"
-        "traj_deform_fusion_mutual_lstm_v2_noise"
         "traj_deform_fusion_mutual_lstm_v2_noise_10"
-        "traj_deform_fusion_mutual_lstm_v2_noise_10"
-        "traj_deform_fusion_mutual_lstm_v2_noise_20"
         "traj_deform_fusion_mutual_lstm_v2_noise_20"
 
     )
@@ -28,18 +22,12 @@ if [ $1 = 'train' ]; then
     traj_recon_affordance_datasets=(
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
 
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
     )
 
     training_tag='' # $1
@@ -136,7 +124,7 @@ if [ $1 = 'train' ]; then
 
 elif [ $1 = 'test' ]; then
 
-    obj_shape_root="../shapes/inference_objs_5"
+    obj_shape_root="../shapes/inference_objs_50"
     # obj_shape_root="../shapes/inference_objs"
     hook_shape_root="../shapes/hook_all_new"
     # hook_shape_root="../shapes/hook_all_new_0"
@@ -151,12 +139,12 @@ elif [ $1 = 'test' ]; then
         # "traj3d_deform_fusion_mutual_lstm_v2_noise_20"
 
         # 40
-        # "traj3d_deform_fusion_mutual_lstm_v2_noise"
+        "traj3d_deform_fusion_mutual_lstm_v2_noise"
         # "traj3d_deform_fusion_mutual_lstm_v2_noise"
 
         # # 10
         # "traj_deform_fusion_mutual_lstm_v2_noise_10"
-        "traj_deform_fusion_mutual_lstm_v2_noise_10"
+        # "traj_deform_fusion_mutual_lstm_v2_noise_10"
 
         # # 20
         # "traj_deform_fusion_mutual_lstm_v2_noise_20"
@@ -178,12 +166,12 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview"
 
         # 40
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview"
 
         # # 20
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview"
@@ -206,12 +194,12 @@ elif [ $1 = 'test' ]; then
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-20-k0/05.02.20.39-1000-singleview/val_deform"
 
         # 40
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val_deform"
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-40-k0/05.02.20.23-1000-singleview/val_deform"
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-40-k0/05.02.20.23-1000-singleview/val_deform"
 
         # # 10
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview/val_deform"
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val_deform"
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-residual-10-k0/05.02.20.53-1000-singleview/val_deform"
 
         # # 20
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/val_deform"
@@ -248,11 +236,37 @@ elif [ $1 = 'test' ]; then
         # # 40
         # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise-05.09.10.36-formal_0/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
         # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise-05.09.10.36-formal_0/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
+
+        # 10
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise_10-05.13.15.52-formal_1/kptraj_all_smooth-absolute-10-k0-05.02.20.53-1000-singleview"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise_10-05.13.15.52-formal_1/kptraj_all_smooth-residual-10-k0-05.02.20.53-1000-singleview"
+        
+        # 20
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise_20-05.13.15.52-formal_1/kptraj_all_smooth-absolute-20-k0-05.02.20.39-1000-singleview"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise_20-05.13.15.52-formal_1/kptraj_all_smooth-residual-20-k0-05.02.20.39-1000-singleview"
+        
+        # 40
+        "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise-05.13.15.52-formal_1/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
+        # "checkpoints/traj3d_deform_fusion_mutual_lstm_v2_noise-05.13.15.52-formal_1/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
+        
+        # 10
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise_10-05.13.15.52-formal_1/kptraj_all_smooth-absolute-10-k0-05.02.20.53-1000-singleview"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise_10-05.13.15.52-formal_1/kptraj_all_smooth-residual-10-k0-05.02.20.53-1000-singleview"
+        
+        # 20
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise_20-05.13.15.52-formal_1/kptraj_all_smooth-absolute-20-k0-05.02.20.39-1000-singleview"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise_20-05.13.15.52-formal_1/kptraj_all_smooth-residual-20-k0-05.02.20.39-1000-singleview"
+        
+        # 40
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise-05.13.15.52-formal_1/kptraj_all_smooth-absolute-40-k0-05.02.20.23-1000-singleview"
+        # "checkpoints/traj_deform_fusion_mutual_lstm_v2_noise-05.13.15.52-formal_1/kptraj_all_smooth-residual-40-k0-05.02.20.23-1000-singleview"
+
+        
+
     )
 
     iters=(
-        # "1000" "3000" "3500" "4000" "4500"
-        # "2000" 
+        # "1500" "2000" "3000" "3500" "4000" "4500" 
         "5000"
     )
 
@@ -273,8 +287,8 @@ elif [ $1 = 'test' ]; then
                                                         --obj_shape_root ${obj_shape_root} \
                                                         --hook_shape_root ${hook_shape_root} \
                                                         --evaluate \
-                                                        --visualize \
-                                                        --use_temp
+                                                        --visualize 
+                                                        # --use_temp
                                                         # --use_gt_cls \
                                                         # --use_gt_cp 
         done

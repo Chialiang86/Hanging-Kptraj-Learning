@@ -12,8 +12,10 @@ dataset_inputs:
   gt_trajs: 20
   
 model_inputs:
-  pcd_feat_dim: 128
-  wpt_feat_dim: 128
+  # pcd_feat_dim: 128
+  # wpt_feat_dim: 128
+  pcd_feat_dim: 512
+  wpt_feat_dim: 32
   hidden_dim: 256
   num_steps: 10
   wpt_dim: 3
