@@ -461,7 +461,7 @@ def test(args):
     for inference_obj_path in inference_obj_paths:
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
-        obj_grasping_infos.append(obj_contact_info['initial_pose'][8]) # bottom position
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][0]) # bottom position
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'

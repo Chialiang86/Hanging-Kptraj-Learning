@@ -124,7 +124,12 @@ if [ $1 = 'train' ]; then
 
 elif [ $1 = 'test' ]; then
 
-    obj_shape_root="../shapes/inference_objs_5"
+    obj_shape_root="../shapes/inference_daily"
+    # obj_shape_root="../shapes/inference_mug"
+    # obj_shape_root="../shapes/inference_scissor"
+    # obj_shape_root="../shapes/inference_cooking"
+    # obj_shape_root="../shapes/inference_tool"
+    # obj_shape_root="../shapes/inference_objs_50"
     # obj_shape_root="../shapes/inference_objs"
     hook_shape_root="../shapes/hook_all_new"
     # hook_shape_root="../shapes/hook_all_new_0"
@@ -261,8 +266,8 @@ elif [ $1 = 'test' ]; then
                                                         --weight_subpath "1000_points-network_epoch-${iter}.pth" \
                                                         --obj_shape_root ${obj_shape_root} \
                                                         --hook_shape_root ${hook_shape_root} \
+                                                        --evaluate \
                                                         --visualize 
-                                                        # --evaluate \
                                                         # --use_temp
                                                         # --use_gt_cls \
                                                         # --use_gt_cp 

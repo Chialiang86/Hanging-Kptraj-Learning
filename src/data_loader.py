@@ -85,7 +85,7 @@ def main(args):
 if __name__=="__main__":
 
     default_dataset = [
-        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.19.28-1000-fullview",
+        # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview",
         "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/",
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview",
     ]
@@ -97,7 +97,7 @@ if __name__=="__main__":
     # other info
     # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
     # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
-    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_deform_mutual/traj_deform_fusion_mutual_lstm_v2_20.yaml')
+    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_deform_mutual/traj_deform_fusion_mutual_lstm_v2_noise_20.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()

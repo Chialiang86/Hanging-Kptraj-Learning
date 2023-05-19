@@ -399,11 +399,9 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
     obj_contact_relative_transform = get_matrix_from_pose(contact_pose)
 
     obj_pose = grasping_info['obj_pose']
-    obj_pose = np.asarray(obj_pose) + np.asarray([0, 0, 0.05, 0, 0, 0, 0])
     obj_transform = get_matrix_from_pose(obj_pose)
     
     robot_pose = grasping_info['robot_pose']
-    robot_pose = np.asarray(robot_pose) + np.asarray([0, 0, 0.05, 0, 0, 0, 0])
     robot_transform = get_matrix_from_pose(robot_pose)
 
     robot.reset()

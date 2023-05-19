@@ -516,9 +516,10 @@ def test(args):
     obj_urdfs = []
     obj_names = []
     for inference_obj_path in inference_obj_paths:
+
         obj_contact_info = json.load(open(inference_obj_path, 'r'))
         obj_contact_poses.append(obj_contact_info['contact_pose'])
-        obj_grasping_infos.append(obj_contact_info['initial_pose'][8]) # bottom position
+        obj_grasping_infos.append(obj_contact_info['initial_pose'][0]) # bottom position
 
         obj_urdf = '{}/base.urdf'.format(os.path.split(inference_obj_path)[0])
         assert os.path.exists(obj_urdf), f'{obj_urdf} not exists'
@@ -829,6 +830,7 @@ def test(args):
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
+                    print('object name: {}'.format(obj_name))
 
                     obj_id = p.loadURDF(obj_urdf)
                     rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)

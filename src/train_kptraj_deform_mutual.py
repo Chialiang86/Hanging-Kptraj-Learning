@@ -477,8 +477,6 @@ def test(args):
 
     for inference_obj_path in inference_obj_whole_dirs:
 
-        if 'scissor_4' not in inference_obj_path:
-            continue
         paths = glob.glob(f'{inference_obj_path}/*.json')
         assert len(paths) == 1, f'multiple object contact informations : {paths}'
         inference_obj_paths.extend(paths) 
@@ -536,7 +534,6 @@ def test(args):
                      3 # devil
         
         points = np.load(inference_hook_path)[:, :3].astype(np.float32)
-        affords = np.load(inference_hook_path)[:, 3].astype(np.float32)
         
         if hook_name in template_hook_names:
 
@@ -624,13 +621,13 @@ def test(args):
 
     # Create pybullet GUI
     physics_client_id = None
-    # physics_client_id = p.connect(p.GUI)
-    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    if visualize:
-        physics_client_id = p.connect(p.GUI)
-        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    else:
-        physics_client_id = p.connect(p.DIRECT)
+    physics_client_id = p.connect(p.GUI)
+    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # if visualize:
+    #     physics_client_id = p.connect(p.GUI)
+    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    # else:
+    #     physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
@@ -816,7 +813,6 @@ def test(args):
                     reversed_recovered_traj = refine_waypoint_rotation(reversed_recovered_traj)
 
                     obj_name = obj_urdf.split('/')[-2]
-                    print(obj_name)
 
                     obj_id = p.loadURDF(obj_urdf)
                     rgbs, success = robot_kptraj_hanging(robot, reversed_recovered_traj, obj_id, hook_id, obj_contact_pose, obj_grasping_info, visualize=visualize if i == 0 else False)

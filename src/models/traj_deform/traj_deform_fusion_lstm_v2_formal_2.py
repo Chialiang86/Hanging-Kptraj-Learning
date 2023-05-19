@@ -23,7 +23,6 @@ def KL(mu, logvar):
     kl_loss = torch.mean(kl_loss)
     return kl_loss
 
-
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         self.SA_modules = nn.ModuleList()
@@ -82,7 +81,7 @@ class PointNet2ClsSSG(PointNet2ClassificationSSG):
             xyz, features = module(xyz, features)
 
         return self.fc_layer(features.squeeze(-1))
-    
+
 class PointNet2SemSegSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         c_in = 3
@@ -124,7 +123,6 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
             )
         )
 
-
         self.FP_modules = nn.ModuleList()
         self.FP_modules.append(PointnetFPModule(mlp=[128 + c_in, 128, 128, 128]))
         self.FP_modules.append(PointnetFPModule(mlp=[256 + 64, 256, 128]))
@@ -161,7 +159,7 @@ class PointNet2SemSegSSG(PointNet2ClassificationSSG):
             li_xyz, li_features = self.SA_modules[i](l_xyz[i], l_features[i])
             l_xyz.append(li_xyz)
             l_features.append(li_features)
-            
+
         for i in range(-1, -(len(self.FP_modules) + 1), -1):
             l_features[i - 1] = self.FP_modules[i](
                 l_xyz[i - 1], l_xyz[i], l_features[i - 1], l_features[i]
@@ -249,15 +247,13 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for classification head =========== #
         ###################################################
 
-        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim})
-
-        # self.classification_head = nn.Sequential(
-        #     nn.Linear(512, 128), # see SA_modules_global
-        #     nn.LeakyReLU(),
-        #     nn.Linear(128, 32),
-        #     nn.LeakyReLU(),
-        #     nn.Linear(32, 4)
-        # )
+        self.classification_head = nn.Sequential(
+            nn.Linear(pcd_feat_dim, 32),
+            nn.LeakyReLU(),
+            nn.Linear(32, 32),
+            nn.LeakyReLU(),
+            nn.Linear(32, 4)
+        )
         
         ###########################################################
         # =========== for trajectory deformation head =========== #
@@ -341,21 +337,9 @@ class TrajDeformFusionLSTM(nn.Module):
         ###############################################
 
         affordance = self.affordance_head(whole_feats)
-        
-        ###################################################
-        # =========== for classification head =========== #
-        ###################################################
-
-        classification_out = self.pointnet2cls(pcs_repeat)
-        difficulty = F.softmax(classification_out, -1)
-
-        ###################################################
-
         if iter < self.train_traj_start:
-            return difficulty, affordance, None
+            return None, affordance, None
         
-        ###################################################
-
         #######################################################################
         # =========== extract shape feature using affordance head =========== #
         #######################################################################
@@ -376,6 +360,13 @@ class TrajDeformFusionLSTM(nn.Module):
             cond = torch.where(part_cond0 == i)[0] # choose the indexes for the i'th point cloud
             tmp_max = torch.max(whole_feats[i, :, part_cond2[cond]], dim=1).values # get max pooling feature using that 10 point features from the sub point cloud 
             whole_feats_part[i] = tmp_max
+
+        ###################################################
+        # =========== for classification head =========== #
+        ###################################################
+
+        classification_out = self.classification_head(whole_feats_part)
+        difficulty = F.log_softmax(classification_out, -1)
 
         ###################################################
 
@@ -413,15 +404,6 @@ class TrajDeformFusionLSTM(nn.Module):
 
         affordance_loss = F.binary_cross_entropy_with_logits(affordance_pred, affordance.unsqueeze(1))
 
-        ###################################################
-        # =========== for classification head =========== #
-        ###################################################
-
-        difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
-        cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
-
-        ###################################################
-        
         if iter < self.train_traj_start:
             losses = {}
             losses['cls'] = cls_loss
@@ -429,10 +411,15 @@ class TrajDeformFusionLSTM(nn.Module):
             losses['deform'] = deform_loss
             losses['dir'] = dir_loss
 
-            losses['total'] = affordance_loss + cls_loss
+            losses['total'] = affordance_loss
             return losses
-        
+
         ###################################################
+        # =========== for classification head =========== #
+        ###################################################
+
+        difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
+        cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
 
         ###########################################################
         # =========== for trajectory deformation head =========== #
@@ -492,7 +479,8 @@ class TrajDeformFusionLSTM(nn.Module):
         losses['dir'] = dir_loss
         losses['deform'] = deform_loss
 
-        losses['total'] = self.lbd_affordance * affordance_loss + \
+        losses['total'] = self.lbd_cls * cls_loss + \
+                            self.lbd_affordance * affordance_loss + \
                             self.lbd_dir * dir_loss + \
                             self.lbd_deform * deform_loss
 
@@ -546,7 +534,7 @@ class TrajDeformFusionLSTM(nn.Module):
         if difficulty is not None:
             target_difficulty = difficulty
         else :
-            classification_out = self.pointnet2cls(pn_input)
+            classification_out = self.classification_head(whole_feats_part)
             difficulty = F.log_softmax(classification_out, -1)
             target_difficulty = torch.argmax(difficulty, dim=-1)
             
