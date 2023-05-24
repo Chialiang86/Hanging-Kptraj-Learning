@@ -40,7 +40,7 @@ def main(args):
 
     # ================== Simulator ==================
 
-    train_set = dataset_class(dataset_dir=f'{dataset_dir}/val_deform', **dataset_dataset_inputs)
+    train_set = dataset_class(dataset_dir=f'{dataset_dir}/train', **dataset_dataset_inputs)
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     train_set.print_data_shape()
     for index in range(1):
@@ -58,6 +58,7 @@ def main(args):
 
             geometries = []
 
+
             contact_point = sample_pcds[0, 0, :3].cpu().detach().squeeze().numpy()
             contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
             contact_point_coor.translate(contact_point.reshape((3, 1)))
@@ -68,6 +69,7 @@ def main(args):
             point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
             geometries.append(point_cloud)
 
+            print(sample_difficulty[0])
             temp_traj = sample_temp_trajs[0].clone()
             off = sample_pcds[0, 0, :3] - temp_traj[0, :3]
             temp_traj[:, :3] += off
@@ -86,7 +88,7 @@ if __name__=="__main__":
 
     default_dataset = [
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview",
-        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview/",
+        "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-20-k0/05.02.20.39-1000-singleview-10c/",
         # "../dataset/traj_recon_affordance/kptraj_all_smooth-absolute-10-k0/05.02.20.53-1000-singleview",
     ]
 
@@ -97,7 +99,7 @@ if __name__=="__main__":
     # other info
     # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
     # parser.add_argument('--config', '-cfg', type=str, default='../config/traj_af_mutual/traj_fusion_mutual_seg_20.yaml')
-    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_deform_mutual/traj_deform_fusion_mutual_lstm_v2_noise_20.yaml')
+    parser.add_argument('--config', '-cfg', type=str, default='../config/traj_deform_mutual/traj_deform_fusion_mutual_lstm_v2_noise_10-formal_4.yaml')
     parser.add_argument('--split_ratio', '-sr', type=float, default=0.2)
     parser.add_argument('--verbose', '-vb', action='store_true')
     args = parser.parse_args()

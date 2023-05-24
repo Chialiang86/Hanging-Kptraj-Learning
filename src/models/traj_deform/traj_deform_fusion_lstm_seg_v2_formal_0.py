@@ -8,20 +8,6 @@ from scipy.spatial.transform import Rotation as R
 from pointnet2_ops.pointnet2_modules import PointnetFPModule, PointnetSAModule
 from pointnet2.models.pointnet2_ssg_cls import PointNet2ClassificationSSG
 
-# def KL(mu, logvar):
-#     mu = mu.view(mu.shape[0], -1)
-#     logvar = logvar.view(logvar.shape[0], -1)
-#     loss = 0.5 * torch.sum(mu * mu + torch.exp(logvar) - 1 - logvar, 1)
-#     # high star implementation
-#     # torch.mean(0.5 * torch.sum(torch.exp(z_var) + z_mu ** 2 - 1. - z_var, 1))
-#     loss = torch.mean(loss)
-#     return loss
-
-def KL(mu, logvar):
-    kl_loss = -0.5 * torch.sum(1 + logvar - mu**2 - logvar.exp())
-    kl_loss = torch.mean(kl_loss)
-    return kl_loss
-
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         c_in = 3 if "input_feat_dim" not in self.hparams.keys() else self.hparams["input_feat_dim"]

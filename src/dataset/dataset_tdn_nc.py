@@ -27,24 +27,20 @@ class KptrajDeformAffordanceDataset(Dataset):
 
         dataset_subdirs = glob.glob(f'{dataset_dir}/*')
 
-        template_hooks = [
-            'Hook_my_bar_easy',
-            'Hook_my_60_normal',
-            'Hook_my_45_hard',
-            'Hook_my_90_devil',
-        ]
+        template_hooks = []
+        for dataset_subdir in dataset_subdirs:
+            hook_name = dataset_subdir.split('/')[-1]
+            if 'center' in hook_name:
+                template_hooks.append(hook_name)
+        
+        print(template_hooks)
 
         for template_hook in template_hooks:
             item = f'{dataset_dir}/{template_hook}'
             old_index = dataset_subdirs.index(item)
             dataset_subdirs.insert(0, dataset_subdirs.pop(old_index))
         
-        self.template_dict = {
-            0: {},
-            1: {},
-            2: {},
-            3: {}
-        }
+        self.template_dict = { i: {} for i in range(len(template_hooks))}
 
         self.type = "residual" if "residual" in dataset_dir else "absolute"
         self.traj_len = num_steps
@@ -60,7 +56,7 @@ class KptrajDeformAffordanceDataset(Dataset):
 
         # dataset_subdirs = dataset_subdirs[:4] + dataset_subdirs[7:8]
 
-        for dataset_subdir in tqdm(dataset_subdirs):
+        for dataset_subdir in tqdm(dataset_subdirs[:20]):
 
             shape_files = glob.glob(f'{dataset_subdir}/affordance*.npy') # point cloud with affordance score (Nx4), the first element is the contact point
             shape_list_tmp = []
@@ -70,11 +66,10 @@ class KptrajDeformAffordanceDataset(Dataset):
             
             hook_name = dataset_subdir.split('/')[-1]
             current_type = 'template' if hook_name in template_hooks else 'normal'
-            difficulty = 0 if 'easy' in hook_name else \
-                         1 if 'normal' in hook_name else \
-                         2 if 'hard' in hook_name else \
-                         3 # devil
-            
+            if current_type == 'normal':
+                difficulty = int(hook_name.split('_')[-1])
+            else : # 'template'
+                difficulty = int(hook_name.split('_')[-1].split('-')[0])
             
             if current_type == 'normal':
                 self.difficulty_list.append(difficulty)

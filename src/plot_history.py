@@ -6,7 +6,7 @@ def main(root_name : str):
 
     fnames = [root_name]
     if os.path.isdir(root_name):
-        fnames = glob.glob(f'{root_name}/*deform*/*.txt')
+        fnames = glob.glob(f'{root_name}/*formal_3/*.txt')
 
     for fname in fnames:
 
@@ -54,7 +54,7 @@ def main(root_name : str):
             if training_model_type == 'deform':
                 training_res = {
                     'cls_loss': [],
-                    # 'afford_loss': [],
+                    'afford_loss': [],
                     # 'dist_loss': [],
                     # 'dir_loss': [],
                     'deform_loss': [],
@@ -62,7 +62,7 @@ def main(root_name : str):
                 }
                 validation_res = {
                     'cls_loss': [],
-                    # 'afford_loss': [],
+                    'afford_loss': [],
                     # 'dist_loss': [],
                     # 'dir_loss': [],
                     'deform_loss': [],
@@ -144,7 +144,7 @@ def main(root_name : str):
 
                         training_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
                         training_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
-                        # training_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        training_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
                         # training_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
                         # training_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                         training_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
@@ -226,7 +226,7 @@ def main(root_name : str):
 
                         validation_epoch.append(int(epoch_line.split('/')[0].split(' ')[-1]))
                         validation_res['cls_loss'].append(float(cls_loss_line.split(':')[-1].strip()))
-                        # validation_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
+                        validation_res['afford_loss'].append(float(afford_loss_line.split(':')[-1].strip()))
                         # validation_res['dist_loss'].append(float(dist_loss_line.split(':')[-1].strip()))
                         # validation_res['dir_loss'].append(float(dir_loss_line.split(':')[-1].strip()))
                         validation_res['deform_loss'].append(float(deform_loss_line.split(':')[-1].strip()))
@@ -275,7 +275,7 @@ def main(root_name : str):
         plt.title('Training History (Total Loss)')
         plt.xlabel('epoch', fontsize=16)
         plt.ylabel('loss', fontsize=16)
-        plt.yscale("log")
+        # plt.yscale("log")
         plt.legend()
         plt.grid()
         plt.savefig(f'{output_dir}/total.png')
@@ -286,13 +286,15 @@ def main(root_name : str):
             # all
             plt.figure(figsize=(10, 5))
             for key in training_res.keys():
-                plt.plot(training_res[key], label=f'train_{key}', zorder=2)
+                if key != 'total_loss':
+                    plt.plot(training_res[key], label=f'train_{key}', zorder=2)
             for key in training_res.keys():
-                plt.plot(validation_res[key], label=f'val_{key}', zorder=2)
+                if key != 'total_loss':
+                    plt.plot(validation_res[key], label=f'val_{key}', zorder=2)
             plt.title('Training History (All Loss)')
             plt.xlabel('epoch', fontsize=16)
             plt.ylabel('loss', fontsize=16)
-            plt.yscale("log")
+            # plt.yscale("log")
             plt.legend()
             plt.grid()
             plt.savefig(f'{output_dir}/all.png')

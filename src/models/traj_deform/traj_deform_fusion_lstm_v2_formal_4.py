@@ -9,7 +9,6 @@ from pointnet2_ops.pointnet2_utils import furthest_point_sample
 from pointnet2_ops.pointnet2_modules import PointnetFPModule, PointnetSAModule
 from pointnet2.models.pointnet2_ssg_cls import PointNet2ClassificationSSG
 
-
 class PointNet2ClsSSG(PointNet2ClassificationSSG):
     def _build_model(self):
         self.SA_modules = nn.ModuleList()
@@ -206,7 +205,8 @@ class LSTMDecoder(nn.Module):
 class TrajDeformFusionLSTM(nn.Module):
     def __init__(self, pcd_feat_dim=32, wpt_feat_dim=64,
                         hidden_dim=128, 
-                        num_steps=30, wpt_dim=9, decoder_layers=1, num_cls=4,
+                        num_steps=30, wpt_dim=9, num_cls=4,
+                        decoder_layers=1,
                         lbd_cls=0.1, lbd_affordance=0.1, lbd_dir=1.0, lbd_deform=1.0, 
                         train_traj_start=1000, dataset_type=0, gt_trajs=1):
         super(TrajDeformFusionLSTM, self).__init__()
@@ -216,6 +216,7 @@ class TrajDeformFusionLSTM(nn.Module):
         self.hidden_dim = hidden_dim
         self.num_steps = num_steps
         self.wpt_dim = wpt_dim
+        self.num_cls = num_cls
         self.decoder_layers = decoder_layers
         self.gt_trajs = gt_trajs
 
@@ -235,7 +236,7 @@ class TrajDeformFusionLSTM(nn.Module):
         # =========== for classification head =========== #
         ###################################################
 
-        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim, 'num_cls': num_cls})
+        self.pointnet2cls = PointNet2ClsSSG({'feat_dim': pcd_feat_dim, 'num_cls': self.num_cls})
 
         # self.classification_head = nn.Sequential(
         #     nn.Linear(512, 128), # see SA_modules_global
@@ -405,7 +406,7 @@ class TrajDeformFusionLSTM(nn.Module):
 
         ###################################################
 
-        difficulty_oh = F.one_hot(difficulty, num_classes=4).double().to(pcs.device)
+        difficulty_oh = F.one_hot(difficulty, num_classes=self.num_cls).double().to(pcs.device)
         cls_loss = self.CELoss(difficulty_pred, difficulty_oh)
             
         if iter < self.train_traj_start:

@@ -474,7 +474,7 @@ def test(args):
     hook_affords = []
     hook_urdfs = []
 
-    class_num = 15 if '/val' in inference_obj_dir else 200
+    class_num = 15 if ('/val' in inference_hook_dir) or '/test' in inference_hook_dir else 10000
     easy_cnt = 0
     normal_cnt = 0
     hard_cnt = 0
@@ -570,7 +570,7 @@ def test(args):
 
     # ================== Inference ==================
 
-    batch_size = 1
+    batch_size = 10
     all_scores = {
         'easy': [],
         'normal': [],
@@ -632,40 +632,40 @@ def test(args):
         # generate trajectory using predicted contact points
         affordance, recon_trajs = network.sample(points_batch)
 
-        ###############################################
-        # =========== for affordance head =========== #
-        ###############################################
+        # ###############################################
+        # # =========== for affordance head =========== #
+        # ###############################################
 
-        points = points_batch[0].cpu().detach().squeeze().numpy()
-        affordance = affordance[0].cpu().detach().squeeze().numpy()
-        affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
-        colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
+        # points = points_batch[0].cpu().detach().squeeze().numpy()
+        # affordance = affordance[0].cpu().detach().squeeze().numpy()
+        # affordance = (affordance - np.min(affordance)) / (np.max(affordance) - np.min(affordance))
+        # colors = cv2.applyColorMap((255 * affordance).astype(np.uint8), colormap=cv2.COLORMAP_JET).squeeze()
 
-        contact_point_cond = np.where(affordance == np.max(affordance))[0]
-        contact_point = points[contact_point_cond][0]
+        # contact_point_cond = np.where(affordance == np.max(affordance))[0]
+        # contact_point = points[contact_point_cond][0]
 
-        contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
-        contact_point_coor.translate(contact_point.reshape((3, 1)))
+        # contact_point_coor = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.2)
+        # contact_point_coor.translate(contact_point.reshape((3, 1)))
 
-        point_cloud = o3d.geometry.PointCloud()
-        point_cloud.points = o3d.utility.Vector3dVector(points)
-        point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud.points = o3d.utility.Vector3dVector(points)
+        # point_cloud.colors = o3d.utility.Vector3dVector(colors / 255)
 
-        if visualize:
-            img_list = []
-            frames = 9
-            rotate_per_frame = np.pi * 2 / frames
-            for _ in range(frames):
-                r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
-                point_cloud.rotate(r, center=(0, 0, 0))
-                contact_point_coor.rotate(r, center=(0, 0, 0))
-                geometries = [point_cloud, contact_point_coor]
+        # if visualize:
+        #     img_list = []
+        #     frames = 9
+        #     rotate_per_frame = np.pi * 2 / frames
+        #     for _ in range(frames):
+        #         r = point_cloud.get_rotation_matrix_from_xyz((0, rotate_per_frame, 0)) # (rx, ry, rz) = (right, up, inner)
+        #         point_cloud.rotate(r, center=(0, 0, 0))
+        #         contact_point_coor.rotate(r, center=(0, 0, 0))
+        #         geometries = [point_cloud, contact_point_coor]
 
-                img = capture_from_viewer(geometries)
-                img_list.append(img)
+        #         img = capture_from_viewer(geometries)
+        #         img_list.append(img)
             
-            save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
-            imageio.mimsave(save_path, img_list, fps=10)
+        #     save_path = f"{output_dir}/{weight_subpath[:-4]}-affor-{sid}.gif"
+        #     imageio.mimsave(save_path, img_list, fps=10)
 
         ##############################################################
         # =========== for trajectory reconstruction head =========== #

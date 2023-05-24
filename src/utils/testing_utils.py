@@ -479,18 +479,20 @@ def robot_kptraj_hanging(robot : pandaEnv, recovered_traj, obj_id, hook_id, cont
             for _ in range(3): 
                 p.stepSimulation()
                 time.sleep(sim_timestep)
+
+            if visualize:
+                # wpt_id = p.createMultiBody(
+                #     baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.002), 
+                #     baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.002, rgbaColor=colors), 
+                #     basePosition=waypoint[:3]
+                # )
+                # wpt_ids.append(wpt_id)
+                img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
+                rgb = img_info[2]
+                rgbs.append(rgb)
+                
         old_gripper_pose = gripper_pose
 
-        if visualize:
-            # wpt_id = p.createMultiBody(
-            #     baseCollisionShapeIndex=p.createCollisionShape(p.GEOM_SPHERE, 0.002), 
-            #     baseVisualShapeIndex=p.createVisualShape(p.GEOM_SPHERE, 0.002, rgbaColor=colors), 
-            #     basePosition=waypoint[:3]
-            # )
-            # wpt_ids.append(wpt_id)
-            img_info = p.getCameraImage(width, height, viewMatrix=view_mat, projectionMatrix=proj_mat)
-            rgb = img_info[2]
-            rgbs.append(rgb)
     
     # for wpt_id in wpt_ids:
     #     p.removeBody(wpt_id)

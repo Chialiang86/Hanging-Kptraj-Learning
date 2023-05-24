@@ -110,6 +110,12 @@ def train(args):
         train_batches = enumerate(train_loader, 0)
         val_batches = enumerate(val_loader, 0)
 
+        # freeze the weight after a specific parameters
+        if epoch >= network.train_traj_start:
+            for param in network.pointnet2cls.parameters():
+                param.requires_grad = False
+                param.grad = None
+
         # training
         train_dist_losses = []
         train_cls_losses = []
@@ -520,7 +526,7 @@ def test(args):
     hook_affords = []
     hook_urdfs = []
 
-    class_num = 15 if '/val' in inference_hook_dir else 20000
+    class_num = 15 if ('/val' in inference_hook_dir) or ('/test' in inference_hook_dir) else 20000
     easy_cnt = 0
     normal_cnt = 0
     hard_cnt = 0
@@ -620,14 +626,14 @@ def test(args):
     # ================== Simulator ==================
 
     # Create pybullet GUI
-    physics_client_id = None
-    physics_client_id = p.connect(p.GUI)
-    p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # if visualize:
-    #     physics_client_id = p.connect(p.GUI)
-    #     p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
-    # else:
-    #     physics_client_id = p.connect(p.DIRECT)
+    # physics_client_id = None
+    # physics_client_id = p.connect(p.GUI)
+    # p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    if visualize:
+        physics_client_id = p.connect(p.GUI)
+        p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
+    else:
+        physics_client_id = p.connect(p.DIRECT)
     p.resetDebugVisualizerCamera(
         cameraDistance=0.2,
         cameraYaw=90,
